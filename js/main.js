@@ -94,7 +94,7 @@ jQuery(document).ready(function($){
 		}
 	}
 
-	function updateTimelinePosition(string, event, timelineComponents, timelineTotWidth) {
+	function updateTimelinePosition(string, event, timelineComponents) {
 		//translate timeline to the left/right according to the position of the selected event
 		var eventStyle = window.getComputedStyle(event.get(0), null),
 			eventLeft = Number(eventStyle.getPropertyValue("left").replace('px', '')),
@@ -141,7 +141,8 @@ jQuery(document).ready(function($){
 			timeSpanNorm = Math.round(timeSpanNorm) + 4,
 			totalWidth = timeSpanNorm*width;
 		timelineComponents['eventsWrapper'].css('width', totalWidth+'px');
-		updateFilling(timelineComponents['timelineEvents'].eq(0), timelineComponents['fillingLine'], totalWidth);
+		updateFilling(timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents['fillingLine'], totalWidth);
+		updateTimelinePosition('next', timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents);
 	
 		return totalWidth;
 	}
