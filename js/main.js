@@ -90,7 +90,7 @@ jQuery(document).ready(function($){
 			newEvent.addClass('selected');
 			selectedDate.removeClass('selected');
 			updateOlderEvents(newEvent);
-			updateTimelinePosition(string, newEvent, timelineComponents, timelineTotWidth);
+			updateTimelinePosition(string, newEvent, timelineComponents);
 		}
 	}
 
@@ -203,16 +203,6 @@ jQuery(document).ready(function($){
 
 	//based on http://stackoverflow.com/questions/542938/how-do-i-get-the-number-of-days-between-two-dates-in-javascript
 	function parseDate(events) {
-		var dateArrays = [];
-		events.each(function(){
-			var dateComp = $(this).data('date').split('/'),
-				newDate = new Date(dateComp[2], dateComp[1]-1, dateComp[0]);
-			dateArrays.push(newDate);
-		});
-	    return dateArrays;
-	}
-
-	function parseDate2(events) {
 		var dateArrays = [];
 		events.each(function(){
 			var singleDate = $(this),
