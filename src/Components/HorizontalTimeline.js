@@ -11,29 +11,6 @@ let setTransformValue = (element, property, value) => {
   element.style['transform'] = property + '(' + value + ')';
 };
 
-// translates the timeline on the click of left or right arrow
-// change it to onClick handling on the specified buttons
-let translateTimeline = (timelineComponents, val, totWidth) => {
-  let value = val;
-  let eventsWrapper = timelineComponents.eventsWrapper.get(0);
-  value = (value > 0) ? 0 : value; // only negative translate value
-  // do not translate more than timeline width
-  value = ( !(typeof totWidth === 'undefined') && value < totWidth ) ? totWidth : value;
-  setTransformValue(eventsWrapper, 'translateX', value + 'px');
-
-  // update navigation arrows visibility
-  if (value === 0 ) {
-    timelineComponents.timelineNavigation.find('.prev').addClass('inactive');
-  } else {
-    timelineComponents.timelineNavigation.find('.prev').removeClass('inactive');
-  }
-  if (value === totWidth ) {
-    timelineComponents.timelineNavigation.find('.next').addClass('inactive');
-  } else {
-    timelineComponents.timelineNavigation.find('.next').removeClass('inactive');
-  }
-};
-
 
 let getTranslateValue = (timeline) => {
   let translateValue = 0;
@@ -54,35 +31,6 @@ let getTranslateValue = (timeline) => {
   return Number(translateValue);
 };
 
-let updateSlide = (timelineComponents, timelineTotWidth, string, eventsMinDistance) => {
-  // retrieve translateX value of timelineComponents.eventsWrapper
-  let translateValue = getTranslateValue(timelineComponents.eventsWrapper);
-  let	wrapperWidth = Number(timelineComponents.timelineWrapper.css('width').replace('px', ''));
-
-  //  translate the timeline to the left('next')/right('prev')
-  if (string === 'next') {
-    translateTimeline(timelineComponents,
-      translateValue - wrapperWidth + eventsMinDistance,
-      wrapperWidth - timelineTotWidth);
-  } else {
-    translateTimeline(timelineComponents, translateValue + wrapperWidth - eventsMinDistance);
-  }
-};
-
-
-let updateTimelinePosition = (string, event, timelineComponents) => {
-  // translate timeline to the left/right according to the position of the selected event
-  let eventStyle = window.getComputedStyle(event.get(0), null);
-  let eventLeft = Number(eventStyle.getPropertyValue('left').replace('px', ''));
-  let timelineWidth = Number(timelineComponents.timelineWrapper.css('width').replace('px', ''));
-  let timelineTotWidth = Number(timelineComponents.eventsWrapper.css('width').replace('px', ''));
-  let timelineTranslate = getTranslateValue(timelineComponents.eventsWrapper);
-
-  if ( (string === 'next' && eventLeft > timelineWidth - timelineTranslate) ||
-      (string === 'prev' && eventLeft < - timelineTranslate) ) {
-    translateTimeline(timelineComponents, - eventLeft + timelineWidth / 2, timelineWidth - timelineTotWidth);
-  }
-};
 
 let updateFilling = (selectedEvent, filling, totWidth) => {
   // change .filling-line length according to the selected event
@@ -92,27 +40,6 @@ let updateFilling = (selectedEvent, filling, totWidth) => {
   eventLeft = Number(eventLeft.replace('px', '')) + Number(eventWidth.replace('px', '')) / 2;
   let scaleValue = eventLeft / totWidth;
   setTransformValue(filling.get(0), 'scaleX', scaleValue);
-};
-
-let setDatePosition = (timelineComponents, min) => {
-  for (let i = 0; i < timelineComponents.timelineDates.length; i++) {
-    let distance = daydiff(timelineComponents.timelineDates[0], timelineComponents.timelineDates[i]);
-    let distanceNorm = Math.round(distance / timelineComponents.eventsMinLapse) + 2;
-    timelineComponents.timelineEvents.eq(i).css('left', distanceNorm * min + 'px');
-  }
-};
-
-let setTimelineWidth = (timelineComponents, width) => {
-  let timeSpan = daydiff(timelineComponents.timelineDates[0],
-    timelineComponents.timelineDates[timelineComponents.timelineDates.length - 1]);
-  let timeSpanNorm = timeSpan / timelineComponents.eventsMinLapse;
-  timeSpanNorm = Math.round(timeSpanNorm) + 4;
-  let totalWidth = timeSpanNorm * width;
-  timelineComponents.eventsWrapper.css('width', totalWidth + 'px');
-  updateFilling(timelineComponents.eventsWrapper.find('a.selected'), timelineComponents.fillingLine, totalWidth);
-  updateTimelinePosition('next', timelineComponents.eventsWrapper.find('a.selected'), timelineComponents);
-
-  return totalWidth;
 };
 
 let updateOlderEvents = (event) => {
@@ -137,24 +64,8 @@ let minLapse = (dates) => {
   return Math.min.apply(null, dateDistances);
 };
 
-function initTimeline(timelineComponents, eventsMinDistance, values) {
+function initTimeline(timelineComponents, eventsMinDistance, values, timelineTotWidth) {
   // assign a left postion to the single events along the timeline
-  setDatePosition(timelineComponents, eventsMinDistance);
-  // assign a width to the timeline
-  var timelineTotWidth = setTimelineWidth(timelineComponents, eventsMinDistance);
-  // the timeline has been initialize - show it
-
-  // detect click on the next arrow
-  timelineComponents.timelineNavigation.on('click', '.next', function(event) {
-    event.preventDefault();
-    updateSlide(timelineComponents, timelineTotWidth, 'next', eventsMinDistance);
-  });
-  // detect click on the prev arrow
-  timelineComponents.timelineNavigation.on('click', '.prev', function(event) {
-    event.preventDefault();
-    updateSlide(timelineComponents, timelineTotWidth, 'prev', eventsMinDistance);
-  });
-  // detect click on the a single event - show new event content
   timelineComponents.eventsWrapper.on('click', 'a', function(event) {
     event.preventDefault();
     timelineComponents.timelineEvents.removeClass('selected');
@@ -174,15 +85,46 @@ function initTimeline(timelineComponents, eventsMinDistance, values) {
 export default class HorizontalTimeline extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      position: 0
+    };
+
     this.timelineComponents = {};
+
+    this.__updateSlide__ = this.__updateSlide__.bind(this);
+    this.__setDatePosition__ = this.__setDatePosition__.bind(this);
+    this.__setTimelineWidth__ = this.__setTimelineWidth__.bind(this);
+    this.__translateTimeline__ = this.__translateTimeline__.bind(this);
+    this.__updateTimelinePosition__ = this.__updateTimelinePosition__.bind(this);
   }
+
+  /**
+   * The expected properties from the parent
+   * @type {Object}
+   */
+  static propTypes = {
+    //  array containing the dates
+    values: PropTypes.array.isRequired,
+    //  function that takes the index of the array as argument
+    indexClick: PropTypes.func.isRequired,
+    // The minimum distance between consecutive events
+    eventsMinDistance: PropTypes.number
+  };
+
+  /**
+   * The values that the properties will take if they are not provided
+   * by the user.
+   * @type {Object}
+   */
+  static defaultProps = {
+    eventsMinDistance: 120
+  };
 
   /**
   * This shity method needs to change
   * @return {[type]} [description]
   */
   componentDidMount() {
-    let eventsMinDistance = 120;
     let timelines = $('.cd-horizontal-timeline');
     let timeline = $(timelines[0]);
 
@@ -193,54 +135,86 @@ export default class HorizontalTimeline extends React.Component {
     // creating date array
     this.timelineComponents.timelineDates = this.props.values.map((value) => new Date(value));
     this.timelineComponents.eventsMinLapse = minLapse(this.timelineComponents.timelineDates);
-    this.timelineComponents.timelineNavigation = timeline.find('.cd-timeline-navigation');
     this.timelineComponents.eventsContent = timeline.children('.events-content');
     timeline.addClass('loaded');
 
-    (timelines.length > 0) && initTimeline(this.timelineComponents, eventsMinDistance, this.props.values);
+    this.timelineTotWidth = this.__setTimelineWidth__(this.props.eventsMinDistance);
+    this.__setDatePosition__();
+
+    initTimeline(this.timelineComponents, this.props.eventsMinDistance, this.props.values, this.timelineTotWidth);
   }
 
-  setTimelineWidth(width) {
+  __setDatePosition__() {
+    for (let i = 0; i < this.timelineComponents.timelineDates.length; i++) {
+      let distance = daydiff(this.timelineComponents.timelineDates[0], this.timelineComponents.timelineDates[i]);
+      let distanceNorm = Math.round(distance / this.timelineComponents.eventsMinLapse) + 2;
+      this.timelineComponents.timelineEvents.eq(i).css('left', distanceNorm * this.props.eventsMinDistance + 'px');
+    }
+  }
+
+  __updateTimelinePosition__(string, event) {
+    // translate timeline to the left/right according to the position of the selected event
+    let eventStyle = window.getComputedStyle(event.get(0), null);
+    let eventLeft = Number(eventStyle.getPropertyValue('left').replace('px', ''));
+    let timelineWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
+    let timelineTotWidth = Number(this.timelineComponents.eventsWrapper.css('width').replace('px', ''));
+    let timelineTranslate = getTranslateValue(this.timelineComponents.eventsWrapper);
+
+    if ( (string === 'next' && eventLeft > timelineWidth - timelineTranslate) ||
+        (string === 'prev' && eventLeft < - timelineTranslate) ) {
+      this.__translateTimeline__(- eventLeft + timelineWidth / 2, timelineWidth - timelineTotWidth);
+    }
+  }
+
+  __setTimelineWidth__(width) {
     let timeSpan = daydiff(this.timelineComponents.timelineDates[0],
       this.timelineComponents.timelineDates[this.timelineComponents.timelineDates.length - 1]);
     let timeSpanNorm = timeSpan / this.timelineComponents.eventsMinLapse;
     timeSpanNorm = Math.round(timeSpanNorm) + 4;
     let totalWidth = timeSpanNorm * width;
     this.timelineComponents.eventsWrapper.css('width', totalWidth + 'px');
+
     updateFilling(this.timelineComponents.eventsWrapper.find('a.selected'),
       this.timelineComponents.fillingLine, totalWidth);
-    updateTimelinePosition('next',
+
+    this.__updateTimelinePosition__('next',
       this.timelineComponents.eventsWrapper.find('a.selected'),
       this.timelineComponents);
 
     return totalWidth;
   }
 
-  // updateSlide(timelineTotWidth, string, eventsMinDistance) {
-  //   // retrieve translateX value of this.timelineComponents.eventsWrapper
-  //   let translateValue = getTranslateValue(this.timelineComponents.eventsWrapper);
-  //   let	wrapperWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
-  //
-  //   //  translate the timeline to the left('next')/right('prev')
-  //   if (string === 'next') {
-  //     translateTimeline(this.timelineComponents,
-  //       translateValue - wrapperWidth + eventsMinDistance,
-  //       wrapperWidth - timelineTotWidth);
-  //   } else {
-  //     translateTimeline(this.timelineComponents, translateValue + wrapperWidth - eventsMinDistance);
-  //   }
-  // }
+  __updateSlide__(string) {
+    if (!string) {
+      return;
+    }
+    // retrieve translateX value of this.timelineComponents.eventsWrapper
+    let translateValue = getTranslateValue(this.timelineComponents.eventsWrapper);
+    let	wrapperWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
 
-  /**
-  * The expected properties from the parent
-  * @type {Object}
-  */
-  static propTypes = {
-    //  array containing the dates
-    values: PropTypes.array.isRequired,
-    //  function that takes the index of the array as argument
-    indexClick: PropTypes.func.isRequired
-  };
+    //  translate the timeline to the left('next')/right('prev')
+    if (string === 'next') {
+      this.__translateTimeline__(translateValue - wrapperWidth + this.props.eventsMinDistance,
+        wrapperWidth - this.timelineTotWidth);
+    } else if (string === 'prev') {
+      this.__translateTimeline__(translateValue + wrapperWidth - this.props.eventsMinDistance);
+    } else {
+      return;
+    }
+  }
+
+  // translates the timeline on the click of left or right arrow
+  // change it to onClick handling on the specified buttons
+  __translateTimeline__(val, totWidth) {
+    let value = val;
+    let eventsWrapper = this.timelineComponents.eventsWrapper.get(0);
+    value = (value > 0) ? 0 : value; // only negative translate value
+    // do not translate more than timeline width
+    value = ( !(typeof totWidth === 'undefined') && value < totWidth ) ? totWidth : value;
+    setTransformValue(eventsWrapper, 'translateX', value + 'px');
+    // set the position of the computend value to the state
+    this.setState({ position: value, maxPosition: totWidth });
+  }
 
   render() {
     //  creating an array of list items that have an onClick handler into which
@@ -259,15 +233,17 @@ export default class HorizontalTimeline extends React.Component {
       );
     });
 
+    // this handles the rendering part of the buttons that appear on either side of
+    // the timeline.
     let buttons = (
       <ul className="cd-timeline-navigation">
-        <li>
-          <a href="#0" className="prev inactive">
+        <li onClick={ this.__updateSlide__.bind(null, 'prev')}>
+          <a href="#0" className={ this.state.position === 0 ? 'prev inactive' : 'prev' }>
             { '<' }
           </a>
         </li>
-        <li>
-          <a href="#0" className="next">
+        <li onClick={ this.__updateSlide__.bind(null, 'next')}>
+          <a href="#0" className={ this.state.position === this.state.maxPosition ? 'next inactive' : 'next' }>
             { '>' }
           </a>
         </li>
@@ -282,7 +258,6 @@ export default class HorizontalTimeline extends React.Component {
               <ol>
                 { valuesList }
               </ol>
-
               <span className="filling-line" aria-hidden="true"></span>
             </div>
           </div>
