@@ -54,17 +54,7 @@ let updateOlderEvents = (event) => {
   .removeClass('older-event');
 };
 
-let minLapse = (dates) => {
-  // determine the minimum distance among events
-  let dateDistances = [];
-  for (let i = 1; i < dates.length; i++) {
-    let distance = daydiff(dates[i - 1], dates[i]);
-    dateDistances.push(distance);
-  }
-  return Math.min.apply(null, dateDistances);
-};
-
-function initTimeline(timelineComponents, eventsMinDistance, values, timelineTotWidth) {
+let initTimeline = (timelineComponents, timelineTotWidth) => {
   // assign a left postion to the single events along the timeline
   timelineComponents.eventsWrapper.on('click', 'a', function(event) {
     event.preventDefault();
@@ -73,15 +63,15 @@ function initTimeline(timelineComponents, eventsMinDistance, values, timelineTot
     updateOlderEvents($(this));
     updateFilling($(this), timelineComponents.fillingLine, timelineTotWidth);
   });
-}
+};
 
 
 /**
-* This is the Horizontal Timeline. This component expects an array of dates
-* just as strings (e.g. 1/1/1993) and layes them horizontaly on the the screen
-* also expects a callback which is activated when that particular index is
-* clicked passing that index along
-*/
+ * This is the Horizontal Timeline. This component expects an array of dates
+ * just as strings (e.g. 1/1/1993) and layes them horizontaly on the the screen
+ * also expects a callback which is activated when that particular index is
+ * clicked passing that index along
+ */
 export default class HorizontalTimeline extends React.Component {
   constructor(props) {
     super(props);
@@ -92,10 +82,13 @@ export default class HorizontalTimeline extends React.Component {
     this.timelineComponents = {};
 
     this.__updateSlide__ = this.__updateSlide__.bind(this);
-    this.__setDatePosition__ = this.__setDatePosition__.bind(this);
     this.__setTimelineWidth__ = this.__setTimelineWidth__.bind(this);
+    this.__minDistanceEvents__ = this.__minDistanceEvents__.bind(this);
     this.__translateTimeline__ = this.__translateTimeline__.bind(this);
     this.__updateTimelinePosition__ = this.__updateTimelinePosition__.bind(this);
+
+    this.timelineDates = this.props.values.map((value) => new Date(value));
+    this.eventsMinLapse = this.__minDistanceEvents__(this.timelineDates);
   }
 
   /**
@@ -133,23 +126,12 @@ export default class HorizontalTimeline extends React.Component {
     this.timelineComponents.fillingLine = this.timelineComponents.eventsWrapper.children('.filling-line');
     this.timelineComponents.timelineEvents = this.timelineComponents.eventsWrapper.find('a');
     // creating date array
-    this.timelineComponents.timelineDates = this.props.values.map((value) => new Date(value));
-    this.timelineComponents.eventsMinLapse = minLapse(this.timelineComponents.timelineDates);
     this.timelineComponents.eventsContent = timeline.children('.events-content');
     timeline.addClass('loaded');
 
     this.timelineTotWidth = this.__setTimelineWidth__(this.props.eventsMinDistance);
-    this.__setDatePosition__();
 
-    initTimeline(this.timelineComponents, this.props.eventsMinDistance, this.props.values, this.timelineTotWidth);
-  }
-
-  __setDatePosition__() {
-    for (let i = 0; i < this.timelineComponents.timelineDates.length; i++) {
-      let distance = daydiff(this.timelineComponents.timelineDates[0], this.timelineComponents.timelineDates[i]);
-      let distanceNorm = Math.round(distance / this.timelineComponents.eventsMinLapse) + 2;
-      this.timelineComponents.timelineEvents.eq(i).css('left', distanceNorm * this.props.eventsMinDistance + 'px');
-    }
+    initTimeline(this.timelineComponents, this.timelineTotWidth);
   }
 
   __updateTimelinePosition__(string, event) {
@@ -167,9 +149,9 @@ export default class HorizontalTimeline extends React.Component {
   }
 
   __setTimelineWidth__(width) {
-    let timeSpan = daydiff(this.timelineComponents.timelineDates[0],
-      this.timelineComponents.timelineDates[this.timelineComponents.timelineDates.length - 1]);
-    let timeSpanNorm = timeSpan / this.timelineComponents.eventsMinLapse;
+    let timeSpan = daydiff(this.timelineDates[0],
+      this.timelineDates[this.timelineDates.length - 1]);
+    let timeSpanNorm = timeSpan / this.eventsMinLapse;
     timeSpanNorm = Math.round(timeSpanNorm) + 4;
     let totalWidth = timeSpanNorm * width;
     this.timelineComponents.eventsWrapper.css('width', totalWidth + 'px');
@@ -188,6 +170,7 @@ export default class HorizontalTimeline extends React.Component {
     if (!string) {
       return;
     }
+
     // retrieve translateX value of this.timelineComponents.eventsWrapper
     let translateValue = getTranslateValue(this.timelineComponents.eventsWrapper);
     let	wrapperWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
@@ -216,16 +199,32 @@ export default class HorizontalTimeline extends React.Component {
     this.setState({ position: value, maxPosition: totWidth });
   }
 
+  __minDistanceEvents__(dates) {
+    // determine the minimum distance among events
+    let dateDistances = [];
+    for (let i = 1; i < dates.length; i++) {
+      let distance = daydiff(dates[i - 1], dates[i]);
+      dateDistances.push(distance);
+    }
+    return Math.min.apply(null, dateDistances);
+  }
+
   render() {
     //  creating an array of list items that have an onClick handler into which
     //  passing the index of the clicked entity.
+    // NOTE: Improve timeline dates handeling and eventsMinLapse handling
     let valuesList = this.props.values.map((date, index) => {
       let parsedDate = new Date(date);
+      let distance = daydiff(this.timelineDates[0], this.timelineDates[index]);
+      let distanceNorm = Math.round(distance / this.eventsMinLapse) + 2;
+
       return (
         <li key={ index }
           onClick={ this.props.indexClick.bind(null, index) }>
           <a href='#0'
+            onClick={ this.__onLinkClick__ }
             className={ index === 0 ? 'selected' : '' }
+            style={{ left: distanceNorm * this.props.eventsMinDistance }}
             data-date={ date }>
             { parsedDate.toDateString() }
           </a>
@@ -236,14 +235,14 @@ export default class HorizontalTimeline extends React.Component {
     // this handles the rendering part of the buttons that appear on either side of
     // the timeline.
     let buttons = (
-      <ul className="cd-timeline-navigation">
+      <ul className='cd-timeline-navigation'>
         <li onClick={ this.__updateSlide__.bind(null, 'prev')}>
-          <a href="#0" className={ this.state.position === 0 ? 'prev inactive' : 'prev' }>
+          <a href='#0' className={ this.state.position === 0 ? 'prev inactive' : 'prev' }>
             { '<' }
           </a>
         </li>
         <li onClick={ this.__updateSlide__.bind(null, 'next')}>
-          <a href="#0" className={ this.state.position === this.state.maxPosition ? 'next inactive' : 'next' }>
+          <a href='#0' className={ this.state.position === this.state.maxPosition ? 'next inactive' : 'next' }>
             { '>' }
           </a>
         </li>
@@ -252,13 +251,13 @@ export default class HorizontalTimeline extends React.Component {
 
     let timeline = (
       <div className='cd-horizontal-timeline'>
-        <div className="timeline">
-          <div className="events-wrapper">
-            <div className="events">
+        <div className='timeline'>
+          <div className='events-wrapper'>
+            <div className='events'>
               <ol>
                 { valuesList }
               </ol>
-              <span className="filling-line" aria-hidden="true"></span>
+              <span className='filling-line' aria-hidden='true'></span>
             </div>
           </div>
           { buttons }
