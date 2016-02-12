@@ -17,8 +17,9 @@ export default class App extends React.Component {
       '1/1/1996',
       '1/1/1997',
       '1/1/1998',
-      '1/1/1999'
+      '1/1/2000'
     ];
+
     return (
       <HorizontalTimeline
         values={ dates }
