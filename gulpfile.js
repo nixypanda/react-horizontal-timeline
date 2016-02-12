@@ -34,7 +34,7 @@ var path = {
   ENTRY_POINT: './src/main.js',
   CSS: [
     'node_modules/bootstrap/dist/css/bootstrap.min.css',
-    './src/**/*.css'
+    './src/css/**/*.css'
   ]
 };
 
