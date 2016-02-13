@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
 let daydiff = (first, second) => Math.round((second - first));
@@ -32,40 +33,6 @@ let getTranslateValue = (timeline) => {
 };
 
 
-let updateFilling = (selectedEvent, filling, totWidth) => {
-  // change .filling-line length according to the selected event
-  let eventStyle = window.getComputedStyle(selectedEvent.get(0), null);
-  let eventLeft = eventStyle.getPropertyValue('left');
-  let eventWidth = eventStyle.getPropertyValue('width');
-  eventLeft = Number(eventLeft.replace('px', '')) + Number(eventWidth.replace('px', '')) / 2;
-  let scaleValue = eventLeft / totWidth;
-  setTransformValue(filling.get(0), 'scaleX', scaleValue);
-};
-
-let updateOlderEvents = (event) => {
-  event.parent('li')
-  .prevAll('li')
-  .children('a')
-  .addClass('older-event')
-  .end()
-  .end()
-  .nextAll('li')
-  .children('a')
-  .removeClass('older-event');
-};
-
-let initTimeline = (timelineComponents, timelineTotWidth) => {
-  // assign a left postion to the single events along the timeline
-  timelineComponents.eventsWrapper.on('click', 'a', function(event) {
-    event.preventDefault();
-    timelineComponents.timelineEvents.removeClass('selected');
-    $(this).addClass('selected');
-    updateOlderEvents($(this));
-    updateFilling($(this), timelineComponents.fillingLine, timelineTotWidth);
-  });
-};
-
-
 /**
  * This is the Horizontal Timeline. This component expects an array of dates
  * just as strings (e.g. 1/1/1993) and layes them horizontaly on the the screen
@@ -76,12 +43,15 @@ export default class HorizontalTimeline extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      position: 0
+      position: 0,
+      selected: 0
     };
 
     this.timelineComponents = {};
 
     this.__updateSlide__ = this.__updateSlide__.bind(this);
+    this.__onLinkClick__ = this.__onLinkClick__.bind(this);
+    this.__updateFilling__ = this.__updateFilling__.bind(this);
     this.__setTimelineWidth__ = this.__setTimelineWidth__.bind(this);
     this.__minDistanceEvents__ = this.__minDistanceEvents__.bind(this);
     this.__translateTimeline__ = this.__translateTimeline__.bind(this);
@@ -126,18 +96,25 @@ export default class HorizontalTimeline extends React.Component {
     this.timelineComponents.fillingLine = this.timelineComponents.eventsWrapper.children('.filling-line');
     this.timelineComponents.timelineEvents = this.timelineComponents.eventsWrapper.find('a');
     // creating date array
-    this.timelineComponents.eventsContent = timeline.children('.events-content');
-    timeline.addClass('loaded');
-
     this.timelineTotWidth = this.__setTimelineWidth__(this.props.eventsMinDistance);
+  }
 
-    initTimeline(this.timelineComponents, this.timelineTotWidth);
+
+  __updateFilling__(selectedEvent) {
+    // change .filling-line length according to the selected event
+    let eventStyle = window.getComputedStyle(selectedEvent.get(0), null);
+    let eventLeft = eventStyle.getPropertyValue('left');
+    let eventWidth = eventStyle.getPropertyValue('width');
+    eventLeft = Number(eventLeft.replace('px', '')) + Number(eventWidth.replace('px', '')) / 2;
+    let scaleValue = eventLeft / this.timelineTotWidth;
+    setTransformValue(this.timelineComponents.fillingLine.get(0), 'scaleX', scaleValue);
   }
 
   __updateTimelinePosition__(string, event) {
     // translate timeline to the left/right according to the position of the selected event
     let eventStyle = window.getComputedStyle(event.get(0), null);
     let eventLeft = Number(eventStyle.getPropertyValue('left').replace('px', ''));
+
     let timelineWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
     let timelineTotWidth = Number(this.timelineComponents.eventsWrapper.css('width').replace('px', ''));
     let timelineTranslate = getTranslateValue(this.timelineComponents.eventsWrapper);
@@ -156,8 +133,7 @@ export default class HorizontalTimeline extends React.Component {
     let totalWidth = timeSpanNorm * width;
     this.timelineComponents.eventsWrapper.css('width', totalWidth + 'px');
 
-    updateFilling(this.timelineComponents.eventsWrapper.find('a.selected'),
-      this.timelineComponents.fillingLine, totalWidth);
+    this.__updateFilling__(this.timelineComponents.eventsWrapper.find('a.selected'));
 
     this.__updateTimelinePosition__('next',
       this.timelineComponents.eventsWrapper.find('a.selected'),
@@ -199,6 +175,11 @@ export default class HorizontalTimeline extends React.Component {
     this.setState({ position: value, maxPosition: totWidth });
   }
 
+  /**
+   * Determines the minimum distance between events
+   * @param  {[array]} dates [the array containing all the dates]
+   * @return {[number]}       [the minimum distance between events]
+   */
   __minDistanceEvents__(dates) {
     // determine the minimum distance among events
     let dateDistances = [];
@@ -209,6 +190,12 @@ export default class HorizontalTimeline extends React.Component {
     return Math.min.apply(null, dateDistances);
   }
 
+
+  __onLinkClick__(next, ref) {
+    // expecting the ref of the link here.
+    this.setState({ selected: next }, this.__updateFilling__($(ReactDOM.findDOMNode(this.refs[ref]))));
+  }
+
   render() {
     //  creating an array of list items that have an onClick handler into which
     //  passing the index of the clicked entity.
@@ -217,13 +204,20 @@ export default class HorizontalTimeline extends React.Component {
       let parsedDate = new Date(date);
       let distance = daydiff(this.timelineDates[0], this.timelineDates[index]);
       let distanceNorm = Math.round(distance / this.eventsMinLapse) + 2;
+      // decide the classname of the events being displayed on the timeline
+      // older-event: displayed as a circle
+      // selected: displayed as a filled-circle.
+      let classname = '';
+      classname += index < this.state.selected ? 'older-event' : '';
+      classname += index === this.state.selected ? ' selected' : '';
 
       return (
         <li key={ index }
           onClick={ this.props.indexClick.bind(null, index) }>
           <a href='#0'
-            onClick={ this.__onLinkClick__ }
-            className={ index === 0 ? 'selected' : '' }
+            ref={ date }
+            onClick={ this.__onLinkClick__.bind(this.state.selected, index, date) }
+            className={ classname }
             style={{ left: distanceNorm * this.props.eventsMinDistance }}
             data-date={ date }>
             { parsedDate.toDateString() }
@@ -250,7 +244,7 @@ export default class HorizontalTimeline extends React.Component {
     );
 
     let timeline = (
-      <div className='cd-horizontal-timeline'>
+      <div className='cd-horizontal-timeline loaded'>
         <div className='timeline'>
           <div className='events-wrapper'>
             <div className='events'>
