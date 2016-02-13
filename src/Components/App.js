@@ -1,4 +1,5 @@
 import React from 'react';
+import { Motion, spring } from 'react-motion';
 import HorizontalTimeline from './HorizontalTimeline';
 
 let GAME_INFO = [
@@ -12,7 +13,7 @@ let GAME_INFO = [
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: 0};
+    this.state = {value: 0, previous: 0};
     this.elderScrolsMap = ['Arena', 'Daggerfall', 'Morrowind', 'Oblivion', 'Skyrim'];
   }
 
@@ -24,15 +25,18 @@ export default class App extends React.Component {
       '03/20/2006',
       '11/11/2011'
     ];
-
+    console.log(this.state);
     return (
       <div>
         <HorizontalTimeline
           values={ dates }
-          indexClick={ (index) => { this.setState({value: index}); }} />
+          indexClick={ (index) => { this.setState({value: index, previous: this.state.value}); }} />
         <div className={ 'col-xs-2' }></div>
         <div className='text-center col-xs-8'>
-          <h1>{ 'The Elder Scrolls ' + (this.state.value + 1) + ' :' }</h1>
+          <Motion style={{x: spring(this.state.value + 1)}}>
+            {value => <h1>{ 'The Elder Scrolls ' + value.x.toFixed(0) + ' :'}</h1>}
+          </Motion>
+
           <h2>{ this.elderScrolsMap[this.state.value] }</h2>
           <hr />
           <p>{ GAME_INFO[this.state.value] }</p>

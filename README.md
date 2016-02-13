@@ -14,7 +14,9 @@ This is how it can be used.
   eventsMinDistance={ /* OPTIONAL: Sets the mininum distance between events */ } />
 ```
 
-
+###Todo
+- Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..)
+- Start using react-motion to simplify code a bit.
 
 
 ####Here is the information provided by the original author.
@@ -24,5 +26,5 @@ An easy to customize, horizontal timeline powered by CSS and jQuery.
 [Article on CodyHouse](http://codyhouse.co/gem/horizontal-timeline/)
 
 [Demo](https://codyhouse.co/demo/horizontal-timeline/index.html)
- 
+
 [Terms](http://codyhouse.co/terms/)

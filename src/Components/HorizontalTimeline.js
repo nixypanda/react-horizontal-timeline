@@ -94,9 +94,10 @@ export default class HorizontalTimeline extends React.Component {
     this.timelineComponents.timelineWrapper = timeline.find('.events-wrapper');
     this.timelineComponents.eventsWrapper = this.timelineComponents.timelineWrapper.children('.events');
     this.timelineComponents.fillingLine = this.timelineComponents.eventsWrapper.children('.filling-line');
-    this.timelineComponents.timelineEvents = this.timelineComponents.eventsWrapper.find('a');
     // creating date array
     this.timelineTotWidth = this.__setTimelineWidth__(this.props.eventsMinDistance);
+
+    this.__updateFilling__(this.timelineComponents.eventsWrapper.find('a.selected'));
   }
 
 
@@ -132,8 +133,6 @@ export default class HorizontalTimeline extends React.Component {
     timeSpanNorm = Math.round(timeSpanNorm) + 4;
     let totalWidth = timeSpanNorm * width;
     this.timelineComponents.eventsWrapper.css('width', totalWidth + 'px');
-
-    this.__updateFilling__(this.timelineComponents.eventsWrapper.find('a.selected'));
 
     this.__updateTimelinePosition__('next',
       this.timelineComponents.eventsWrapper.find('a.selected'),
