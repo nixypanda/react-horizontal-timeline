@@ -25,7 +25,7 @@ export default class App extends React.Component {
       '03/20/2006',
       '11/11/2011'
     ];
-    console.log(this.state);
+
     return (
       <div>
         <HorizontalTimeline

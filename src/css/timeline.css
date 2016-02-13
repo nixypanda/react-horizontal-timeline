@@ -19,12 +19,12 @@ Main Components
     transition: opacity 0.2s;
 }
 
-/* Getting rif of the list numbers */
+/* Getting rid of the list numbers */
 .cd-horizontal-timeline ol {
     list-style: none;
 }
 
-/* Getting rif of the list bullets */
+/* Getting rid of the list bullets */
 .cd-horizontal-timeline ul {
     list-style: none;
 }
