@@ -17,8 +17,7 @@ export default class HorizontalTimeline extends React.Component {
     this.state = {
       position: 0,
       selected: 0,
-      filledValue: 0,
-      timelineTranslate: 0
+      filledValue: 0
     };
 
     this.timelineComponents = {};
@@ -81,7 +80,7 @@ export default class HorizontalTimeline extends React.Component {
     eventLeft = Number(eventLeft.replace('px', '')) + Number(eventWidth.replace('px', '')) / 2;
     let filledValue = eventLeft / this.timelineTotWidth;
     // right now the filledValue contains the value of the transform
-    this.setState({filledValue: filledValue});
+    this.setState({ filledValue: filledValue });
   }
 
   __setTimelineWidth__() {
@@ -90,19 +89,14 @@ export default class HorizontalTimeline extends React.Component {
   }
 
   __updateSlide__(string) {
-    if (!string) {
-      return;
-    }
-
-    let translateValue = this.state.timelineTranslate;
     let	wrapperWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
 
     //  translate the timeline to the left('next')/right('prev')
     if (string === 'next') {
-      this.__translateTimeline__(translateValue - wrapperWidth + this.props.eventsMinDistance,
+      this.__translateTimeline__(this.state.position - wrapperWidth + this.props.eventsMinDistance,
         wrapperWidth - this.timelineTotWidth);
     } else if (string === 'prev') {
-      this.__translateTimeline__(translateValue + wrapperWidth - this.props.eventsMinDistance);
+      this.__translateTimeline__(this.state.position + wrapperWidth - this.props.eventsMinDistance);
     }
   }
 
@@ -114,7 +108,7 @@ export default class HorizontalTimeline extends React.Component {
     // do not translate more than timeline width
     value = ( !(typeof totWidth === 'undefined') && value < totWidth ) ? totWidth : value;
     // set the position of the computend value to the state
-    this.setState({ position: value, maxPosition: totWidth, timelineTranslate: value });
+    this.setState({ position: value, maxPosition: totWidth });
   }
 
   /**
@@ -190,7 +184,7 @@ export default class HorizontalTimeline extends React.Component {
         <div className='timeline'>
           <div className='events-wrapper'>
             { /* Use react motion here to control what happens on click of next or prev */ }
-            <Motion style={{ X: spring(this.state.timelineTranslate, {stiffness: 180, damping: 12})}}>
+            <Motion style={{ X: spring(this.state.position, {stiffness: 300, damping: 15}) }}>
               {({X}) =>
               <div className='events'
                 style={{
@@ -202,7 +196,7 @@ export default class HorizontalTimeline extends React.Component {
                   { valuesList }
                 </ol>
                 { /* Using react-motion here to simplify a lot of the code */ }
-                <Motion style={{ tX: spring(this.state.filledValue, {stiffness: 210, damping: 20}) }}>
+                <Motion style={{ tX: spring(this.state.filledValue, {stiffness: 300, damping: 20}) }}>
                   {({tX}) =>
                   <span className='filling-line' aria-hidden='true'
                     style={{ WebkitTransform: `scaleX(${tX})`, transform: `scaleX(${tX})` }}></span>
