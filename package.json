@@ -13,15 +13,19 @@
   "author": "Sherub Thakur",
   "license": "MIT",
   "dependencies": {
+    "autobind-decorator": "^1.3.3",
     "bootstrap": "^3.3.6",
     "jquery": "^2.1.4",
+    "radium": "^0.16.6",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
+    "react-icons": "^1.0.3",
     "react-motion": "^0.4.1"
   },
   "devDependencies": {
     "babel": "^6.3.26",
     "babel-eslint": "^5.0.0-beta6",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",

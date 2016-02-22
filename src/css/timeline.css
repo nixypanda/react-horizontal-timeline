@@ -19,16 +19,6 @@ Main Components
     transition: opacity 0.2s;
 }
 
-/* Getting rid of the list numbers */
-.cd-horizontal-timeline ol {
-    list-style: none;
-}
-
-/* Getting rid of the list bullets */
-.cd-horizontal-timeline ul {
-    list-style: none;
-}
-
 .cd-horizontal-timeline.loaded {
     /* show the timeline after events position has been set (using JavaScript) */
     opacity: 1;
@@ -118,17 +108,13 @@ Main Components
     -o-transform: translateZ(0);
     transform: translateZ(0);
 }
+
 .cd-horizontal-timeline .events a::after {
-    /* this is used to create the event spot */
+    /* this is used to create the event spot*/
     content: '';
     position: absolute;
     left: 50%;
     right: auto;
-    -webkit-transform: translateX(-50%);
-    -moz-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    -o-transform: translateX(-50%);
-    transform: translateX(-50%);
     bottom: -5px;
     height: 12px;
     width: 12px;
@@ -139,6 +125,7 @@ Main Components
     -moz-transition: background-color 0.3s, border-color 0.3s;
     transition: background-color 0.3s, border-color 0.3s;
 }
+
 .no-touch .cd-horizontal-timeline .events a:hover::after {
     background-color: #7b9d6f;
     border-color: #7b9d6f;
@@ -171,50 +158,9 @@ Main Components
     border: 2px solid #dfdfdf;
     /* replace text with an icon */
     overflow: hidden;
-    color: transparent;
     text-indent: 100%;
     white-space: nowrap;
     -webkit-transition: border-color 0.3s;
     -moz-transition: border-color 0.3s;
     transition: border-color 0.3s;
-}
-.cd-timeline-navigation a::after {
-    /* arrow icon */
-    content: '';
-    position: absolute;
-    height: 16px;
-    width: 16px;
-    left: 50%;
-    top: 50%;
-    bottom: auto;
-    right: auto;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    -moz-transform: translateX(-50%) translateY(-50%);
-    -ms-transform: translateX(-50%) translateY(-50%);
-    -o-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-    background: url(../img/cd-arrow.svg) no-repeat 0 0;
-}
-.cd-timeline-navigation a.prev {
-    left: 0;
-    -webkit-transform: translateY(-50%) rotate(180deg);
-    -moz-transform: translateY(-50%) rotate(180deg);
-    -ms-transform: translateY(-50%) rotate(180deg);
-    -o-transform: translateY(-50%) rotate(180deg);
-    transform: translateY(-50%) rotate(180deg);
-}
-.cd-timeline-navigation a.next {
-    right: 0;
-}
-.no-touch .cd-timeline-navigation a:hover {
-    border-color: #7b9d6f;
-}
-.cd-timeline-navigation a.inactive {
-    cursor: not-allowed;
-}
-.cd-timeline-navigation a.inactive::after {
-    background-position: 0 -16px;
-}
-.no-touch .cd-timeline-navigation a.inactive:hover {
-    border-color: #dfdfdf;
 }

@@ -85,7 +85,7 @@ gulp.task('watch', ['copy'], function() {
 
   var watcher = watchify(browserify({
     entries: [path.ENTRY_POINT],
-    transform: [[babelify, {presets: ['es2015', 'react', 'stage-0'] } ]],
+    transform: [[babelify, {presets: ['es2015', 'react', 'stage-0'], plugins: ['transform-decorators-legacy'] } ]],
     debug: true,
     cache: {}, packageCache: {}, fullPaths: true
   }));
@@ -112,7 +112,7 @@ gulp.task('default', ['watch', 'css', 'open']);
 gulp.task('build', function() {
   browserify({
     entries: [path.ENTRY_POINT],
-    transform: [[babelify, {presets: ['es2015', 'react', 'stage-0'] } ]]
+    transform: [[babelify, {presets: ['es2015', 'react', 'stage-0'], plugins: ['transform-decorators-legacy']} ]]
   })
   .bundle()
   .pipe(source(path.MINIFIED_OUT))
