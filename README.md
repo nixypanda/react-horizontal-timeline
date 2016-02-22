@@ -16,8 +16,9 @@ This is how it can be used.
 
 ###Todo
 - ~~Start using react-motion to simplify code a bit.~~
-- Arrows on the buttons on either side.
-- Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..).
+- ~~Arrows on the buttons on either side.~~
+- ~~Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..).~~
+- Make it more customizable.
 - Improve the structure.
 - better prop options/handling.
 - Make someone use it. :D

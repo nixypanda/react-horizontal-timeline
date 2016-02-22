@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { Motion, spring } from 'react-motion';
-import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
 // decorators
@@ -36,6 +35,7 @@ let styles = {
     cursor: 'not-allowed'
   }
 };
+
 /**
 * This is the Horizontal Timeline. This component expects an array of dates
 * just as strings (e.g. 1/1/1993) and layes them horizontaly on the the screen
@@ -74,17 +74,63 @@ export default class HorizontalTimeline extends React.Component {
   * @type {Object}
   */
   static defaultProps = {
-    eventsMinDistance: 80,
-    eventsMaxDistance: 360
+    eventsMinDistance: 80
   };
 
   componentWillMount() {
-    let dates = this.props.values.map((value) => new Date(value));
+    this.__setUpState__(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.__setUpState__(nextProps);
+  }
+
+  /**
+  * Determines the minimum distance between events
+  * @param  {[array]} dates [the array containing all the dates]
+  * @return {[number]}       [the minimum distance between events]
+  */
+  @autobind
+  __minDistanceEvents__(dates) {
+    // determine the minimum distance among events
+    let dateDistances = [];
+    for (let i = 1; i < dates.length; i++) {
+      let distance = daydiff(dates[i - 1], dates[i]);
+      dateDistances.push(distance);
+    }
+    // return the minimum distance between two dates but considering that all dates
+    // are the same then return the distance between 2 days i.e. 86400000
+    return Math.max(Math.min.apply(null, dateDistances), 86400000);
+  }
+
+  @autobind
+  __setUpState__(nextProps) {
+    // parsing the dates from all valid formats that the constructor for Date accepts.
+    let dates = nextProps.values.map((value) => new Date(value));
+    // Calculating the minimum seperation between events
     this.eventsMinLapse = this.__minDistanceEvents__(dates);
-    let width = this.__setTimelineWidth__(dates);
+
+    // using dynamic programming to set up the distance from the origin of the timeline.
+    let distances = new Array(dates.length);
+    distances[0] = nextProps.eventsMinDistance;
+
+    for (let index = 1; index < distances.length; index++) {
+      let distance = daydiff(dates[index - 1], dates[index]);
+      // NOTE: for now just setting a hard limit on the value of normalised distanceNorm
+      // i.e. distances will grow linearly and reach a max point then stop to increase
+      // an elegent mathametical calculation opertunity here.
+      let distanceFromPrevious = Math.min(Math.round(distance / this.eventsMinLapse) + 1, 6);
+      // the distance_from_origin(n) = distance_from_origin(n-1) + distance between n and n - 1.
+      distances[index] = distances[index - 1] + distanceFromPrevious * nextProps.eventsMinDistance;
+    }
+
     this.setState({
+      // the distances from the origin of the the timeline
+      distances: distances,
+      // parsed format of the dates
       timelineDates: dates,
-      timelineTotWidth: width
+      // the exact value of the width of the timeline
+      timelineTotWidth: Math.max(750, distances[distances.length - 1] + 100)
     });
   }
 
@@ -102,16 +148,6 @@ export default class HorizontalTimeline extends React.Component {
     this.__updateFilling__(this.timelineComponents.eventsWrapper.find('a.selected'));
   }
 
-  componentWillReceiveProps(nextProps) {
-    let dates = nextProps.values.map((value) => new Date(value));
-    this.eventsMinLapse = this.__minDistanceEvents__(dates);
-    let width = this.__setTimelineWidth__(dates);
-    this.setState({
-      timelineDates: dates,
-      timelineTotWidth: width
-    });
-  }
-
   @autobind
   __updateFilling__(selectedEvent) {
     // change .filling-line length according to the selected event
@@ -122,20 +158,6 @@ export default class HorizontalTimeline extends React.Component {
     let filledValue = eventLeft / this.state.timelineTotWidth;
     // right now the filledValue contains the value of the transform
     this.setState({ filledValue: filledValue });
-  }
-
-  @autobind
-  __setTimelineWidth__(dates) {
-    let timeSpan = daydiff(dates[0], dates[dates.length - 1]);
-    let width = (Math.round(timeSpan / this.eventsMinLapse) + 6) * this.props.eventsMinDistance;
-    let maxDist = 0;
-    for (let i = 1; i < dates.length; i++) {
-      let spanAdjacent = daydiff(dates[i - 1], dates[i]);
-      maxDist += Math.min(Math.round(spanAdjacent / this.eventsMinLapse) + 1, 6);
-    }
-    width = Math.min(width, maxDist * this.props.eventsMinDistance);
-    // NOTE: Hardcoded minimum length of the timeline
-    return Math.max(750, width);
   }
 
   @autobind
@@ -163,24 +185,6 @@ export default class HorizontalTimeline extends React.Component {
     this.setState({ position: value, maxPosition: totWidth });
   }
 
-  /**
-  * Determines the minimum distance between events
-  * @param  {[array]} dates [the array containing all the dates]
-  * @return {[number]}       [the minimum distance between events]
-  */
-  @autobind
-  __minDistanceEvents__(dates) {
-    // determine the minimum distance among events
-    let dateDistances = [];
-    for (let i = 1; i < dates.length; i++) {
-      let distance = daydiff(dates[i - 1], dates[i]);
-      dateDistances.push(distance);
-    }
-    // return the minimum distance between two dates but considering that all dates
-    // are the same then return the distance between 2 days i.e. 86400000
-    return Math.max(Math.min.apply(null, dateDistances), 86400000);
-  }
-
   @autobind
   __onLinkClick__(next, ref) {
     // expecting the ref of the link here.
@@ -192,13 +196,6 @@ export default class HorizontalTimeline extends React.Component {
     //  passing the index of the clicked entity.
     // NOTE: Improve timeline dates handeling and eventsMinLapse handling
     let valuesList = this.props.values.map((date, index) => {
-      let parsedDate = new Date(date);
-      let distance = daydiff(this.state.timelineDates[0], this.state.timelineDates[index]);
-      // NOTE: for now just setting a hard limit on the value of normalised distanceNorm
-      // i.e. distances will grow linearly and reach a max point then stop to increase
-      // an elegent mathametical calculation opertunity here.
-      let distanceNorm = Math.min(Math.round(distance / this.eventsMinLapse) + 1, 6);
-
       // decide the classname of the events being displayed on the timeline
       // older-event: displayed as a circle
       // selected: displayed as a filled-circle.
@@ -213,9 +210,9 @@ export default class HorizontalTimeline extends React.Component {
             ref={ date }
             onClick={ this.__onLinkClick__.bind(this.state.selected, index, date) }
             className={ classname }
-            style={{ left: (distanceNorm + index) * this.props.eventsMinDistance, cursor: 'pointer' }}
+            style={{ left: this.state.distances[index], cursor: 'pointer' }}
             data-date={ date }>
-            { parsedDate.toDateString().substring(4) }
+            { this.state.timelineDates[index].toDateString().substring(4) }
           </a>
         </li>
       );
@@ -247,7 +244,7 @@ export default class HorizontalTimeline extends React.Component {
       </ul>
     );
 
-    let timeline = (
+    return (
       <div className='cd-horizontal-timeline loaded'>
         <div className='timeline'>
           <div className='events-wrapper'>
@@ -276,12 +273,6 @@ export default class HorizontalTimeline extends React.Component {
           </div>
           { buttons }
         </div>
-      </div>
-    );
-
-    return (
-      <div>
-        { timeline }
       </div>
     );
   }
