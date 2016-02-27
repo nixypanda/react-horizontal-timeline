@@ -12,17 +12,9 @@ a {
 Main Components
 -------------------------------- */
 .cd-horizontal-timeline {
-    opacity: 0;
     margin: 2em auto;
-    -webkit-transition: opacity 0.2s;
-    -moz-transition: opacity 0.2s;
-    transition: opacity 0.2s;
 }
 
-.cd-horizontal-timeline.loaded {
-    /* show the timeline after events position has been set (using JavaScript) */
-    opacity: 1;
-}
 .cd-horizontal-timeline .timeline {
     position: relative;
     height: 100px;
@@ -30,6 +22,8 @@ Main Components
     max-width: 800px;
     margin: 0 auto;
 }
+
+/* Hides the timeline overflow */
 .cd-horizontal-timeline .events-wrapper {
     position: relative;
     height: 100%;
@@ -37,8 +31,8 @@ Main Components
     overflow: hidden;
 }
 
+/* these are used to create a shadow effect at the sides of the timeline */
 .cd-horizontal-timeline .events-wrapper::after, .cd-horizontal-timeline .events-wrapper::before {
-    /* these are used to create a shadow effect at the sides of the timeline */
     content: '';
     position: absolute;
     z-index: 2;
@@ -49,14 +43,13 @@ Main Components
 
 .cd-horizontal-timeline .events-wrapper::before {
     left: 0;
-    background-image: -webkit-linear-gradient( left , #f8f8f8, rgba(248, 248, 248, 0));
     background-image: linear-gradient(to right, #f8f8f8, rgba(248, 248, 248, 0));
 }
 .cd-horizontal-timeline .events-wrapper::after {
     right: 0;
-    background-image: -webkit-linear-gradient( right , #f8f8f8, rgba(248, 248, 248, 0));
     background-image: linear-gradient(to left, #f8f8f8, rgba(248, 248, 248, 0));
 }
+
 .cd-horizontal-timeline .events {
     /* this is the grey line/timeline */
     position: absolute;
@@ -66,9 +59,6 @@ Main Components
     height: 2px;
     /* width will be set using JavaScript */
     background: #dfdfdf;
-    -webkit-transition: -webkit-transform 0.4s;
-    -moz-transition: -moz-transform 0.4s;
-    transition: transform 0.4s;
 }
 .cd-horizontal-timeline .filling-line {
     /* this is used to create the green line filling the timeline */
@@ -79,20 +69,14 @@ Main Components
     height: 100%;
     width: 100%;
     background-color: #7b9d6f;
-    -webkit-transform: scaleX(0);
-    -moz-transform: scaleX(0);
-    -ms-transform: scaleX(0);
-    -o-transform: scaleX(0);
-    transform: scaleX(0);
+
     -webkit-transform-origin: left center;
     -moz-transform-origin: left center;
     -ms-transform-origin: left center;
     -o-transform-origin: left center;
     transform-origin: left center;
-    -webkit-transition: -webkit-transform 0.3s;
-    -moz-transition: -moz-transform 0.3s;
-    transition: transform 0.3s;
 }
+
 .cd-horizontal-timeline .events a {
     position: absolute;
     bottom: 0;
@@ -101,12 +85,6 @@ Main Components
     font-size: 1.3rem;
     padding-bottom: 15px;
     color: #383838;
-    /* fix bug on Safari - text flickering while timeline translates */
-    -webkit-transform: translateZ(0);
-    -moz-transform: translateZ(0);
-    -ms-transform: translateZ(0);
-    -o-transform: translateZ(0);
-    transform: translateZ(0);
 }
 
 .cd-horizontal-timeline .events a::after {
@@ -121,9 +99,6 @@ Main Components
     border-radius: 50%;
     border: 2px solid #dfdfdf;
     background-color: #f8f8f8;
-    -webkit-transition: background-color 0.3s, border-color 0.3s;
-    -moz-transition: background-color 0.3s, border-color 0.3s;
-    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .no-touch .cd-horizontal-timeline .events a:hover::after {
@@ -160,7 +135,4 @@ Main Components
     overflow: hidden;
     text-indent: 100%;
     white-space: nowrap;
-    -webkit-transition: border-color 0.3s;
-    -moz-transition: border-color 0.3s;
-    transition: border-color 0.3s;
 }
