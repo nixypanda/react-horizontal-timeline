@@ -12,6 +12,8 @@ This is how it can be used.
 <HorizontalTimeline values={ /* The array of dates that you want to appear on the time-line */ }
   indexClick={ /* The function that should be triggered when that particular date is clicked (identification by index) */ }
   eventsMinDistance={ /* OPTIONAL: Sets the minimum distance between events */ } />
+  fillingMotion={ /* OPTIONAL: Sets the animation style of how filling motion will look */ }
+  slidingMotion={ /* OPTIONAL: Sets the animation style of how sliding motion will look */ }
 ```
 
 ###Todo

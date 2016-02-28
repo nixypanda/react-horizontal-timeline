@@ -32,13 +32,13 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'spec/**/*.spec.js': ['webpack'],
-      'src/**/*.js': ['webpack']
+      'src/**/*.js': ['webpack', 'coverage']
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['spec', 'coverage'],
+    reporters: ['spec', 'coverage', 'progress'],
 
     coverageReporter: {
       dir: 'build/reports/coverage',
@@ -48,6 +48,7 @@ module.exports = function(config) {
         { type: 'cobertura', subdir: '.', file: 'cobertura.txt' }
       ]
     },
+
     webpack: {
       module: {
         loaders: [{

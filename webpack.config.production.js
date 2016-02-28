@@ -52,7 +52,6 @@ module.exports = {
   resolve: {
     extensions: ['', '.js']
   },
-  devtool: 'source-map',
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({

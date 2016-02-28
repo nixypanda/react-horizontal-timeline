@@ -1,6 +1,6 @@
+import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import { Motion, spring } from 'react-motion';
-import $ from 'jquery';
 
 // decorators
 import Radium from 'radium';
@@ -9,7 +9,7 @@ import autobind from 'autobind-decorator';
 import FaAngleLeft from 'react-icons/lib/fa/angle-left';
 import FaAngleRight from 'react-icons/lib/fa/angle-right';
 
-require('../css/timeline.css');
+import {} from '../css/timeline.css';
 
 let daydiff = (first, second) => Math.round((second - first));
 
