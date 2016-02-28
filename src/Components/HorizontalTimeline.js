@@ -51,8 +51,6 @@ export default class HorizontalTimeline extends React.Component {
       selected: 0,
       filledValue: 0
     };
-
-    this.timelineComponents = {};
   }
 
   /**
@@ -65,7 +63,9 @@ export default class HorizontalTimeline extends React.Component {
     //  function that takes the index of the array as argument
     indexClick: PropTypes.func.isRequired,
     // The minimum distance between consecutive events
-    eventsMinDistance: PropTypes.number
+    eventsMinDistance: PropTypes.number,
+    fillingMotion: PropTypes.object,
+    slidingMotion: PropTypes.object
   };
 
   /**
@@ -74,7 +74,9 @@ export default class HorizontalTimeline extends React.Component {
    * @type {Object}
    */
   static defaultProps = {
-    eventsMinDistance: 80
+    eventsMinDistance: 80,
+    fillingMotion: { stiffness: 150, damping: 25 },
+    slidingMotion: { stiffness: 150, damping: 25 }
   };
 
   componentWillMount() {
@@ -142,29 +144,30 @@ export default class HorizontalTimeline extends React.Component {
   * @return {[type]} [description]
   */
   componentDidMount() {
-    let timelines = $('.cd-horizontal-timeline');
-    let timeline = $(timelines[0]);
-
-    this.timelineComponents.timelineWrapper = timeline.find('.events-wrapper');
-
-    this.__updateFilling__();
+    // have the initial event selected.
+    this.__updateFilling__(0);
   }
 
   @autobind
-  __updateFilling__() {
+  __updateFilling__(selected) {
     // change .filling-line length according to the selected event
-    let eventStyle = window.getComputedStyle($(this.refs[this.state.timelineDates[this.state.selected]]).get(0), null);
+    let eventStyle = window.getComputedStyle($(this.refs[this.state.timelineDates[selected]]).get(0), null);
     // The half the space occupied by the the string showing the date
     let eventWidth = Number(eventStyle.getPropertyValue('width').replace('px', '')) / 2;
-    let filledValue = (this.state.distanceFromOrigin[this.state.selected] + eventWidth) / this.state.timelineTotWidth;
+    // filled value = distane from origin to the selected event + half the space occupied by the date string on screen
+    let filledValue = (this.state.distanceFromOrigin[selected] + eventWidth) / this.state.timelineTotWidth;
 
     // right now the filledValue contains the value of the transform
-    this.setState({ filledValue: filledValue });
+    this.setState({
+      selected: selected,
+      filledValue: filledValue
+    });
   }
 
   @autobind
   __updateSlide__(string) {
-    let	wrapperWidth = Number(this.timelineComponents.timelineWrapper.css('width').replace('px', ''));
+    // the width of the timeline component between the two buttons (prev and next)
+    let	wrapperWidth = Number($('.events-wrapper').css('width').replace('px', ''));
 
     //  translate the timeline to the left('next')/right('prev')
     if (string === 'next') {
@@ -176,12 +179,6 @@ export default class HorizontalTimeline extends React.Component {
     } else if (string === 'prev') {
       this.setState({ position: Math.min(0, this.state.position + wrapperWidth - this.props.eventsMinDistance) });
     }
-  }
-
-  @autobind
-  __onLinkClick__(next) {
-    // expecting the ref of the link here.
-    this.setState({ selected: next }, () => { this.__updateFilling__(); });
   }
 
   render() {
@@ -201,7 +198,7 @@ export default class HorizontalTimeline extends React.Component {
           onClick={ this.props.indexClick.bind(null, index) }>
           <a
             ref={ this.state.timelineDates[index] }
-            onClick={ this.__onLinkClick__.bind(this.state.selected, index) }
+            onClick={ this.__updateFilling__.bind(this.state.selected, index) }
             className={ classname }
             style={{ left: this.state.distanceFromOrigin[index], cursor: 'pointer' }}
             data-date={ date }>
@@ -241,8 +238,9 @@ export default class HorizontalTimeline extends React.Component {
       <div className='cd-horizontal-timeline loaded'>
         <div className='timeline'>
           <div className='events-wrapper'>
+
             { /* Use react motion here to control what happens on click of next or prev */ }
-            <Motion style={{ X: spring(this.state.position, {stiffness: 130, damping: 20}) }}>
+            <Motion style={{ X: spring(this.state.position, this.props.slidingMotion) }}>
               {({X}) =>
               <div className='events'
                 style={{
@@ -253,8 +251,9 @@ export default class HorizontalTimeline extends React.Component {
                 <ol style={{listStyle: 'none'}} >
                   { valuesList }
                 </ol>
+
                 { /* Using react-motion here to simplify a lot of the code */ }
-                <Motion style={{ tX: spring(this.state.filledValue, {stiffness: 130, damping: 20}) }}>
+                <Motion style={{ tX: spring(this.state.filledValue, this.props.fillingMotion) }}>
                   {({tX}) =>
                   <span className='filling-line' aria-hidden='true'
                     style={{ WebkitTransform: `scaleX(${tX})`, transform: `scaleX(${tX})` }}></span>
