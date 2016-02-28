@@ -7,8 +7,8 @@
     "start": "node server.js",
     "build": "./node_modules/.bin/webpack --config webpack.config.production.js",
     "lint": "./node_modules/.bin/eslint .",
-    "test": "./node_modules/.bin/karma start --single-run --no-auto-watch karma.config.js",
-    "test_watch": "./node_modules/.bin/karma start --auto-watch --no-single-run karma.config.js"
+    "test": "./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js",
+    "test_watch": "./node_modules/.bin/karma start --auto-watch --no-single-run karma.conf.js"
   },
   "repository": {
     "type": "git",
