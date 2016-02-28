@@ -9,6 +9,7 @@ import autobind from 'autobind-decorator';
 import FaAngleLeft from 'react-icons/lib/fa/angle-left';
 import FaAngleRight from 'react-icons/lib/fa/angle-right';
 
+require('../css/timeline.css');
 
 let daydiff = (first, second) => Math.round((second - first));
 

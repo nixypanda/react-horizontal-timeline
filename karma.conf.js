@@ -10,11 +10,12 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['browserify', 'jasmine'],
+    frameworks: ['jasmine'],
 
 
     // list of files / patterns to load in the browser
     files: [
+      './node_modules/phantomjs-polyfill/bind-polyfill.js',
       'spec/**/*spec.js'
     ],
 
@@ -23,28 +24,43 @@ module.exports = function(config) {
     exclude: [
     ],
 
+    plugins: [webpack, 'karma-jasmine', 'karma-phantomjs-launcher', 'karma-coverage', 'karma-spec-reporter'],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*.js': ['browserify', 'coverage'],
-      'spec/**/*.js': ['browserify']
+      'tests/**/*_spec.js': ['webpack'],
+      'src/**/*.js': ['webpack']
     },
 
-    browserify: {
-      debug: true,
-      // transform: [ 'babelify' ]
-      transform: [['babelify', {'presets': ['es2015', 'react', 'stage-0'] } ]]
-    },
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['spec', 'coverage'],
 
     coverageReporter: {
-      type: 'text'
+      dir: 'build/reports/coverage',
+      reporters: [
+        { type: 'html', subdir: 'report-html' },
+        { type: 'lcov', subdir: 'report-lcov' },
+        { type: 'cobertura', subdir: '.', file: 'cobertura.txt' }
+      ]
     },
-
+    webpack: {
+      module: {
+        loaders: [{
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: 'babel-loader'
+        }],
+        postLoaders: [{
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: 'istanbul-instrumenter'
+        }]
+      }
+    },
+    webpackMiddleware: { noInfo: true },
 
     // web server port
     port: 9876,
@@ -65,7 +81,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'PhantomJS'],
 
 
     // Continuous Integration mode
