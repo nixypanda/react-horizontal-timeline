@@ -9,7 +9,6 @@ Main Components
     position: relative;
     height: 100px;
     width: 90%;
-    max-width: 800px;
     margin: 0 auto;
 }
 
@@ -50,6 +49,7 @@ Main Components
     /* width will be set using JavaScript */
     background: #dfdfdf;
 }
+
 .cd-horizontal-timeline .filling-line {
     /* this is used to create the green line filling the timeline */
     position: absolute;
@@ -58,7 +58,6 @@ Main Components
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: #7b9d6f;
 
     -webkit-transform-origin: left center;
     -moz-transform-origin: left center;
@@ -75,35 +74,6 @@ Main Components
     font-size: 1.3rem;
     padding-bottom: 15px;
     color: #383838;
-}
-
-.cd-horizontal-timeline .events a::after {
-    /* this is used to create the event spot*/
-    content: '';
-    position: absolute;
-    left: 50%;
-    right: auto;
-    bottom: -5px;
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    border: 2px solid #dfdfdf;
-    background-color: #f8f8f8;
-}
-
-.no-touch .cd-horizontal-timeline .events a:hover::after {
-    background-color: #7b9d6f;
-    border-color: #7b9d6f;
-}
-.cd-horizontal-timeline .events a.selected {
-    pointer-events: none;
-}
-.cd-horizontal-timeline .events a.selected::after {
-    background-color: #7b9d6f;
-    border-color: #7b9d6f;
-}
-.cd-horizontal-timeline .events a.older-event::after {
-    border-color: #7b9d6f;
 }
 
 .cd-timeline-navigation a {
