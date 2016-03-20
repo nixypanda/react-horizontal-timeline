@@ -15,7 +15,7 @@ import {} from '../css/timeline.css';
 const DAY = 86400000;
 const MAX_NORMALISED_SEPERATION = 6;
 const MIN_TIMELINE_WIDTH = 750;
-const DATE_WIDTH = 80;
+const DATE_WIDTH = 85;
 
 let daydiff = (first, second) => Math.round((second - first));
 
@@ -211,7 +211,7 @@ export default class HorizontalTimeline extends React.Component {
             data-date={ date }
             onClick={ this.__updateFilling__.bind(this.state.selected, index) }
             ref={ this.state.timelineDates[index] }
-            style={{ left: this.state.distanceFromOrigin[index], cursor: 'pointer', width: 80 }} >
+            style={{ left: this.state.distanceFromOrigin[index], cursor: 'pointer', width: DATE_WIDTH }} >
             { this.state.timelineDates[index].toDateString().substring(4) }
           </a>
           <span style={[
