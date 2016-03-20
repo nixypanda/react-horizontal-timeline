@@ -15,6 +15,7 @@ import {} from '../css/timeline.css';
 const DAY = 86400000;
 const MAX_NORMALISED_SEPERATION = 6;
 const MIN_TIMELINE_WIDTH = 750;
+const DATE_WIDTH = 80;
 
 let daydiff = (first, second) => Math.round((second - first));
 
@@ -140,10 +141,9 @@ export default class HorizontalTimeline extends React.Component {
   @autobind
   __updateFilling__(selected) {
     // change .filling-line length according to the selected event
-    // let eventStyle = window.getComputedStyle($(this.refs[this.state.timelineDates[selected]]).get(0), null);
+    let eventStyle = window.getComputedStyle($(this.refs[this.state.timelineDates[selected]]).get(0), null);
     // The half the space occupied by the the string showing the date
-    // let eventWidth = Number(eventStyle.getPropertyValue('width').replace('px', '')) / 2;
-    let eventWidth = 0;
+    let eventWidth = Number(eventStyle.getPropertyValue('width').replace('px', '')) / 2;
     // filled value = distane from origin to the selected event + half the space occupied by the date string on screen
     let filledValue = (this.state.distanceFromOrigin[selected] + eventWidth) / this.state.timelineTotWidth;
 
@@ -182,7 +182,7 @@ export default class HorizontalTimeline extends React.Component {
       let dots = {
         base: {
           position: 'absolute',
-          left: this.state.distanceFromOrigin[index] /* + (space required by date string) */,
+          left: this.state.distanceFromOrigin[index] + (DATE_WIDTH - 2) / 2,
           bottom: -5,
           height: 12,
           width: 12,
@@ -207,10 +207,11 @@ export default class HorizontalTimeline extends React.Component {
         <li key={ index }
           onClick={ this.props.indexClick.bind(null, index) }>
           <a
+            className='text-center'
             data-date={ date }
             onClick={ this.__updateFilling__.bind(this.state.selected, index) }
             ref={ this.state.timelineDates[index] }
-            style={ { left: this.state.distanceFromOrigin[index], cursor: 'pointer' } } >
+            style={{ left: this.state.distanceFromOrigin[index], cursor: 'pointer', width: 80 }} >
             { this.state.timelineDates[index].toDateString().substring(4) }
           </a>
           <span style={[
