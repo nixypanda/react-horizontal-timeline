@@ -4,8 +4,11 @@ Here is a [demo] (http://jck-d-rpr.github.io/react-horizontal-timeline) I hope y
 
 ###Usage
 This module exports 2 components.
+
 1. ```HorizontalTimeline```
+
 It will just render a timeline with the dates that you provided and it is upto you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
+
 Property	       |	Type   	   |	Default	                    |	Description
 :------------------|:--------------|:-------------------------------|:--------------------------------
  values            | array         | undefind                       | **sorted** array of dates (**required**)
@@ -43,7 +46,9 @@ export default class App extends React.Component {
 ```
 
 2. ```HorizontalTimelineContent```
+
 You can provide this component with the complete data and it will render it (also uses react-swipeable-views).
+
 Property	|	Type		|	Default		|	Description
 :-----------|:--------------|:--------------|:--------------------------------
  content    | [ object(s) ] | undefind      | an array of object(s) which have two keys { date, component } where component is the component to render when corresponding date is selected.
