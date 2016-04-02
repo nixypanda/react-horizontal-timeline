@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactHorizontalTimeline from '../dist/react-horizontal-timeline';
 
 import HorizontalTimelineContent from './Components/HorizontalTimelineContent';
 import GameInfo from './resources/content';
@@ -11,6 +12,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: 0, previous: 0 };
+    console.log(ReactHorizontalTimeline);
   }
 
   componentWillMount() {
