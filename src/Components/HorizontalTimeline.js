@@ -116,7 +116,12 @@ export default class HorizontalTimeline extends React.Component {
       distances[index] = distances[index - 1] + distanceFromPrevious * nextProps.eventsMinDistance;
     }
 
+    // set selected value only if index value is present
+    if (nextProps.index !== null) {
+      this.setState({ selected: nextProps.index });
+    }
 
+    // needs to be done after setting up selected
     this.setState({
       // the distances from the origin of the the timeline
       distanceFromOrigin: distances,
@@ -124,28 +129,15 @@ export default class HorizontalTimeline extends React.Component {
       timelineDates: dates,
       // the exact value of the width of the timeline
       timelineTotWidth: Math.max(MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100)
+    }, () => {
+      this.__updateFilling__(this.state.selected);
     });
-
-    // also translate timeline to the position of the new selected event
-  }
-
-  /**
-  * This shity method needs to change
-  * @return {[type]} [description]
-  */
-  componentDidMount() {
-    // have the initial event selected.
-    this.__updateFilling__(0);
   }
 
   @autobind
   __updateFilling__(selected) {
-    // change .filling-line length according to the selected event
-    let eventStyle = window.getComputedStyle($(this.refs[this.state.timelineDates[selected]]).get(0), null);
-    // The half the space occupied by the the string showing the date
-    let eventWidth = Number(eventStyle.getPropertyValue('width').replace('px', '')) / 2;
     // filled value = distane from origin to the selected event + half the space occupied by the date string on screen
-    let filledValue = (this.state.distanceFromOrigin[selected] + eventWidth) / this.state.timelineTotWidth;
+    let filledValue = (this.state.distanceFromOrigin[selected] + DATE_WIDTH / 2) / this.state.timelineTotWidth;
 
     // right now the filledValue contains the value of the transform
     this.setState({
