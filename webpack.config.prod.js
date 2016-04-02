@@ -51,10 +51,11 @@ module.exports = {
   entry: [
     './src/Components/HorizontalTimeline.js'
   ],
- // If you pass an array - the modules are loaded on startup. The last one is exported.
+  // If you pass an array - the modules are loaded on startup. The last one is exported.
   output: {
     path: (__dirname, 'dist'),
-    filename: 'react-horizontal-timeline.js'
+    filename: 'react-horizontal-timeline.js',
+    libraryTarget: 'commonjs2'
   },
   // Array of file extensions used to resolve modules.
   resolve: {
@@ -64,8 +65,6 @@ module.exports = {
     react: 'react',
     'react-dom': 'react-dom'
   },
-  // http://www.cnblogs.com/Answer1215/p/4312265.html
-  // The source map file will only be downloaded if you have source maps enabled and your dev tools open.
   plugins: [],
   module: {
     loaders: loaders
