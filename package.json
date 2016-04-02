@@ -2,10 +2,11 @@
   "name": "react-horizontal-timeline",
   "version": "0.0.1",
   "description": "A horizontal timeline component made using react",
-  "main": "main.js",
+  "main": "./dist/react-horizontal-timeline.js",
   "scripts": {
     "start": "node server.js",
-    "build": "./node_modules/.bin/webpack --config webpack.config.production.js",
+    "build": "./node_modules/.bin/webpack --config webpack.config.js",
+    "prepublish": "npm run build",
     "lint": "./node_modules/.bin/eslint .",
     "test": "./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js",
     "test_watch": "./node_modules/.bin/karma start --auto-watch --no-single-run karma.conf.js"
