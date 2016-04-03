@@ -1,9 +1,11 @@
 // Karma configuration
 // Generated on Sun Jan 31 2016 06:13:26 GMT+0530 (IST)
 
+/* eslint-disable no-var */
 var webpack = require('karma-webpack');
+var path = require('path');
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -12,7 +14,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: [ 'jasmine' ],
 
 
     // list of files / patterns to load in the browser
@@ -26,23 +28,31 @@ module.exports = function(config) {
     exclude: [
     ],
 
-    plugins: [webpack, 'karma-jasmine', 'karma-phantomjs-launcher', 'karma-coverage', 'karma-spec-reporter'],
+    plugins: [
+      'karma-coverage',
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-spec-reporter',
+      'karma-sourcemap-loader',
+      webpack
+    ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'spec/**/*.spec.js': ['webpack'],
-      'src/**/*.js': ['webpack', 'coverage']
+      'spec/**/*.spec.js': [ 'webpack', 'sourcemap' ],
+      'src/**/*.js': [ 'webpack', 'coverage', 'sourcemap' ]
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['spec', 'coverage', 'progress'],
+    reporters: [ 'dots', 'coverage', 'progress' ],
 
     coverageReporter: {
       dir: 'build/reports/coverage',
       reporters: [
+        { type: 'text' },
         { type: 'html', subdir: 'report-html' },
         { type: 'lcov', subdir: 'report-lcov' },
         { type: 'cobertura', subdir: '.', file: 'cobertura.txt' }
@@ -50,20 +60,41 @@ module.exports = function(config) {
     },
 
     webpack: {
+       // just do inline source maps instead of the default
+      devtool: 'inline-source-map',
       module: {
-        loaders: [{
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          loader: 'babel-loader'
-        }],
-        postLoaders: [{
-          test: /\.jsx?$/,
-          exclude: /(node_modules|spec)/,
-          loader: 'istanbul-instrumenter'
-        }]
+        preLoaders: [
+          {
+            test: /\.jsx?$/,
+            exclude: [ /node_modules/, /\.spec\.js/ ],
+            loader: 'isparta-instrumenter-loader'
+          }
+        ],
+        loaders: [
+          {
+            test: /\.jsx?$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader'
+          },
+          // css etc required to run bootstrap
+          {
+            test: /\.css$/,
+            loader: 'style-loader!css-loader',
+            include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
+          }
+        ]
+        // delays coverage til after tests are run, fixing transpiled source coverage error
+        // postLoaders: [ {
+        //   test: /\.jsx?$/,
+        //   exclude: /(node_modules|spec)/,
+        //   loader: 'istanbul-instrumenter'
+        // } ]
       }
     },
-    webpackMiddleware: { noInfo: true },
+    webpackMiddleware: {
+      // please don't spam the console when running in karma!
+      noInfo: true
+    },
 
     // web server port
     port: 9876,
@@ -84,7 +115,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: [ 'PhantomJS' ],
 
 
     // Continuous Integration mode
