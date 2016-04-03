@@ -17,10 +17,9 @@
   },
   "keywords": [
     "react",
-    "es6",
-    "babel",
-    "webpack",
     "timeline",
+    "horizontal",
+    "react-motion",
     "react-component"
   ],
   "author": "Sherub Thakur",

@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
-import HorizontalTimeline from './HorizontalTimeline';
 import SwipeableViews from 'react-swipeable-views';
 
-export default class App extends React.Component {
+import HorizontalTimeline from '../../src/Components/HorizontalTimeline';
+
+export default class HorizontalTimelineContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: 0, previous: 0 };

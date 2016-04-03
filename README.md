@@ -2,10 +2,10 @@
 A react port of the horizontal time-line developed by CodyHouse.
 Here is a [demo] (http://jck-d-rpr.github.io/react-horizontal-timeline) I hope you too are a fan of the elder scrolls.
 
-###Usage
-This module exports 2 components.
-1. ```HorizontalTimeline```
+##HorizontalTimeline
+
 It will just render a timeline with the dates that you provided and it is upto you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
+
 Property	       |	Type   	   |	Default	                    |	Description
 :------------------|:--------------|:-------------------------------|:--------------------------------
  values            | array         | undefind                       | **sorted** array of dates (**required**)
@@ -17,6 +17,7 @@ Property	       |	Type   	   |	Default	                    |	Description
  styles            | object        |{ background: '#dfdfdf', foreground: '#7b9d6f', maxSize: 800 } | object containging the styles for the timeline currently foreground and background colors along with the max length of the timeline can be changed.
 
 This is how it can be used.
+
 ```
 const VALUES = [ /* The date strings go here */ ];
 
@@ -41,58 +42,20 @@ export default class App extends React.Component {
 }
 
 ```
-
-2. ```HorizontalTimelineContent```
-You can provide this component with the complete data and it will render it (also uses react-swipeable-views).
-Property	|	Type		|	Default		|	Description
-:-----------|:--------------|:--------------|:--------------------------------
- content    | [ object(s) ] | undefind      | an array of object(s) which have two keys { date, component } where component is the component to render when corresponding date is selected.
-
-This is how it can be used
-```
-# GameInfo contains the content to display look for
-# date: is the date string
-# subtitle: is a string (e.g. 'skyrim')
-# content: is also a string (desc of a game)
-
-class App extends React.Component {
-
-  state = { value: 0, previous: 0 };
-
-  componentWillMount() {
-    this.data = GameInfo.map((game, index) => {
-      return ({
-        date: game.date,
-        component: (
-          <div className='container' key={index}>
-            <h1>{ `The Elder Scrolls ${index + 1}:`}</h1>
-            <h2>{ game.subtitle }</h2>
-            <hr />
-            <p>{ game.content}</p>
-            <hr />
-          </div>
-        )
-      });
-    });
-  }
-
-  render() {
-    return (
-      <HorizontalTimelineContent content={this.data} />
-    );
-  }
-}
-```
+For more advanced usage take a look at the demos directory.
 
 ###Todo
 - ~~Start using react-motion to simplify code a bit.~~
 - ~~Arrows on the buttons on either side.~~
 - ~~Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..).~~
 - Make it more customizable.
-- Improve the structure.
+- ~~Improve the structure.~~
 - better prop options/handling.
 - Make someone use it. :D
 
+##Running the developmnt version
+- Just clone the repo and do an ```npm install``` followed by an ```npm run start```.
+- Then go to ```localhost:5000/demos/<demo_name>/index.html``` to see the fruits of your labor.
 
 ####Here is the information provided by the original author.
 

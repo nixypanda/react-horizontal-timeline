@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import HorizontalTimelineContent from './Components/HorizontalTimelineContent';
-import GameInfo from './resources/content';
+import HorizontalTimelineContent from './HorizontalTimelineContent';
+import GameInfo from '../resources/content';
 
-import {} from 'bootstrap-webpack';
-import {} from './css/body.css';
+import 'bootstrap-webpack';
 
 class App extends React.Component {
   constructor(props) {
@@ -38,5 +37,4 @@ class App extends React.Component {
   }
 }
 
-
-ReactDOM.render(<App />, document.getElementById('react-horizontal-timeline'));
+ReactDOM.render(<App />, document.getElementById('content'));

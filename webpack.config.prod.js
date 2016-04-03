@@ -1,9 +1,5 @@
 /**
- * WEBPACK CONFIG
- *
- * 'react-hot'
- * React Hot Loader is a plugin for Webpack that allows instantaneous live refresh without losing state
- * while editing React components.
+ * WEBPACK CONFIG FOR PRODUCTION USE
  */
 
 /* eslint-disable no-var */

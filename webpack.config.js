@@ -1,5 +1,5 @@
 /**
- * WEBPACK CONFIG
+ * WEBPACK CONFIG TO RUN DEMOS
  *
  * 'react-hot'
  * React Hot Loader is a plugin for Webpack that allows instantaneous live refresh without losing state
@@ -10,18 +10,68 @@
 var webpack = require('webpack');
 var path = require('path');
 
-module.exports = {
-  entry: [
+// entry point of all the deomos
+var entry = {
+  'demo-swipeable-views': './demos/demo-swipeable-views/index.js'
+};
+
+// array of all the requisite loaders
+var loaders = [
+  // **IMPORTANT** This is needed so that each bootstrap js file required by
+  // bootstrap-webpack has access to the jQuery object
+  {
+    test: /bootstrap\/js\//,
+    loader: 'imports?jQuery=jquery'
+  },
+  // Babel enables the use of ES6 today by transpiling your ES6 JavaScript into equivalent ES5 source
+  // that is actually delivered to the end user browser.
+  {
+    test: /\.jsx?$/,
+    loaders: [ 'babel' ],
+    include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
+  },
+  // css etc required to run bootstrap
+  {
+    test: /\.css$/,
+    loader: 'style-loader!css-loader',
+    include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
+  },
+  {
+    test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
+    loader: 'url?limit=10000&mimetype=application/font-woff'
+  },
+  {
+    test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+    loader: 'url?limit=10000&mimetype=application/octet-stream'
+  },
+  {
+    test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+    loader: 'file'
+  },
+  {
+    test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+    loader: 'url?limit=10000&mimetype=image/svg+xml'
+  }
+];
+
+// setting up variables
+// setting up the entry point to the demos
+entry = Object.keys(entry).reduce(function (result, key) {
+  result[key] = [
     'webpack-dev-server/client?http://localhost:5000',
-    'webpack/hot/dev-server',
-    // Entry point for the bundle.
-    './src/main'
-  ],
- // If you pass an array - the modules are loaded on startup. The last one is exported.
+    'webpack/hot/only-dev-server',
+    entry[key]
+  ];
+  return result;
+}, {});
+
+module.exports = {
+  entry: entry,
+   // If you pass an array - the modules are loaded on startup. The last one is exported.
   output: {
-    path: __dirname,
-    filename: 'bundle.js',
-    publicPath: '/static/'
+    filename: '[name]/all.js',
+    publicPath: '/demos/',
+    path: __dirname + '/demos/'
   },
   // Array of file extensions used to resolve modules.
   resolve: {
@@ -39,42 +89,9 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   module: {
-    loaders: [
-      // **IMPORTANT** This is needed so that each bootstrap js file required by
-      // bootstrap-webpack has access to the jQuery object
-      {
-        test: /bootstrap\/js\//,
-        loader: 'imports?jQuery=jquery'
-      },
-      // Babel enables the use of ES6 today by transpiling your ES6 JavaScript into equivalent ES5 source
-      // that is actually delivered to the end user browser.
-      {
-        test: /\.jsx?$/,
-        loaders: [ 'babel' ],
-        include: path.join(__dirname, 'src')
-      },
-      // css etc required to run bootstrap
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader',
-        include: path.join(__dirname, 'src/')
-      },
-      {
-        test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/font-woff'
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=application/octet-stream'
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file'
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?limit=10000&mimetype=image/svg+xml'
-      }
-    ]
-  }
+    loaders: loaders
+  },
+  noParse: [
+    path.join(__dirname, 'node_modules')
+  ]
 };

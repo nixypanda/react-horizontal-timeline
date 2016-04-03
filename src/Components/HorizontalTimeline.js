@@ -41,6 +41,7 @@ export default class HorizontalTimeline extends React.Component {
    * @type {Object}
    */
   static propTypes = {
+    index: PropTypes.number,
     //  array containing the dates
     values: PropTypes.array.isRequired,
     //  function that takes the index of the array as argument
@@ -116,20 +117,21 @@ export default class HorizontalTimeline extends React.Component {
       distances[index] = distances[index - 1] + distanceFromPrevious * nextProps.eventsMinDistance;
     }
 
-    // set selected value only if index value is present
-    if (nextProps.index !== null) {
-      this.setState({ selected: nextProps.index });
-    }
-
-    // needs to be done after setting up selected
-    this.setState({
+    // The new state of the horizontal timeline.
+    let state = {
       // the distances from the origin of the the timeline
       distanceFromOrigin: distances,
       // parsed format of the dates
       timelineDates: dates,
       // the exact value of the width of the timeline
       timelineTotWidth: Math.max(MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100)
-    }, () => {
+    };
+
+    // set selected value only if index value is present
+    if (nextProps.index) {
+      state.selected = nextProps.index;
+    }
+    this.setState(state, () => {
       this.__updateFilling__(this.state.selected);
     });
   }
@@ -162,6 +164,11 @@ export default class HorizontalTimeline extends React.Component {
       this.setState({ position: Math.min(0, this.state.position + wrapperWidth - this.props.eventsMinDistance) });
     }
   }
+
+  __handleDateClick__ = (index) => {
+    this.props.indexClick(index);
+    this.__updateFilling__(index);
+  };
 
   render() {
     //  creating an array of list items that have an onClick handler into which
@@ -196,12 +203,11 @@ export default class HorizontalTimeline extends React.Component {
       };
 
       return (
-        <li key={ index }
-          onClick={ this.props.indexClick.bind(null, index) }>
+        <li key={ index } >
           <a
             className='text-center'
             data-date={ date }
-            onClick={ this.__updateFilling__.bind(this.state.selected, index) }
+            onClick={ this.__handleDateClick__.bind(null, index) }
             ref={ this.state.timelineDates[index] }
             style={{ left: this.state.distanceFromOrigin[index], cursor: 'pointer', width: DATE_WIDTH }} >
             { this.state.timelineDates[index].toDateString().substring(4) }
