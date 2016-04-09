@@ -5,6 +5,7 @@ import HorizontalTimelineContent from './HorizontalTimelineContent';
 import GameInfo from '../resources/content';
 
 import 'bootstrap-webpack';
+require('file?name=[name].[ext]!./index.html');
 
 class App extends React.Component {
   constructor(props) {

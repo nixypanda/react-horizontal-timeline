@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "build": "./node_modules/.bin/webpack --config webpack.config.prod.js",
+    "build_demos": "./node_modules/.bin/webpack --config webpack.config.demos.prod.js",
     "prepublish": "npm run build",
     "lint": "./node_modules/.bin/eslint .",
     "test": "./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js",
@@ -59,6 +60,7 @@
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
+    "html-loader": "^0.4.3",
     "imports-loader": "^0.6.5",
     "isparta": "^4.0.0",
     "isparta-instrumenter-loader": "^1.0.0",
