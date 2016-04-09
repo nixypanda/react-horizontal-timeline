@@ -1,4 +1,8 @@
 #React Horizontal Timeline
+[![npm version](https://badge.fury.io/js/react-horizontal-timeline.svg)](https://badge.fury.io/js/react-horizontal-timeline)
+[![Build Status](https://travis-ci.org/jck-d-rpr/react-horizontal-timeline.svg?branch=master)](https://travis-ci.org/jck-d-rpr/react-horizontal-timeline)
+[![Coverage Status](https://coveralls.io/repos/github/jck-d-rpr/react-horizontal-timeline/badge.svg?branch=master)](https://coveralls.io/github/jck-d-rpr/react-horizontal-timeline?branch=master)
+
 A react port of the horizontal time-line developed by CodyHouse.
 Here is a [demo] (http://jck-d-rpr.github.io/react-horizontal-timeline) I hope you too are a fan of the elder scrolls.
 

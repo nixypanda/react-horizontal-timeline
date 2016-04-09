@@ -10,6 +10,7 @@
     "prepublish": "npm run build",
     "lint": "./node_modules/.bin/eslint .",
     "test": "./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js",
+    "test:coveralls": "./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js && cat ./build/reports/coverage/report-lcov/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test_watch": "./node_modules/.bin/karma start --auto-watch --no-single-run karma.conf.js"
   },
   "repository": {
@@ -52,6 +53,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babel-runtime": "^6.3.19",
     "bootstrap-webpack": "0.0.5",
+    "coveralls": "^2.11.9",
     "css-loader": "^0.23.1",
     "eslint": "^2.6.0",
     "eslint-plugin-react": "^4.1.0",
