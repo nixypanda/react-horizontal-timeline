@@ -7,9 +7,6 @@ describe('Testing integrity of the the timeline component', () => {
     let renderer = ReactTestUtils.createRenderer();
     renderer.render(
       <ReactHorizontalTimeline
-        indexClick={ (index) => {
-          console.log(index);
-        }}
         values={[ '1/1/1993', '1/1/1994' ]}
       />
     );

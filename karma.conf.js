@@ -52,10 +52,10 @@ module.exports = function (config) {
     coverageReporter: {
       dir: 'build/reports/coverage',
       reporters: [
-        { type: 'text' },
-        { type: 'html', subdir: 'report-html' },
-        { type: 'lcov', subdir: 'report-lcov' },
-        { type: 'cobertura', subdir: '.', file: 'cobertura.txt' }
+        // { type: 'text' },
+        { type: 'html', subdir: 'report-html' }
+        // { type: 'lcov', subdir: 'report-lcov' },
+        // { type: 'cobertura', subdir: '.', file: 'cobertura.txt' }
       ]
     },
 
@@ -83,12 +83,6 @@ module.exports = function (config) {
             include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
           }
         ]
-        // delays coverage til after tests are run, fixing transpiled source coverage error
-        // postLoaders: [ {
-        //   test: /\.jsx?$/,
-        //   exclude: /(node_modules|spec)/,
-        //   loader: 'istanbul-instrumenter'
-        // } ]
       }
     },
     webpackMiddleware: {

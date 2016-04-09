@@ -45,7 +45,7 @@ export default class HorizontalTimeline extends React.Component {
     //  array containing the dates
     values: PropTypes.array.isRequired,
     //  function that takes the index of the array as argument
-    indexClick: PropTypes.func.isRequired,
+    indexClick: PropTypes.func,
     // The minimum distance between consecutive events
     eventsMinDistance: PropTypes.number,
     styles: PropTypes.object,
