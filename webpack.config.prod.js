@@ -45,7 +45,7 @@ var loaders = [
 
 module.exports = {
   entry: [
-    './src/Components/HorizontalTimeline.js'
+    './src/Components/HorizontalTimeline.jsx'
   ],
   // If you pass an array - the modules are loaded on startup. The last one is exported.
   output: {

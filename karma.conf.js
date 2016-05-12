@@ -41,6 +41,7 @@ module.exports = function (config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'spec/**/*.spec.js': [ 'webpack', 'sourcemap' ],
+      'src/**/*.jsx': [ 'webpack', 'coverage', 'sourcemap' ],
       'src/**/*.js': [ 'webpack', 'coverage', 'sourcemap' ]
     },
 
@@ -83,6 +84,9 @@ module.exports = function (config) {
             include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
           }
         ]
+      },
+      resolve: {
+        extensions: [ '', '.js', '.jsx' ]
       }
     },
     webpackMiddleware: {
