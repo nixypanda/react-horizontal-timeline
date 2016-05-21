@@ -5,14 +5,13 @@ import Constants from '../Constants';
 
 /**
  * THe static/non-static styles Information for a single event dot on the timeline
- * @param  { object } styles [ User passed styles ( foreground, background etc info )]
- * @return {[type]}        [ A multilevel style object containing the following information
+ * @param {object} styles User passed styles ( foreground, background etc info
+ * @return {object} A multilevel style object containing the following information
  *   links: THe style information for the clickable dates that apper floating over the timeline
  *   base: The base style information for the event dot that appers exactly on the timeline
  *   none: The style information for the future dot (wrt selected).
  *   older: The styles information for the past dot (wrt selected)
  *   selected: The styles information for the preset dot
- * ]
  */
 const dots = (styles) => ({
   links: {
@@ -33,11 +32,12 @@ const dots = (styles) => ({
     zIndex: 2
   },
   none: {
-    border: `2px solid ${styles.background}`,
-    backgroundColor: '#f8f8f8'
+    backgroundColor: styles.background,
+    // border: `2px solid ${styles.background}`,
+    border: `2px solid ${styles.outline}`
   },
   older: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: styles.background,
     border: `2px solid ${styles.foreground}`
   },
   selected: {
@@ -50,8 +50,8 @@ const dots = (styles) => ({
  * The markup for one single dot on the timeline (A SEPERATE FILE FOR A DOT!!!!!!!!)
  * let me emphasie it again A FUCKING SEPTERATE FILE FOR A SHIT LITTLE TINY FUCKING DOT!!!!!!!!!!!
  *
- * @param  { object } props [ The props passed down]
- * @return { StatelessFunctionalReactComponent }       [ The markup for a dot ]
+ * @param {object} props The props passed down
+ * @return {StatelessFunctionalReactComponent} The markup for a dot
  */
 const TimelineDot = (props) => (
   <li key={ props.index } >
@@ -76,6 +76,10 @@ const TimelineDot = (props) => (
   </li>
 );
 
+/**
+ * propTypes
+ * @type {Object}
+ */
 TimelineDot.propTypes = {
   // The index of the currently selected dot (required to style as old, present, or future event)
   selected: PropTypes.number.isRequired,

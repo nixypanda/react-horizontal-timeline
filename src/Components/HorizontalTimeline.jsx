@@ -6,20 +6,23 @@ import { Motion, spring } from 'react-motion';
 import Radium from 'radium';
 
 import '../css/timeline.css';
+import Constants from '../Constants';
 import TimelineDot from './TimelineDot';
 import HorizontalTimelineButtons from './HorizontalTimelineButtons';
-
-const DAY = 86400000;
-const MAX_NORMALISED_SEPERATION = 6;
-const MIN_TIMELINE_WIDTH = 750;
-const DATE_WIDTH = 85;
-
-let daydiff = (first, second) => Math.round((second - first));
+import Faders from './Faders';
 
 /**
- * Determines the minimum distance between events
- * @param  {[array]} dates [the array containing all the dates]
- * @return {[number]}       [the minimum distance between events]
+ * Differance between two dates
+ *
+ * @param  {Date} first Date of the first event
+ * @param  {Date} second Date of the second event
+ * @return {number} Differance between the two dates
+ */
+let daydiff = (first, second) => Math.round((second - first));
+
+/** * Determines the minimum distance between events
+ * @param {array} dates the array containing all the dates
+ * @return {number} the minimum distance between events
  */
 const __minDistanceEvents__ = (dates) => {
   // determine the minimum distance among events
@@ -31,7 +34,7 @@ const __minDistanceEvents__ = (dates) => {
 
   // return the minimum distance between two dates but considering that all dates
   // are the same then return the distance between 2 days i.e. 86400000
-  return Math.max(Math.min.apply(null, dateDistances), DAY);
+  return Math.max(Math.min.apply(null, dateDistances), Constants.DAY);
 };
 
 /*
@@ -46,8 +49,7 @@ class HorizontalTimeline extends React.Component {
     this.state = {
       position: 0,
       selected: 0,
-      filledValue: 0,
-      maxPosition: 0
+      filledValue: 0
     };
   }
 
@@ -76,7 +78,8 @@ class HorizontalTimeline extends React.Component {
   static defaultProps = {
     eventsMinDistance: 80,
     styles: {
-      background: '#dfdfdf',
+      outline: '#dfdfdf',
+      background: '#f8f8f8',
       foreground: '#7b9d6f',
       maxSize: 800
     },
@@ -85,11 +88,32 @@ class HorizontalTimeline extends React.Component {
   };
 
   componentWillMount() {
+    $(document.body).on('keydown', this.__move__);
     this.__setUpState__(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
     this.__setUpState__(nextProps);
+  }
+
+  componentWillUnmount() {
+    $(document.body).off('keydown', this.__move__);
+  }
+
+  /**
+   * Movement in the horizontal timeline based on the movent from arrow keys
+   *
+   * @param  {object} event The keypress event
+   * @return {undefind} modifies the state (either by translating the timeline or by updateing the dot)
+   */
+  __move__ = (event) => {
+    if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
+      this.updateSlide(Constants.KEYMAP[event.keyCode]);
+    } else if (event.keyCode === Constants.UP_KEY) {
+      this.handleDateClick(Math.min(this.state.selected + 1, this.state.timelineDates.length - 1));
+    } else if (event.keyCode === Constants.DOWN_KEY) {
+      this.handleDateClick(Math.max(this.state.selected - 1, 0));
+    }
   }
 
   __setUpState__ = (nextProps) => {
@@ -107,7 +131,9 @@ class HorizontalTimeline extends React.Component {
       // NOTE: for now just setting a hard limit on the value of normalised distanceNorm
       // i.e. distances will grow linearly and reach a max point then stop to increase
       // an elegent mathametical calculation opertunity here.
-      let distanceFromPrevious = Math.min(Math.round(distance / this.eventsMinLapse) + 1, MAX_NORMALISED_SEPERATION);
+      let distanceFromPrevious = Math.min(
+        Math.round(distance / this.eventsMinLapse) + 1, Constants.MAX_NORMALISED_SEPERATION
+      );
       // the distance_from_origin(n) = distance_from_origin(n-1) + distance between n and n - 1.
       distances[index] = distances[index - 1] + distanceFromPrevious * nextProps.eventsMinDistance;
     }
@@ -119,7 +145,7 @@ class HorizontalTimeline extends React.Component {
       // parsed format of the dates
       timelineDates: dates,
       // the exact value of the width of the timeline
-      timelineTotWidth: Math.max(MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100)
+      totalWidth: Math.max(Constants.MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100)
     };
 
     // set selected value only if index value is present
@@ -131,9 +157,14 @@ class HorizontalTimeline extends React.Component {
     });
   };
 
+  /**
+   * Updates the the value of the position that the filling bar should take.
+   * @param  {number} selected The index of the dot upto which the filling needs to be done.
+   * @return {undefind} Nothing just modifies the state withe the new filling value.
+   */
   __updateFilling__ = (selected) => {
     // filled value = distane from origin to the selected event + half the space occupied by the date string on screen
-    let filledValue = (this.state.distanceFromOrigin[selected] + DATE_WIDTH / 2) / this.state.timelineTotWidth;
+    let filledValue = (this.state.distanceFromOrigin[selected] + Constants.DATE_WIDTH / 2) / this.state.totalWidth;
 
     // right now the filledValue contains the value of the transform
     this.setState({
@@ -142,22 +173,35 @@ class HorizontalTimeline extends React.Component {
     });
   };
 
-  updateSlide = (string) => {
+  /**
+   * This method translates the timeline by a certaing amount depending on if the direction passed is left or right.
+   *
+   * @param  {string} direction The direction towards which the timeline will translates
+   * @return {undefind} Just modifies the value by which we need to translate the timeline in place
+   */
+  updateSlide = (direction) => {
     // the width of the timeline component between the two buttons (prev and next)
     let	wrapperWidth = Number($('.events-wrapper').css('width').replace('px', ''));
 
     //  translate the timeline to the left('next')/right('prev')
-    if (string === 'right') {
+    if (direction === Constants.RIGHT) {
       this.setState({
         position: Math.max(this.state.position - wrapperWidth + this.props.eventsMinDistance,
-                            wrapperWidth - this.state.timelineTotWidth),
-        maxPosition: wrapperWidth - this.state.timelineTotWidth
+                            wrapperWidth - this.state.totalWidth),
+        maxPosition: wrapperWidth - this.state.totalWidth
       });
-    } else if (string === 'left') {
+    } else if (direction === Constants.LEFT) {
       this.setState({ position: Math.min(0, this.state.position + wrapperWidth - this.props.eventsMinDistance) });
     }
   };
 
+  /**
+   * Invokes the parent prop indexClick with the passed value of the index and then updates the filling bar by calling
+   * the __updateFilling__ method.
+   *
+   * @param  {number} index The index of the timeline dot that we need to go to
+   * @return {undefind} modifies the state
+   */
   handleDateClick = (index) => {
     this.props.indexClick(index);
     this.__updateFilling__(index);
@@ -188,9 +232,15 @@ class HorizontalTimeline extends React.Component {
           <div className='events-wrapper'>
             <Motion style={{ X: spring(this.state.position, this.props.slidingMotion) }}>
               {({ X }) =>
-              <div className='events'
+              <div
                 style={{
-                  width: this.state.timelineTotWidth,
+                  position: 'absolute',
+                  zIndex: 1,
+                  left: 0,
+                  top: 49,
+                  height: 2,
+                  background: this.props.styles.outline,
+                  width: this.state.totalWidth,
                   WebkitTransform: `translate3d(${X}, 0, 0)px`,
                   transform: `translate3d(${X}px, 0, 0)`
                 }}>
@@ -202,8 +252,14 @@ class HorizontalTimeline extends React.Component {
                   {({ tX }) =>
                   <span
                     aria-hidden='true'
-                    className='filling-line'
                     style={{
+                      position: 'absolute',
+                      zIndex: 1,
+                      left: 0,
+                      top: 0,
+                      height: '100%',
+                      width: '100%',
+                      transformOrigin: 'left center',
                       backgroundColor: this.props.styles.foreground,
                       WebkitTransform: `scaleX(${tX})`,
                       transform: `scaleX(${tX})`
@@ -215,6 +271,7 @@ class HorizontalTimeline extends React.Component {
             }
             </Motion>
           </div>
+          <Faders styles={this.props.styles} />
           <HorizontalTimelineButtons
             maxPosition={this.state.maxPosition}
             position={this.state.position}

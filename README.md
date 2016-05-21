@@ -21,7 +21,7 @@ Property	       |	Type   	   |	Default	                    |	Description
  eventsMinDistance | number        | 80                             | The minimum distance between consecutive events
  fillingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how filling motion will look
  slidingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how sliding motion will look
- styles            | object        |{ background: '#dfdfdf', foreground: '#7b9d6f', maxSize: 800 } | object containging the styles for the timeline currently foreground and background colors along with the max length of the timeline can be changed.
+ styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf', maxSize: 800 } | object containging the styles for the timeline currently outline (the color of the boundries of the thimeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors along with the max length of the timeline can be changed.
 
 This is how it can be used.
 
@@ -55,9 +55,10 @@ For more advanced usage take a look at the demos directory.
 - ~~Start using react-motion to simplify code a bit.~~
 - ~~Arrows on the buttons on either side.~~
 - ~~Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..).~~
-- Make it more customizable.
+- ~~Make it more customizable.~~
 - ~~Improve the structure.~~
-- better prop options/handling.
+- Keyboard movement controls
+- Touch controls
 - Make someone use it. :D
 
 ##Running the developmnt version

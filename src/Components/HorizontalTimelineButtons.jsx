@@ -11,13 +11,15 @@ import FaAngleRight from 'react-icons/lib/fa/angle-right';
 
 /**
  * These are the static styles for the buttons on either side of the timeline.
+ *
+ * @param {styles} styles The user-definded styles/the default styles
+ * @param {boolean} active Hacky crap to get svg filling color right
+ * @return {object} An object containing styles for the buttons
  * link: styles defined for the link elements i.e. the href tag.
  * icon: styles defined for the icon that appears on the button.
  * inactive: styles defined for when the icons are inactive.
- *
- * @type {Object}
  */
-const styles = {
+const buttonStyles = (styles, active) => ({
   link: {
     position: 'absolute',
     zIndex: 1,
@@ -27,91 +29,71 @@ const styles = {
     height: 34,
     width: 34,
     borderRadius: '50%',
-    border: '2px solid #dfdfdf',
+    border: `2px solid ${styles.outline}`,
     overflow: 'hidden',
     textIndent: '100%',
     whiteSpace: 'nowrap'
   },
   icon: {
     position: 'absolute',
-    zIndex: 2,
+    left: 0,
+    zIndex: 3,
     top: '50%',
     bottom: 'auto',
     transform: 'translateY(-50%)',
     height: 20,
-    width: 29
+    width: 29,
+    overflow: 'hidden',
+    textIndent: '100%',
+    whiteSpace: 'nowrap',
+    fill: active ? styles.foreground : styles.outline
   },
   inactive: {
-    color: '#dfdfdf',
-    cursor: 'not-allowed'
+    color: styles.outline,
+    cursor: 'not-allowed',
+    ':hover': {
+      border: `2px solid ${styles.outline}`
+    }
+  },
+  active: {
+    cursor: 'pointer',
+    ':hover': {
+      border: `2px solid ${styles.foreground}`,
+      color: styles.foreground
+    }
   }
-};
-
-/**
- * The markup for a single button. Expects a on click handler to be passed (which in our case will
- * trigger the translation of the timeline either towards left or right).
- *
- * @param  { object } props [description]
- * @return { StatelessFunctionalReactComponent }       [ The markup info for a single button ]
- */
-let Button = (props) => (
-  <li onClick={ props.onClick.bind(null, props.side)}>
-    <a
-      key={props.side}
-      style={[
-        styles.link,
-        { ':hover': { border: `2px solid ${props.styles.foreground}` }, [props.side]: 0 },
-        props.statusStyles
-      ]}>
-      { props.icon }
-    </a>
-  </li>
-);
-
-// Expected propteries from the parent
-Button.propTypes = {
-  // only two types of button can be there left and right
-  side: PropTypes.oneOf([ Constants.LEFT, Constants.RIGHT ]),
-  // The icon that we need to show on the button
-  icon: PropTypes.object.isRequired,
-  // The user passed styles (has fields like foreground, background color etc.)
-  styles: PropTypes.object,
-  // What to do when the given button is clicked (in this case translate timeline)
-  onClick: PropTypes.func.isRequired,
-  // button styles we should apply based on the status (i.e. active or inactive)
-  statusStyles: PropTypes.shape({
-    color: PropTypes.string.isRequired,
-    cursor: PropTypes.oneOf([ 'pointer', 'not-allowed' ])
-  })
-};
-
-// Wrapping the button with Radium (so we get all the styling goodness)
-Button = Radium(Button);
+});
 
 /**
  * Markup for both the buttons
  *
- * @param  { object } props [ The info provided by the parent ]
- * @return { StatelessFunctionalReactComponent }       [ The Markup info for both the buttons ]
+ * @param  {object} props The info provided by the parent
+ * @return {StatelessFunctionalReactComponent} The Markup info for both the buttons
  */
 const HorizontalTimelineButtons = (props) => (
-  <ul style={{ listStyle: 'none' }} >
-    <Button
-      icon={<FaAngleLeft style={ styles.icon } />}
-      onClick={props.updateSlide}
-      side={Constants.LEFT}
-      statusStyles={props.position === 0 ? styles.inactive : { color: props.styles.foreground, cursor: 'pointer' } }
-      styles={props.styles}
-    />
-    <Button
-      icon={<FaAngleRight style={ styles.icon } />}
-      onClick={props.updateSlide}
-      side={Constants.RIGHT}
-      statusStyles={props.position === props.maxPosition ? styles.inactive : {
-        color: props.styles.foreground, cursor: 'pointer'
-      } }
-      styles={props.styles}
-    />
+  <ul >
+    <li
+      key={Constants.LEFT}
+      onClick={ props.updateSlide.bind(null, Constants.LEFT)}
+      style={[
+        buttonStyles(props.styles).link,
+        props.position === 0 ? buttonStyles(props.styles).inactive : buttonStyles(props.styles).active,
+        { [Constants.LEFT]: 0 }
+      ]}
+    >
+      <FaAngleLeft style={buttonStyles(props.styles, !(props.position === 0)).icon} />
+    </li>
+    <li
+      key={Constants.RIGHT}
+      onClick={ props.updateSlide.bind(null, Constants.RIGHT)}
+      style={[
+        buttonStyles(props.styles).link,
+        { [Constants.RIGHT]: 0 },
+        props.position === props.maxPosition ? buttonStyles(props.styles).inactive : buttonStyles(props.styles).active
+      ]}
+    >
+      <FaAngleRight style={buttonStyles(props.styles, !(props.position === props.maxPosition)).icon} />
+    </li>
   </ul>
 );
 
@@ -123,8 +105,8 @@ HorizontalTimelineButtons.propTypes = {
   position: PropTypes.number.isRequired,
   // The user passed styles (has fields like foreground, background color etc.)
   styles: PropTypes.object,
-  // The maximum position that the timeline component can acuire
-  maxPosition: PropTypes.number.isRequired
+  // The maximum position that the timeline component can acuire, (on initial load will be null)
+  maxPosition: PropTypes.number
 };
 
 // Wrapping the buttons with Radium (so we get all the styling goodness)
