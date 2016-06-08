@@ -5,7 +5,6 @@ import { Motion, spring } from 'react-motion';
 // decorators
 import Radium from 'radium';
 
-import '../css/timeline.css';
 import Constants from '../Constants';
 import TimelineDot from './TimelineDot';
 import HorizontalTimelineButtons from './HorizontalTimelineButtons';
@@ -225,11 +224,19 @@ class HorizontalTimeline extends React.Component {
     );
 
     return (
-      <div className='cd-horizontal-timeline loaded' >
-        <div className='timeline' style={{
-          maxWidth: this.props.styles.maxSize
+      <div style={{ margin: '2em auto' }} >
+        <div style={{
+          maxWidth: this.props.styles.maxSize,
+          position: 'relative',
+          height: '100',
+          margin: '0 auto'
         }}>
-          <div className='events-wrapper'>
+          <div className='events-wrapper' style={{
+            position: 'relative',
+            height: '100%',
+            margin: '0 40px',
+            overflow: 'hidden'
+          }}>
             <Motion style={{ X: spring(this.state.position, this.props.slidingMotion) }}>
               {({ X }) =>
               <div

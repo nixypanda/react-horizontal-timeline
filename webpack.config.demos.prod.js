@@ -3,8 +3,10 @@
  */
 
 /* eslint-disable no-var */
-// var webpack = require('webpack');
+/* eslint-disable no-process-env */
+var webpack = require('webpack');
 var path = require('path');
+
 var loaders = [
   // **IMPORTANT** This is needed so that each bootstrap js file required by
   // bootstrap-webpack has access to the jQuery object
@@ -43,6 +45,9 @@ var loaders = [
   }
 ];
 
+// production mode
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 module.exports = {
   entry: [
     './demos/demo-swipeable-views/index.js'
@@ -57,7 +62,11 @@ module.exports = {
   resolve: {
     extensions: [ '', '.js', '.jsx' ]
   },
-  plugins: [],
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      compress: { warnings: false }
+    })
+  ],
   module: {
     loaders: loaders
   },

@@ -59,7 +59,10 @@ module.exports = {
   },
   externals: {
     react: 'react',
-    'react-dom': 'react-dom'
+    'react-dom': 'react-dom',
+    'react-motion': 'react-motion',
+    radium: 'radium',
+    jquery: 'jquery'
   },
   plugins: [],
   module: {
