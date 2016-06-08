@@ -58,7 +58,6 @@ const TimelineDot = (props) => (
     <a
       className='text-center'
       onClick={ props.onClick.bind(null, props.index) }
-      ref={ props.eventDate }
       style={[
         dots(props.styles).links,
         { left: props.distanceFromOrigin, cursor: 'pointer', width: Constants.DATE_WIDTH }
