@@ -95,3 +95,4 @@ TimelineDot.propTypes = {
 };
 
 export default Radium(TimelineDot);
+

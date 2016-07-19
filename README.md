@@ -1,7 +1,6 @@
 #React Horizontal Timeline
 [![npm version](https://badge.fury.io/js/react-horizontal-timeline.svg)](https://badge.fury.io/js/react-horizontal-timeline)
 [![Build Status](https://travis-ci.org/jckdrpr/react-horizontal-timeline.svg?branch=master)](https://travis-ci.org/jckdrpr/react-horizontal-timeline)
-[![Coverage Status](https://coveralls.io/repos/github/jckdrpr/react-horizontal-timeline/badge.svg?branch=master)](https://coveralls.io/github/jckdrpr/react-horizontal-timeline?branch=master)
 [![Code Climate](https://codeclimate.com/github/jckdrpr/react-horizontal-timeline/badges/gpa.svg)](https://codeclimate.com/github/jckdrpr/react-horizontal-timeline)
 [![Dependency Status](https://david-dm.org/jckdrpr/react-horizontal-timeline.svg)](https://david-dm.org/jckdrpr/react-horizontal-timeline)
 [![devDependency Status](https://david-dm.org/jckdrpr/react-horizontal-timeline/dev-status.svg)](https://david-dm.org/jckdrpr/react-horizontal-timeline#info=devDependencies)
@@ -57,8 +56,9 @@ For more advanced usage take a look at the demos directory.
 - ~~Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..).~~
 - ~~Make it more customizable.~~
 - ~~Improve the structure.~~
-- Keyboard movement controls
+- ~~Keyboard movement controls~~
 - Touch controls
+- Customizable date points/event names/tooltip on the timeline
 - Make someone use it. :D
 
 ##Running the developmnt version

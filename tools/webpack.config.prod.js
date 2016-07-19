@@ -12,8 +12,8 @@ var loaders = [
     test: /bootstrap\/js\//,
     loader: 'imports?jQuery=jquery'
   },
-  // Babel enables the use of ES6 today by transpiling your ES6 JavaScript into equivalent ES5 source
-  // that is actually delivered to the end user browser.
+  // Babel enables the use of ES6 today by transpiling your ES6 JavaScript into equivalent ES5
+  // source that is actually delivered to the end user browser.
   {
     test: /\.jsx?$/,
     loaders: [ 'babel' ],
@@ -61,8 +61,7 @@ module.exports = {
     react: 'react',
     'react-dom': 'react-dom',
     'react-motion': 'react-motion',
-    radium: 'radium',
-    jquery: 'jquery'
+    radium: 'radium'
   },
   plugins: [],
   module: {

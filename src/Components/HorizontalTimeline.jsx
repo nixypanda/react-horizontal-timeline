@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import React, { PropTypes } from 'react';
 import { Motion, spring } from 'react-motion';
 
@@ -10,6 +9,7 @@ import TimelineDot from './TimelineDot';
 import HorizontalTimelineButtons from './HorizontalTimelineButtons';
 import Faders from './Faders';
 
+
 /**
  * Differance between two dates
  *
@@ -17,19 +17,25 @@ import Faders from './Faders';
  * @param  {Date} second Date of the second event
  * @return {number} Differance between the two dates
  */
-let daydiff = (first, second) => Math.round((second - first));
+const daydiff = (first, second) => Math.round((second - first));
 
-/** * Determines the minimum distance between events
+/**
+ * Takes a list of lists and zips them together (size should be the same).
+ *
+ * e.g. zip([['row0col0', 'row0col1', 'row0col2'], ['row1col0', 'row1col1', 'row1col2']]);
+ * = [["row0col0","row1col0"], ["row0col1","row1col1"], ["row0col2","row1col2"]]
+ */
+const zip = rows => rows[0].map((_,c) => rows.map(row => row[c]));
+
+/**
+ * Determines the minimum distance between events
  * @param {array} dates the array containing all the dates
  * @return {number} the minimum distance between events
  */
 const __minDistanceEvents__ = (dates) => {
   // determine the minimum distance among events
-  let dateDistances = [];
-  for (let i = 1; i < dates.length; i += 1) {
-    let distance = daydiff(dates[i - 1], dates[i]);
-    dateDistances.push(distance);
-  }
+  const datePairs = zip([ dates.slice(0, -1), dates.slice(1) ]);
+  const dateDistances = datePairs.map(([x, y]) => daydiff(x, y))
 
   // return the minimum distance between two dates but considering that all dates
   // are the same then return the distance between 2 days i.e. 86400000
@@ -87,7 +93,7 @@ class HorizontalTimeline extends React.Component {
   };
 
   componentWillMount() {
-    $(document.body).on('keydown', this.__move__);
+    document.body.addEventListener('keydown', this.__move__);
     this.__setUpState__(this.props);
   }
 
@@ -96,14 +102,15 @@ class HorizontalTimeline extends React.Component {
   }
 
   componentWillUnmount() {
-    $(document.body).off('keydown', this.__move__);
+    document.body.removeEventListener('keydown', this.__move__);
   }
 
   /**
    * Movement in the horizontal timeline based on the movent from arrow keys
    *
    * @param  {object} event The keypress event
-   * @return {undefind} modifies the state (either by translating the timeline or by updateing the dot)
+   * @return {undefind} modifies the state (either by translating the timeline or by updateing the
+   * dot)
    */
   __move__ = (event) => {
     if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
@@ -117,20 +124,20 @@ class HorizontalTimeline extends React.Component {
 
   __setUpState__ = (nextProps) => {
     // parsing the dates from all valid formats that the constructor for Date accepts.
-    let dates = nextProps.values.map((value) => new Date(value));
+    const dates = nextProps.values.map((value) => new Date(value));
     // Calculating the minimum seperation between events
     this.eventsMinLapse = __minDistanceEvents__(dates);
 
     // using dynamic programming to set up the distance from the origin of the timeline.
-    let distances = new Array(dates.length);
+    const distances = new Array(dates.length);
     distances[0] = nextProps.eventsMinDistance;
 
     for (let index = 1; index < distances.length; index += 1) {
-      let distance = daydiff(dates[index - 1], dates[index]);
+      const distance = daydiff(dates[index - 1], dates[index]);
       // NOTE: for now just setting a hard limit on the value of normalised distanceNorm
       // i.e. distances will grow linearly and reach a max point then stop to increase
       // an elegent mathametical calculation opertunity here.
-      let distanceFromPrevious = Math.min(
+      const distanceFromPrevious = Math.min(
         Math.round(distance / this.eventsMinLapse) + 1, Constants.MAX_NORMALISED_SEPERATION
       );
       // the distance_from_origin(n) = distance_from_origin(n-1) + distance between n and n - 1.
@@ -138,7 +145,7 @@ class HorizontalTimeline extends React.Component {
     }
 
     // The new state of the horizontal timeline.
-    let state = {
+    const state = {
       // the distances from the origin of the the timeline
       distanceFromOrigin: distances,
       // parsed format of the dates
@@ -151,6 +158,7 @@ class HorizontalTimeline extends React.Component {
     if (nextProps.index) {
       state.selected = nextProps.index;
     }
+
     this.setState(state, () => {
       this.__updateFilling__(this.state.selected);
     });
@@ -162,8 +170,9 @@ class HorizontalTimeline extends React.Component {
    * @return {undefind} Nothing just modifies the state withe the new filling value.
    */
   __updateFilling__ = (selected) => {
-    // filled value = distane from origin to the selected event + half the space occupied by the date string on screen
-    let filledValue = (this.state.distanceFromOrigin[selected] + Constants.DATE_WIDTH / 2) / this.state.totalWidth;
+    // filled value = distane from origin to the selected event + half the space occupied by the
+    // date string on screen
+    const filledValue = (this.state.distanceFromOrigin[selected] + Constants.DATE_WIDTH / 2) / this.state.totalWidth;
 
     // right now the filledValue contains the value of the transform
     this.setState({
@@ -173,14 +182,18 @@ class HorizontalTimeline extends React.Component {
   };
 
   /**
-   * This method translates the timeline by a certaing amount depending on if the direction passed is left or right.
+   * This method translates the timeline by a certaing amount depending on if the direction passed
+   * is left or right.
    *
    * @param  {string} direction The direction towards which the timeline will translates
    * @return {undefind} Just modifies the value by which we need to translate the timeline in place
    */
   updateSlide = (direction) => {
     // the width of the timeline component between the two buttons (prev and next)
-    let	wrapperWidth = Number($('.events-wrapper').css('width').replace('px', ''));
+    const wrapperWidth = Number(
+      getComputedStyle(document.getElementsByClassName('events-wrapper')[0])['width']
+        .replace('px', '')
+    );
 
     //  translate the timeline to the left('next')/right('prev')
     if (direction === Constants.RIGHT) {
@@ -190,12 +203,15 @@ class HorizontalTimeline extends React.Component {
         maxPosition: wrapperWidth - this.state.totalWidth
       });
     } else if (direction === Constants.LEFT) {
-      this.setState({ position: Math.min(0, this.state.position + wrapperWidth - this.props.eventsMinDistance) });
+      this.setState({
+        position: Math.min(0, this.state.position + wrapperWidth - this.props.eventsMinDistance)
+      });
     }
   };
 
   /**
-   * Invokes the parent prop indexClick with the passed value of the index and then updates the filling bar by calling
+   * Invokes the parent prop indexClick with the passed value of the index and then updates the
+   * filling bar by calling
    * the __updateFilling__ method.
    *
    * @param  {number} index The index of the timeline dot that we need to go to
@@ -210,7 +226,7 @@ class HorizontalTimeline extends React.Component {
     //  creating an array of list items that have an onClick handler into which
     //  passing the index of the clicked entity.
     // NOTE: Improve timeline dates handeling and eventsMinLapse handling
-    let valuesList = this.props.values.map((date, index) => (
+    const valuesList = this.props.values.map((date, index) => (
         <TimelineDot
           distanceFromOrigin={this.state.distanceFromOrigin[index]}
           eventDate={this.state.timelineDates[index]}
@@ -292,3 +308,4 @@ class HorizontalTimeline extends React.Component {
 }
 
 export default Radium(HorizontalTimeline);
+
