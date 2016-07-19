@@ -2,8 +2,8 @@
  * WEBPACK CONFIG TO RUN DEMOS
  *
  * 'react-hot'
- * React Hot Loader is a plugin for Webpack that allows instantaneous live refresh without losing state
- * while editing React components.
+ * React Hot Loader is a plugin for Webpack that allows instantaneous live refresh without losing
+ * state while editing React components.
  */
 
 /* eslint-disable no-var */
@@ -12,7 +12,7 @@ var path = require('path');
 
 // entry point of all the deomos
 var entry = {
-  'demo-swipeable-views': './demos/demo-swipeable-views/index.js'
+  'demo-swipeable-views': path.join(process.cwd(), './demos/demo-swipeable-views/index.js')
 };
 
 // array of all the requisite loaders
@@ -28,13 +28,13 @@ var loaders = [
   {
     test: /\.jsx?$/,
     loaders: [ 'babel' ],
-    include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
+    include: [ path.join(process.cwd(), 'demos'), path.join(process.cwd(), 'src') ]
   },
   // css etc required to run bootstrap
   {
     test: /\.css$/,
     loader: 'style-loader!css-loader',
-    include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src') ]
+    include: [ path.join(process.cwd(), 'demos'), path.join(process.cwd(), 'src') ]
   },
   {
     test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
@@ -75,27 +75,28 @@ module.exports = {
   output: {
     filename: '[name]/all.js',
     publicPath: '/demos/',
-    path: __dirname + '/demos/'
+    path: path.join(process.cwd(), '/demos/')
   },
   // Array of file extensions used to resolve modules.
   resolve: {
     extensions: [ '', '.js', '.jsx' ]
   },
   // http://www.cnblogs.com/Answer1215/p/4312265.html
-  // The source map file will only be downloaded if you have source maps enabled and your dev tools open.
+  // The source map file will only be downloaded if you have source maps enabled and your dev tools
+  // open.
   devtool: 'eval-source-map',
   plugins: [
-    // Hot Module Replacement (HMR) exchanges, adds or removes modules while an application is running without
-    // page reload.
+    // Hot Module Replacement (HMR) exchanges, adds or removes modules while an application is
+    // running without page reload.
     new webpack.HotModuleReplacementPlugin(),
-    // Hot loader is better when used with NoErrorsPlugin and hot/only-dev-server since it eliminates page reloads
-    // altogether and recovers after syntax errors.
+    // Hot loader is better when used with NoErrorsPlugin and hot/only-dev-server since it eliminates
+    // page reloads altogether and recovers after syntax errors.
     new webpack.NoErrorsPlugin()
   ],
   module: {
     loaders: loaders
   },
   noParse: [
-    path.join(__dirname, 'node_modules')
+    path.join(process.cwd(), 'node_modules')
   ]
 };

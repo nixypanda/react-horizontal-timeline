@@ -148,8 +148,6 @@ module.exports = {
     'no-implied-eval': 2,
     // disallow usage of __iterator__ property
     'no-iterator': 2,
-    // disallow use of labeled statements
-    'no-labels': 2,
     // disallow unnecessary nested blocks
     'no-lone-blocks': 2,
     // disallow creation of functions within loops

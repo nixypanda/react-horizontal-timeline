@@ -1,12 +1,8 @@
 /spec
 /src
-.babelrc
-.eslintignore
-.eslintrc.js
+/tools
+.coveralls.yml
+.travis.yml
 .gitignore
 .index.html
-karma.conf.js
 README.md
-server.js
-webpack.config.js
-webpack.config.prod.js

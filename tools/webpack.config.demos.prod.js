@@ -19,13 +19,13 @@ var loaders = [
   {
     test: /\.jsx?$/,
     loaders: [ 'babel' ],
-    include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src/') ]
+    include: [ path.join(process.cwd(), 'demos'), path.join(process.cwd(), 'src/') ]
   },
   // css etc required to run bootstrap
   {
     test: /\.css$/,
     loader: 'style-loader!css-loader',
-    include: [ path.join(__dirname, 'demos'), path.join(__dirname, 'src/') ]
+    include: [ path.join(process.cwd(), 'demos'), path.join(process.cwd(), 'src/') ]
   },
   {
     test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
@@ -50,11 +50,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 module.exports = {
   entry: [
-    './demos/demo-swipeable-views/index.js'
+    path.join(process.cwd(), './demos/demo-swipeable-views/index.js')
   ],
   // If you pass an array - the modules are loaded on startup. The last one is exported.
   output: {
-    path: (__dirname, 'dist'),
+    path: path.join(process.cwd(), 'dist'),
     filename: '[name]/all.js',
     publicPath: '/demos'
   },
@@ -71,6 +71,6 @@ module.exports = {
     loaders: loaders
   },
   noParse: [
-    path.join(__dirname, 'node_modules')
+    path.join(process.cwd(), 'node_modules')
   ]
 };

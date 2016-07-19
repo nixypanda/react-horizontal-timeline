@@ -17,13 +17,13 @@ var loaders = [
   {
     test: /\.jsx?$/,
     loaders: [ 'babel' ],
-    include: path.join(__dirname, 'src')
+    include: path.join(process.cwd(), 'src')
   },
   // css etc required to run bootstrap
   {
     test: /\.css$/,
     loader: 'style-loader!css-loader',
-    include: path.join(__dirname, 'src/')
+    include: path.join(process.cwd(), 'src/')
   },
   {
     test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
@@ -45,11 +45,11 @@ var loaders = [
 
 module.exports = {
   entry: [
-    './src/Components/HorizontalTimeline.jsx'
+    path.join(process.cwd(), './src/Components/HorizontalTimeline.jsx')
   ],
   // If you pass an array - the modules are loaded on startup. The last one is exported.
   output: {
-    path: (__dirname, 'dist'),
+    path: path.join(process.cwd(), 'dist'),
     filename: 'react-horizontal-timeline.js',
     libraryTarget: 'commonjs2'
   },

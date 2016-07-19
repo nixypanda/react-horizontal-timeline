@@ -228,7 +228,7 @@ class HorizontalTimeline extends React.Component {
         <div style={{
           maxWidth: this.props.styles.maxSize,
           position: 'relative',
-          height: '100',
+          height: 100,
           margin: '0 auto'
         }}>
           <div className='events-wrapper' style={{
