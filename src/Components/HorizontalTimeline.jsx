@@ -86,7 +86,6 @@ class HorizontalTimeline extends React.Component {
       outline: '#dfdfdf',
       background: '#f8f8f8',
       foreground: '#7b9d6f',
-      maxSize: 800
     },
     fillingMotion: { stiffness: 150, damping: 25 },
     slidingMotion: { stiffness: 150, damping: 25 }
@@ -144,6 +143,9 @@ class HorizontalTimeline extends React.Component {
       distances[index] = distances[index - 1] + distanceFromPrevious * nextProps.eventsMinDistance;
     }
 
+    //TODO We need the full width of the bar here to correctly determine the totalWidth
+    const fullWidth = 2000;
+
     // The new state of the horizontal timeline.
     const state = {
       // the distances from the origin of the the timeline
@@ -151,7 +153,7 @@ class HorizontalTimeline extends React.Component {
       // parsed format of the dates
       timelineDates: dates,
       // the exact value of the width of the timeline
-      totalWidth: Math.max(Constants.MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100)
+      totalWidth: Math.max(Constants.MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100, fullWidth)
     };
 
     // set selected value only if index value is present
@@ -240,12 +242,11 @@ class HorizontalTimeline extends React.Component {
     );
 
     return (
-      <div style={{ margin: '2em auto' }} >
         <div style={{
-          maxWidth: this.props.styles.maxSize,
           position: 'relative',
           height: 100,
-          margin: '0 auto'
+          margin: '0 auto',
+          width: '100%',
         }}>
           <div className='events-wrapper' style={{
             position: 'relative',
@@ -256,6 +257,7 @@ class HorizontalTimeline extends React.Component {
             <Motion style={{ X: spring(this.state.position, this.props.slidingMotion) }}>
               {({ X }) =>
               <div
+                className='events'
                 style={{
                   position: 'absolute',
                   zIndex: 1,
@@ -263,7 +265,7 @@ class HorizontalTimeline extends React.Component {
                   top: 49,
                   height: 2,
                   background: this.props.styles.outline,
-                  width: this.state.totalWidth,
+                  width: '100%',
                   WebkitTransform: `translate3d(${X}, 0, 0)px`,
                   transform: `translate3d(${X}px, 0, 0)`
                 }}>
@@ -275,6 +277,7 @@ class HorizontalTimeline extends React.Component {
                   {({ tX }) =>
                   <span
                     aria-hidden='true'
+                    className='filling-line'
                     style={{
                       position: 'absolute',
                       zIndex: 1,
@@ -302,10 +305,8 @@ class HorizontalTimeline extends React.Component {
             updateSlide={this.updateSlide}
           />
         </div>
-      </div>
     );
   }
 }
 
 export default Radium(HorizontalTimeline);
-
