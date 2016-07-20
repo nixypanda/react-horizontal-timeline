@@ -14,7 +14,7 @@ It will just render a timeline with the dates that you provided and it is upto y
 
 Property	       |	Type   	   |	Default	                    |	Description
 :------------------|:--------------|:-------------------------------|:--------------------------------
- values            | array         | undefind                       | **sorted** array of dates (**required**)
+ values            | array         | undefind                       | **sorted** array of dates (format:**mm/dd/yyyy**) (**required**)
  indexCLick        | function      | undefind                       | function that takes the index of the array as argument (**required**)
  index             | number        | 0                              | the index of the selected date (useful if you want to control the selected date from outside like in case of react-swipeable-views)
  eventsMinDistance | number        | 80                             | The minimum distance between consecutive events
