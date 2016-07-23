@@ -8,7 +8,7 @@
     "build": "./node_modules/.bin/webpack --config tools/webpack.config.prod.js",
     "build:demos": "./node_modules/.bin/webpack --config tools/webpack.config.demos.prod.js",
     "prepublish": "npm run build",
-    "lint": "./node_modules/.bin/eslint --config tools/lint-config.js src tools demos",
+    "lint": "./node_modules/.bin/eslint --config tools/lint-config.js src demos",
     "test": "ava",
     "test:cover": "nyc ava",
     "test:watch": "npm run test -- --watch"

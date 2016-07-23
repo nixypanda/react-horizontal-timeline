@@ -119,7 +119,7 @@ class HorizontalTimeline extends React.Component {
 
     if (isSwiping === true || dx > this.touch.threshold || dy > this.touch.threshold) {
       this.touch.isSwiping = isSwiping;
-      var dX = this.touch.coors.x - touchObj.pageX; // amount scrolled
+      const dX = this.touch.coors.x - touchObj.pageX; // amount scrolled
       this.touch.coors.x = touchObj.pageX;
       this.setState({
         position: this.state.position - (dX) // set new position
@@ -148,7 +148,7 @@ class HorizontalTimeline extends React.Component {
       });
     } else if ((barWidth - wrapperWidth + this.state.position) < 0) {
       // if scrolled more than the available space
-      var pos = wrapperWidth - barWidth;
+      const pos = wrapperWidth - barWidth;
       this.setState({
         position: pos
       });
@@ -210,6 +210,7 @@ class HorizontalTimeline extends React.Component {
     );
   };
 
+
   /**
    * Updates the the value of the position that the filling bar should take.
    * @param  {number} selected The index of the dot upto which the filling needs to be done.
@@ -226,6 +227,7 @@ class HorizontalTimeline extends React.Component {
       filledValue: filledValue
     });
   };
+
 
   /**
    * This method translates the timeline by a certaing amount depending on if the direction passed
@@ -255,6 +257,7 @@ class HorizontalTimeline extends React.Component {
     }
   };
 
+
   /**
    * Invokes the parent prop indexClick with the passed value of the index and then updates the
    * filling bar by calling
@@ -267,6 +270,7 @@ class HorizontalTimeline extends React.Component {
     this.props.indexClick(index);
     this.__updateFilling__(index);
   };
+
 
   render() {
     //  creating an array of list items that have an onClick handler into which

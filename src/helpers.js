@@ -19,6 +19,8 @@ export const daydiff = (first, second) => Math.round((second - first));
  *
  * e.g. zip([['row0col0', 'row0col1', 'row0col2'], ['row1col0', 'row1col1', 'row1col2']]);
  * = [["row0col0","row1col0"], ["row0col1","row1col1"], ["row0col2","row1col2"]]
+ * @param {array} rows An array (of size 2) of arrays (of equal size).
+ * @return {array} An array (of size of either array in param) of arrays (of size 2)
  */
 export const zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
 
@@ -26,15 +28,16 @@ export const zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
 /**
  * Determines the minimum distance between events
  * @param {array} dates the array containing all the dates
+ * @param {number} seperation the minimum seperation required.
  * @return {number} the minimum distance between events
  */
 export const minDistanceEvents = (dates, seperation) => {
   // determine the minimum distance among events
-  const datePairs = zip([dates.slice(0, -1), dates.slice(1)]);
-  const dateDistances = datePairs.map(([x, y]) => daydiff(x, y))
+  const datePairs = zip([ dates.slice(0, -1), dates.slice(1) ]);
+  const dateDistances = datePairs.map(([ x, y ]) => daydiff(x, y));
 
   // return the minimum distance between two dates but considering that all dates
-  // are the same then return the provided minimum seperation. 
+  // are the same then return the provided minimum seperation.
   return Math.max(Math.min.apply(null, dateDistances), seperation);
 };
 
