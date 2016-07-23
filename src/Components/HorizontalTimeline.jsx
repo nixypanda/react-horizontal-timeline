@@ -1,46 +1,15 @@
-import React, {PropTypes} from 'react';
-import {Motion, spring} from 'react-motion';
+import React, { PropTypes } from 'react';
+import { Motion, spring } from 'react-motion';
 
 // decorators
 import Radium from 'radium';
 
+import { zip, daydiff, cummulativeSeperation } from '../helpers';
 import Constants from '../Constants';
 import TimelineDot from './TimelineDot';
 import HorizontalTimelineButtons from './HorizontalTimelineButtons';
 import Faders from './Faders';
 
-
-/**
- * Differance between two dates
- *
- * @param  {Date} first Date of the first event
- * @param  {Date} second Date of the second event
- * @return {number} Differance between the two dates
- */
-const daydiff = (first, second) => Math.round((second - first));
-
-/**
- * Takes a list of lists and zips them together (size should be the same).
- *
- * e.g. zip([['row0col0', 'row0col1', 'row0col2'], ['row1col0', 'row1col1', 'row1col2']]);
- * = [["row0col0","row1col0"], ["row0col1","row1col1"], ["row0col2","row1col2"]]
- */
-const zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
-
-/**
- * Determines the minimum distance between events
- * @param {array} dates the array containing all the dates
- * @return {number} the minimum distance between events
- */
-const __minDistanceEvents__ = (dates) => {
-  // determine the minimum distance among events
-  const datePairs = zip([dates.slice(0, -1), dates.slice(1)]);
-  const dateDistances = datePairs.map(([x, y]) => daydiff(x, y))
-
-  // return the minimum distance between two dates but considering that all dates
-  // are the same then return the distance between 2 days i.e. 86400000
-  return Math.max(Math.min.apply(null, dateDistances), Constants.DAY);
-};
 
 /*
  * This is the Horizontal Timeline. This component expects an array of dates
@@ -49,6 +18,7 @@ const __minDistanceEvents__ = (dates) => {
  * clicked passing that index along
  */
 class HorizontalTimeline extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -67,6 +37,7 @@ class HorizontalTimeline extends React.Component {
     }
   }
 
+
   /**
    * The expected properties from the parent
    * @type {Object}
@@ -83,6 +54,8 @@ class HorizontalTimeline extends React.Component {
     fillingMotion: PropTypes.object,
     slidingMotion: PropTypes.object
   };
+
+
   /**
    * The values that the properties will take if they are not provided
    * by the user.
@@ -94,25 +67,29 @@ class HorizontalTimeline extends React.Component {
       outline: '#dfdfdf',
       background: '#f8f8f8',
       foreground: '#7b9d6f',
-      maxSize: 800
+      maxSize: 1000
     },
     fillingMotion: {stiffness: 150, damping: 25},
     slidingMotion: {stiffness: 150, damping: 25},
     isTouchEnabled: true
   };
 
+
   componentWillMount() {
     document.body.addEventListener('keydown', this.__move__);
     this.__setUpState__(this.props);
   }
 
+
   componentWillReceiveProps(nextProps) {
     this.__setUpState__(nextProps);
   }
 
+
   componentWillUnmount() {
     document.body.removeEventListener('keydown', this.__move__);
   }
+
 
   handleTouchStart = (event) => {
     const touchObj = event.touches[0];
@@ -122,6 +99,8 @@ class HorizontalTimeline extends React.Component {
     this.touch.isSwiping = false;
     this.touch.started = true;
   };
+
+
   handleTouchMove = (event) => {
     const wrapperWidth = Number(
       getComputedStyle(document.getElementsByClassName('events-wrapper')[0])['width']
@@ -152,6 +131,8 @@ class HorizontalTimeline extends React.Component {
     // Prevent native scrolling
     event.preventDefault();
   };
+
+
   handleTouchEnd = (event) => {
     const wrapperWidth = Number(
       getComputedStyle(document.getElementsByClassName('events-wrapper')[0])['width']
@@ -165,7 +146,8 @@ class HorizontalTimeline extends React.Component {
       this.setState({
         position: 0
       });
-    } else if ((barWidth - wrapperWidth + this.state.position) < 0) {  // if scrolled more than the available space
+    } else if ((barWidth - wrapperWidth + this.state.position) < 0) {
+      // if scrolled more than the available space
       var pos = wrapperWidth - barWidth;
       this.setState({
         position: pos
@@ -176,6 +158,8 @@ class HorizontalTimeline extends React.Component {
     this.touch.isSwiping = false;
     this.touch.started = false;
   };
+
+
   /**
    * Movement in the horizontal timeline based on the movent from arrow keys
    *
@@ -193,27 +177,16 @@ class HorizontalTimeline extends React.Component {
     }
   }
 
+
   __setUpState__ = (nextProps) => {
     // parsing the dates from all valid formats that the constructor for Date accepts.
     const dates = nextProps.values.map((value) => new Date(value));
-    // Calculating the minimum seperation between events
-    this.eventsMinLapse = __minDistanceEvents__(dates);
-
-    // using dynamic programming to set up the distance from the origin of the timeline.
-    const distances = new Array(dates.length);
-    distances[0] = nextProps.eventsMinDistance;
-
-    for (let index = 1; index < distances.length; index += 1) {
-      const distance = daydiff(dates[index - 1], dates[index]);
-      // NOTE: for now just setting a hard limit on the value of normalised distanceNorm
-      // i.e. distances will grow linearly and reach a max point then stop to increase
-      // an elegent mathametical calculation opertunity here.
-      const distanceFromPrevious = Math.min(
-        Math.round(distance / this.eventsMinLapse) + 1, Constants.MAX_NORMALISED_SEPERATION
-      );
-      // the distance_from_origin(n) = distance_from_origin(n-1) + distance between n and n - 1.
-      distances[index] = distances[index - 1] + distanceFromPrevious * nextProps.eventsMinDistance;
-    }
+    const distances = cummulativeSeperation(
+      dates,
+      nextProps.eventsMinDistance,
+      Constants.DAY,
+      Constants.MAX_NORMALISED_SEPERATION
+    );
 
     // The new state of the horizontal timeline.
     const state = {
@@ -222,7 +195,7 @@ class HorizontalTimeline extends React.Component {
       // parsed format of the dates
       timelineDates: dates,
       // the exact value of the width of the timeline
-      totalWidth: Math.max(Constants.MIN_TIMELINE_WIDTH, distances[distances.length - 1] + 100)
+      totalWidth: Math.max(nextProps.styles.maxSize, distances[distances.length - 1] + 100)
     };
 
     // set selected value only if index value is present
@@ -230,9 +203,11 @@ class HorizontalTimeline extends React.Component {
       state.selected = nextProps.index;
     }
 
-    this.setState(state, () => {
-      this.__updateFilling__(this.state.selected);
-    });
+    this.setState(
+      state,
+      // after setting the state go to the selected event
+      () => { this.__updateFilling__(this.state.selected); }
+    );
   };
 
   /**
@@ -318,31 +293,31 @@ class HorizontalTimeline extends React.Component {
       <div style={{ margin: '2em auto' }}
         {...touchEvents}>
         <div style={{
-      maxWidth: this.props.styles.maxSize,
-      position: 'relative',
-      height: 100,
-      margin: '0 auto'
-    }}>
+          maxWidth: this.props.styles.maxSize,
+          position: 'relative',
+          height: 100,
+          margin: '0 auto'
+        }}>
           <div className='events-wrapper' style={{
-      position: 'relative',
-      height: '100%',
-      margin: '0 40px',
-      overflow: 'hidden'
-      }}>
+            position: 'relative',
+            height: '100%',
+            margin: '0 40px',
+            overflow: 'hidden'
+          }}>
             <Motion style={{ X: spring(this.state.position, this.props.slidingMotion) }}>
               {({X}) =>
                 <div
                   style={{
-          position: 'absolute',
-          zIndex: 1,
-          left: 0,
-          top: 49,
-          height: 2,
-          background: this.props.styles.outline,
-          width: this.state.totalWidth,
-          WebkitTransform: `translate3d(${X}, 0, 0)px`,
-          transform: `translate3d(${X}px, 0, 0)`
-        }}>
+                    position: 'absolute',
+                    zIndex: 1,
+                    left: 0,
+                    top: 49,
+                    height: 2,
+                    background: this.props.styles.outline,
+                    width: this.state.totalWidth,
+                    WebkitTransform: `translate3d(${X}, 0, 0)px`,
+                    transform: `translate3d(${X}px, 0, 0)`
+                  }}>
                   <ol className='events-bar' style={{ listStyle: 'none' }}>
                     { valuesList }
                   </ol>
@@ -352,18 +327,18 @@ class HorizontalTimeline extends React.Component {
                       <span
                         aria-hidden='true'
                         style={{
-            position: 'absolute',
-            zIndex: 1,
-            left: 0,
-            top: 0,
-            height: '100%',
-            width: '100%',
-            transformOrigin: 'left center',
-            backgroundColor: this.props.styles.foreground,
-            WebkitTransform: `scaleX(${tX})`,
-            transform: `scaleX(${tX})`
-          }}>
-          </span>
+                          position: 'absolute',
+                          zIndex: 1,
+                          left: 0,
+                          top: 0,
+                          height: '100%',
+                          width: '100%',
+                          transformOrigin: 'left center',
+                          backgroundColor: this.props.styles.foreground,
+                          WebkitTransform: `scaleX(${tX})`,
+                          transform: `scaleX(${tX})`
+                        }}>
+                      </span>
                     }
                   </Motion>
                 </div>

@@ -55,10 +55,12 @@
   "ava": {
     "verbose": true,
     "files": [
-      "src/**/*.test.js"
+      "src/**/*.test.js",
+      "src/*.test.js"
     ],
     "source": [
-      "src/**/*.{js,jsx}",
+      "src/**/*.jsx",
+      "src/**/*.js",
       "!dist/**/*",
       "!coverage/**/*",
       "!src/**/*.test.js"
@@ -90,6 +92,7 @@
     "bootstrap": "^3.3.6",
     "radium": "^0.18.0",
     "react": "^15.0.2",
+    "react-addons-update": "^15.2.1",
     "react-dom": "^15.0.2",
     "react-icons": "^2.0.1",
     "react-motion": "^0.4.2"
