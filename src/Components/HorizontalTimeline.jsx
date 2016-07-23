@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-import { Motion, spring } from 'react-motion';
+import React, {PropTypes} from 'react';
+import {Motion, spring} from 'react-motion';
 
 // decorators
 import Radium from 'radium';
@@ -25,7 +25,7 @@ const daydiff = (first, second) => Math.round((second - first));
  * e.g. zip([['row0col0', 'row0col1', 'row0col2'], ['row1col0', 'row1col1', 'row1col2']]);
  * = [["row0col0","row1col0"], ["row0col1","row1col1"], ["row0col2","row1col2"]]
  */
-const zip = rows => rows[0].map((_,c) => rows.map(row => row[c]));
+const zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
 
 /**
  * Determines the minimum distance between events
@@ -34,7 +34,7 @@ const zip = rows => rows[0].map((_,c) => rows.map(row => row[c]));
  */
 const __minDistanceEvents__ = (dates) => {
   // determine the minimum distance among events
-  const datePairs = zip([ dates.slice(0, -1), dates.slice(1) ]);
+  const datePairs = zip([dates.slice(0, -1), dates.slice(1)]);
   const dateDistances = datePairs.map(([x, y]) => daydiff(x, y))
 
   // return the minimum distance between two dates but considering that all dates
@@ -56,6 +56,15 @@ class HorizontalTimeline extends React.Component {
       selected: 0,
       filledValue: 0
     };
+    this.touch = {
+      coors: {
+        x: 0,
+        y: 0,
+      },
+      isSwiping: false,
+      started: false,
+      threshold: 3
+    }
   }
 
   /**
@@ -74,7 +83,6 @@ class HorizontalTimeline extends React.Component {
     fillingMotion: PropTypes.object,
     slidingMotion: PropTypes.object
   };
-
   /**
    * The values that the properties will take if they are not provided
    * by the user.
@@ -88,8 +96,9 @@ class HorizontalTimeline extends React.Component {
       foreground: '#7b9d6f',
       maxSize: 800
     },
-    fillingMotion: { stiffness: 150, damping: 25 },
-    slidingMotion: { stiffness: 150, damping: 25 }
+    fillingMotion: {stiffness: 150, damping: 25},
+    slidingMotion: {stiffness: 150, damping: 25},
+    isTouchEnabled: true
   };
 
   componentWillMount() {
@@ -105,6 +114,68 @@ class HorizontalTimeline extends React.Component {
     document.body.removeEventListener('keydown', this.__move__);
   }
 
+  handleTouchStart = (event) => {
+    const touchObj = event.touches[0];
+
+    this.touch.coors.x = touchObj.pageX;
+    this.touch.coors.y = touchObj.pageY;
+    this.touch.isSwiping = false;
+    this.touch.started = true;
+  };
+  handleTouchMove = (event) => {
+    const wrapperWidth = Number(
+      getComputedStyle(document.getElementsByClassName('events-wrapper')[0])['width']
+        .replace('px', '')
+    );
+    if (!this.touch.started) {
+      this.handleTouchStart(event);
+      return;
+    }
+
+    const touchObj = event.touches[0];
+    const dx = Math.abs(this.touch.coors.x - touchObj.pageX);
+    const dy = Math.abs(this.touch.coors.y - touchObj.pageY);
+
+    const isSwiping = dx > dy && dx > this.touch.threshold;
+
+    if (isSwiping === true || dx > this.touch.threshold || dy > this.touch.threshold) {
+      this.touch.isSwiping = isSwiping;
+      var dX = this.touch.coors.x - touchObj.pageX; // amount scrolled
+      this.touch.coors.x = touchObj.pageX;
+      this.setState({
+        position: this.state.position - (dX) // set new position
+      });
+    }
+    if (this.touch.isSwiping !== true) {
+      return;
+    }
+    // Prevent native scrolling
+    event.preventDefault();
+  };
+  handleTouchEnd = (event) => {
+    const wrapperWidth = Number(
+      getComputedStyle(document.getElementsByClassName('events-wrapper')[0])['width']
+        .replace('px', '')
+    );
+    const barWidth = Number(
+      getComputedStyle(document.getElementsByClassName('events-bar')[0])['width']
+        .replace('px', '')
+    );
+    if (this.state.position > 0) {  // if already at start
+      this.setState({
+        position: 0
+      });
+    } else if ((barWidth - wrapperWidth + this.state.position) < 0) {  // if scrolled more than the available space
+      var pos = wrapperWidth - barWidth;
+      this.setState({
+        position: pos
+      });
+    }
+    this.touch.coors.x = 0;
+    this.touch.coors.y = 0;
+    this.touch.isSwiping = false;
+    this.touch.started = false;
+  };
   /**
    * Movement in the horizontal timeline based on the movent from arrow keys
    *
@@ -199,7 +270,7 @@ class HorizontalTimeline extends React.Component {
     if (direction === Constants.RIGHT) {
       this.setState({
         position: Math.max(this.state.position - wrapperWidth + this.props.eventsMinDistance,
-                            wrapperWidth - this.state.totalWidth),
+          wrapperWidth - this.state.totalWidth),
         maxPosition: wrapperWidth - this.state.totalWidth
       });
     } else if (direction === Constants.LEFT) {
@@ -238,63 +309,68 @@ class HorizontalTimeline extends React.Component {
         />
       )
     );
-
+    const touchEvents = this.props.isTouchEnabled ? {
+      onTouchStart: this.handleTouchStart,
+      onTouchMove: this.handleTouchMove,
+      onTouchEnd: this.handleTouchEnd,
+    } : {};
     return (
-      <div style={{ margin: '2em auto' }} >
+      <div style={{ margin: '2em auto' }}
+        {...touchEvents}>
         <div style={{
-          maxWidth: this.props.styles.maxSize,
-          position: 'relative',
-          height: 100,
-          margin: '0 auto'
-        }}>
+      maxWidth: this.props.styles.maxSize,
+      position: 'relative',
+      height: 100,
+      margin: '0 auto'
+    }}>
           <div className='events-wrapper' style={{
-            position: 'relative',
-            height: '100%',
-            margin: '0 40px',
-            overflow: 'hidden'
-          }}>
+      position: 'relative',
+      height: '100%',
+      margin: '0 40px',
+      overflow: 'hidden'
+      }}>
             <Motion style={{ X: spring(this.state.position, this.props.slidingMotion) }}>
-              {({ X }) =>
-              <div
-                style={{
-                  position: 'absolute',
-                  zIndex: 1,
-                  left: 0,
-                  top: 49,
-                  height: 2,
-                  background: this.props.styles.outline,
-                  width: this.state.totalWidth,
-                  WebkitTransform: `translate3d(${X}, 0, 0)px`,
-                  transform: `translate3d(${X}px, 0, 0)`
-                }}>
-                <ol style={{ listStyle: 'none' }} >
-                  { valuesList }
-                </ol>
+              {({X}) =>
+                <div
+                  style={{
+          position: 'absolute',
+          zIndex: 1,
+          left: 0,
+          top: 49,
+          height: 2,
+          background: this.props.styles.outline,
+          width: this.state.totalWidth,
+          WebkitTransform: `translate3d(${X}, 0, 0)px`,
+          transform: `translate3d(${X}px, 0, 0)`
+        }}>
+                  <ol className='events-bar' style={{ listStyle: 'none' }}>
+                    { valuesList }
+                  </ol>
 
-                <Motion style={{ tX: spring(this.state.filledValue, this.props.fillingMotion) }}>
-                  {({ tX }) =>
-                  <span
-                    aria-hidden='true'
-                    style={{
-                      position: 'absolute',
-                      zIndex: 1,
-                      left: 0,
-                      top: 0,
-                      height: '100%',
-                      width: '100%',
-                      transformOrigin: 'left center',
-                      backgroundColor: this.props.styles.foreground,
-                      WebkitTransform: `scaleX(${tX})`,
-                      transform: `scaleX(${tX})`
-                    }}>
-                  </span>
-                }
-              </Motion>
-            </div>
-            }
+                  <Motion style={{ tX: spring(this.state.filledValue, this.props.fillingMotion) }}>
+                    {({tX}) =>
+                      <span
+                        aria-hidden='true'
+                        style={{
+            position: 'absolute',
+            zIndex: 1,
+            left: 0,
+            top: 0,
+            height: '100%',
+            width: '100%',
+            transformOrigin: 'left center',
+            backgroundColor: this.props.styles.foreground,
+            WebkitTransform: `scaleX(${tX})`,
+            transform: `scaleX(${tX})`
+          }}>
+          </span>
+                    }
+                  </Motion>
+                </div>
+              }
             </Motion>
           </div>
-          <Faders styles={this.props.styles} />
+          <Faders styles={this.props.styles}/>
           <HorizontalTimelineButtons
             maxPosition={this.state.maxPosition}
             position={this.state.position}
