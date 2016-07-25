@@ -74,7 +74,7 @@ const HorizontalTimelineButtons = (props) => (
   <ul >
     <li
       key={Constants.LEFT}
-      onClick={() => props.updateSlide(Constants.LEFT)}
+      onClick={props.updateSlide.bind(null, Constants.LEFT)}
       style={[
         buttonStyles.link(props.styles),
         props.position === 0 ? buttonStyles.inactive(props.styles) : buttonStyles.active(props.styles),
@@ -85,7 +85,7 @@ const HorizontalTimelineButtons = (props) => (
     </li>
     <li
       key={Constants.RIGHT}
-      onClick={() => props.updateSlide(Constants.RIGHT)}
+      onClick={props.updateSlide.bind(null, Constants.RIGHT)}
       style={[
         buttonStyles.link(props.styles),
         { [Constants.RIGHT]: 0 },
@@ -111,3 +111,4 @@ HorizontalTimelineButtons.propTypes = {
 
 // Wrapping the buttons with Radium (so we get all the styling goodness)
 export default Radium(HorizontalTimelineButtons);
+
