@@ -78,7 +78,7 @@ module.exports = {
   // http://www.cnblogs.com/Answer1215/p/4312265.html
   // The source map file will only be downloaded if you have source maps enabled and your dev tools
   // open.
-  devtool: 'source-map',
+  devtool: 'eval-source-map',
   plugins: [
     // Hot Module Replacement (HMR) exchanges, adds or removes modules while an application is
     // running without page reload.
