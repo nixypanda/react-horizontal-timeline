@@ -12,18 +12,22 @@ const RIGHT = 'right';
  * @param  {string} gradientDirection The direction in which we want to generate fade effect
  * @return {object} The styleing Information for the left or right fader
  */
-const faderStyle = (styles, position, gradientDirection) => ({
-  zIndex: 2,
-  top: '50%',
-  position: 'absolute',
-  bottom: 'auto',
-  transform: 'translateY(-50%)',
-  height: '100%',
-  width: 20,
-  overflow: 'hidden',
-  [position]: 40,
-  backgroundImage: `linear-gradient(to ${gradientDirection}, ${styles.background}, rgba(248, 248, 248, 0))`
-});
+const faderStyle = {
+  base: {
+    zIndex: 2,
+    top: '50%',
+    position: 'absolute',
+    bottom: 'auto',
+    transform: 'translateY(-50%)',
+    height: '100%',
+    width: 20,
+    overflow: 'hidden',
+  },
+  specific: (styles, position, gradientDirection) => ({
+    [position]: 40,
+    backgroundImage: `linear-gradient(to ${gradientDirection}, ${styles.background}, rgba(248, 248, 248, 0))`
+  })
+};
 
 /**
  * The markup Information for an element that produces the fade effect at the end of the timeline
@@ -33,8 +37,8 @@ const faderStyle = (styles, position, gradientDirection) => ({
  */
 const Faders = (props) => (
   <ul style={{ listStyle: 'none' }}>
-    <li style={faderStyle(props.styles, LEFT, RIGHT)} />
-    <li style={faderStyle(props.styles, RIGHT, LEFT)} />
+    <li style={[ faderStyle.base, faderStyle.specific(props.styles, LEFT, RIGHT) ]} />
+    <li style={[ faderStyle.base, faderStyle.specific(props.styles, RIGHT, LEFT) ]} />
   </ul>
 );
 
@@ -52,3 +56,4 @@ Faders.propTypes = {
 };
 
 export default Radium(Faders);
+

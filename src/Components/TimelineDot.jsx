@@ -4,16 +4,12 @@ import Radium from 'radium';
 import Constants from '../Constants';
 
 /**
- * THe static/non-static styles Information for a single event dot on the timeline
- * @param {object} styles User passed styles ( foreground, background etc info
- * @return {object} A multilevel style object containing the following information
- *   links: THe style information for the clickable dates that apper floating over the timeline
- *   base: The base style information for the event dot that appers exactly on the timeline
- *   none: The style information for the future dot (wrt selected).
- *   older: The styles information for the past dot (wrt selected)
- *   selected: The styles information for the preset dot
+ * The static/non-static styles Information for a single event dot on the timeline
  */
-const dots = (styles) => ({
+const dots = {
+  /**
+   * The style information for the clickable dates that apper floating over the timeline
+   */
   links: {
     position: 'absolute',
     bottom: 0,
@@ -23,6 +19,9 @@ const dots = (styles) => ({
     paddingBottom: 15,
     color: '#383838'
   },
+  /**
+   * The base style information for the event dot that appers exactly on the timeline
+   */
   base: {
     position: 'absolute',
     bottom: -5,
@@ -31,20 +30,32 @@ const dots = (styles) => ({
     borderRadius: '50%',
     zIndex: 2
   },
-  none: {
+  /**
+   * The style information for the future dot (wrt selected).
+   * @param {object} styles User passed styles ( foreground, background etc info
+   */
+  none: (styles) => ({
     backgroundColor: styles.background,
     // border: `2px solid ${styles.background}`,
     border: `2px solid ${styles.outline}`
-  },
-  older: {
+  }),
+  /**
+   * older: The styles information for the past dot (wrt selected)
+   * @param {object} styles User passed styles ( foreground, background etc info
+   */
+  older: (styles) => ({
     backgroundColor: styles.background,
     border: `2px solid ${styles.foreground}`
-  },
-  selected: {
+  }),
+  /**
+   * selected: The styles information for the preset dot
+   * @param {object} styles User passed styles ( foreground, background etc info
+   */
+  selected: (styles) => ({
     backgroundColor: styles.foreground,
     borderColor: styles.foreground
-  }
-});
+  })
+};
 
 /**
  * The markup for one single dot on the timeline (A SEPERATE FILE FOR A DOT!!!!!!!!)
@@ -59,17 +70,17 @@ const TimelineDot = (props) => (
       className='text-center'
       onClick={ props.onClick.bind(null, props.index) }
       style={[
-        dots(props.styles).links,
+        dots.links,
         { left: props.distanceFromOrigin, cursor: 'pointer', width: Constants.DATE_WIDTH }
       ]} >
       { props.eventDate.toDateString().substring(4) }
     </a>
     <span style={[
-      dots(props.index).base,
+      dots.base,
       { left: props.distanceFromOrigin + (Constants.DATE_WIDTH - 2) / 2 },
-      (props.selected < props.index) && dots(props.styles).none,
-      (props.selected > props.index) && dots(props.styles).older,
-      (props.selected === props.index) && dots(props.styles).selected
+      (props.selected < props.index) && dots.none(props.styles),
+      (props.selected > props.index) && dots.older(props.styles),
+      (props.selected === props.index) && dots.selected(props.styles)
     ]}>
     </span>
   </li>
