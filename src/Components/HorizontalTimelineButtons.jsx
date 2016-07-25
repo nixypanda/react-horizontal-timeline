@@ -64,8 +64,9 @@ const buttonStyles = {
   })
 };
 
+
 /**
- * Markup for both the buttons
+ * Markup for both the buttons (that translate the timeline left or right).
  *
  * @param  {object} props The info provided by the parent
  * @return {StatelessFunctionalReactComponent} The Markup info for both the buttons
@@ -81,7 +82,9 @@ const HorizontalTimelineButtons = (props) => (
         { [Constants.LEFT]: 0 }
       ]}
     >
-      <FaAngleLeft style={buttonStyles.icon(props.styles, !(props.position === 0))} />
+      <FaAngleLeft
+        style={buttonStyles.icon(props.styles, !(props.position === 0))}
+      />
     </li>
     <li
       key={Constants.RIGHT}
@@ -92,10 +95,13 @@ const HorizontalTimelineButtons = (props) => (
         props.position === props.maxPosition ? buttonStyles.inactive(props.styles) : buttonStyles.active(props.styles)
       ]}
     >
-      <FaAngleRight style={buttonStyles.icon(props.styles, !(props.position === props.maxPosition))} />
+      <FaAngleRight
+        style={buttonStyles.icon(props.styles, !(props.position === props.maxPosition))}
+      />
     </li>
   </ul>
 );
+
 
 // Expected propteries
 HorizontalTimelineButtons.propTypes = {
@@ -111,3 +117,4 @@ HorizontalTimelineButtons.propTypes = {
 
 // Wrapping the buttons with Radium (so we get all the styling goodness)
 export default Radium(HorizontalTimelineButtons);
+

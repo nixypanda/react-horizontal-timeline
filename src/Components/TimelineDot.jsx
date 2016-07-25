@@ -3,6 +3,7 @@ import Radium from 'radium';
 
 import Constants from '../Constants';
 
+
 /**
  * The static/non-static styles Information for a single event dot on the timeline
  */
@@ -57,6 +58,7 @@ const dots = {
   })
 };
 
+
 /**
  * The markup for one single dot on the timeline (A SEPERATE FILE FOR A DOT!!!!!!!!)
  * let me emphasie it again A FUCKING SEPTERATE FILE FOR A SHIT LITTLE TINY FUCKING DOT!!!!!!!!!!!
@@ -86,6 +88,7 @@ const TimelineDot = (props) => (
   </li>
 );
 
+
 /**
  * propTypes
  * @type {Object}
@@ -105,4 +108,6 @@ TimelineDot.propTypes = {
   styles: PropTypes.object.isRequired
 };
 
+
 export default Radium(TimelineDot);
+

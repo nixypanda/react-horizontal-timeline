@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import Radium from 'radium';
 
+
 const LEFT = 'left';
 const RIGHT = 'right';
+
 
 /**
  * Returns the styles that generate a fading effect on the edges of the timeline
@@ -29,6 +31,7 @@ const faderStyle = {
   })
 };
 
+
 /**
  * The markup Information for an element that produces the fade effect at the end of the timeline
  *
@@ -42,6 +45,7 @@ const Faders = (props) => (
   </ul>
 );
 
+
 /**
  * The styles that parent will provide
  * @type {Object}
@@ -50,10 +54,10 @@ Faders.propTypes = {
   styles: PropTypes.shape({
     foreground: PropTypes.string.isRequired,
     background: PropTypes.string.isRequired,
-    outline: PropTypes.string.isRequired,
-    maxSize: PropTypes.number.isRequired
+    outline: PropTypes.string.isRequired
   })
 };
+
 
 export default Radium(Faders);
 
