@@ -31,24 +31,26 @@ export default class HorizontalTimelineContent extends React.Component {
     });
 
     return (
-      //<div>
-        <HorizontalTimeline
-          index={this.state.value}
-          indexClick={(index) => {
-            this.setState({ value: index, previous: this.state.value });
-          }}
-          values={ this.dates } />
-      //  <div className='text-center'>
-      //    <SwipeableViews
-      //      index={this.state.value}
-      //      onChangeIndex={(value, previous) => {
-      //        this.setState({ value: value, previous: previous });
-      //      }}
-      //      resistance>
-      //      {views}
-      //    </SwipeableViews>
-      //  </div>
-      //</div>
+      <div>
+        <div style={{ width: '60%', height: '100px', margin: '0 auto' }}>
+          <HorizontalTimeline
+            index={this.state.value}
+            indexClick={(index) => {
+              this.setState({ value: index, previous: this.state.value });
+            }}
+            values={ this.dates } />
+        </div>
+        <div className='text-center'>
+          <SwipeableViews
+            index={this.state.value}
+            onChangeIndex={(value, previous) => {
+              this.setState({ value: value, previous: previous });
+            }}
+            resistance>
+            {views}
+          </SwipeableViews>
+        </div>
+      </div>
     );
   }
 }

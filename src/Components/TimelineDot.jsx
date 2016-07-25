@@ -68,12 +68,12 @@ const TimelineDot = (props) => (
   <li key={ props.index } >
     <a
       className='text-center'
-      onClick={ props.onClick.bind(null, props.index) }
+      onClick={() => props.onClick(props.index) }
       style={[
         dots.links,
         { left: props.distanceFromOrigin, cursor: 'pointer', width: Constants.DATE_WIDTH }
       ]} >
-      { props.eventDate.toDateString().substring(4) }
+      { props.label }
     </a>
     <span style={[
       dots.base,
@@ -98,7 +98,7 @@ TimelineDot.propTypes = {
   // The onClick handler ( in this case to trigger the fillingMotion of the timeline )
   onClick: PropTypes.func.isRequired,
   // The date of the event (required to display it)
-  eventDate: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
   // The numerical value in pixels of the distance from the origin
   distanceFromOrigin: PropTypes.number.isRequired,
   // The styles prefrences of the user
@@ -106,4 +106,3 @@ TimelineDot.propTypes = {
 };
 
 export default Radium(TimelineDot);
-

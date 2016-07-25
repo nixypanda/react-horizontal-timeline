@@ -6,9 +6,44 @@ import Radium from 'radium';
 
 import {zip, daydiff, cummulativeSeperation} from '../helpers';
 import Constants from '../Constants';
-import TimelineDot from './TimelineDot';
-import HorizontalTimelineButtons from './HorizontalTimelineButtons';
-import Faders from './Faders';
+
+import TimelineEvents from './TimelineEvents';
+
+const defaultCalcLabel = (value) => (new Date(value)).toDateString().substring(4);
+
+const transformEvents = (Component) => {
+
+    const EventsTransform = ({values, getLabel, eventsMinDistance, ...props}) => {
+        //Default label calculation
+        const calcLabel = getLabel || defaultCalcLabel;
+        const minDistance = eventsMinDistance || 80;
+
+        const dates = values.map((value) => new Date(value));
+        const distances = cummulativeSeperation(dates, minDistance, Constants.DAY, Constants.MAX_NORMALISED_SEPERATION);
+        const events = distances.map((distance, index) => ({
+            distance,
+            label: calcLabel(values[index]),
+        }));
+
+        return (
+            <Component
+                events={events}
+                eventsMinDistance={minDistance}
+                {...props}
+            />
+        );
+    };
+
+    EventsTransform.propTypes = {
+        //  array containing the sorted date strings
+        values: PropTypes.arrayOf(PropTypes.string).isRequired,
+        // The minimum distance between consecutive events
+        eventsMinDistance: PropTypes.number,
+    }
+
+    return EventsTransform;
+
+};
 
 /*
  * This is the Horizontal Timeline. This component expects an array of dates
@@ -20,11 +55,6 @@ class HorizontalTimeline extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            position: 0,
-            selected: 0,
-            filledValue: 0
-        };
         this.touch = {
             coors: {
                 x: 0,
@@ -34,6 +64,8 @@ class HorizontalTimeline extends React.Component {
             started: false,
             threshold: 3
         }
+
+        this.__storeMainDiv__ = this.__storeMainDiv__.bind(this);
     }
 
     /**
@@ -42,8 +74,11 @@ class HorizontalTimeline extends React.Component {
    */
     static propTypes = {
         index: PropTypes.number,
-        //  array containing the dates
-        values: PropTypes.array.isRequired,
+        //  array containing the events
+        events: PropTypes.arrayOf(PropTypes.shape({
+            distance: PropTypes.number.isRequired,
+            label: PropTypes.string.isRequired,
+        })).isRequired,
         //  function that takes the index of the array as argument
         indexClick: PropTypes.func,
         // The minimum distance between consecutive events
@@ -59,7 +94,6 @@ class HorizontalTimeline extends React.Component {
    * @type {Object}
    */
     static defaultProps = {
-        eventsMinDistance: 80,
         styles: {
             outline: '#dfdfdf',
             background: '#f8f8f8',
@@ -78,6 +112,10 @@ class HorizontalTimeline extends React.Component {
 
     componentWillMount() {
         document.body.addEventListener('keydown', this.__move__);
+        window.addEventListener('resize', this.handleResize);
+    }
+
+    componentDidMount() {
         this.__setUpState__(this.props);
     }
 
@@ -87,6 +125,7 @@ class HorizontalTimeline extends React.Component {
 
     componentWillUnmount() {
         document.body.removeEventListener('keydown', this.__move__);
+        window.removeEventListener('resize', this.handleResize);
     }
 
     handleTouchStart = (event) => {
@@ -142,109 +181,53 @@ class HorizontalTimeline extends React.Component {
         this.touch.started = false;
     };
 
-    /**
-   * Movement in the horizontal timeline based on the movent from arrow keys
-   *
-   * @param  {object} event The keypress event
-   * @return {undefind} modifies the state (either by translating the timeline or by updateing the
-   * dot)
-   */
+    handleResize = () => {
+        this.__setUpState__(this.props);
+    }
+
+   /**
+    * Movement in the horizontal timeline based on the movent from arrow keys
+    *
+    * @param  {object} event The keypress event
+    * @return {undefind} modifies the state (either by translating the timeline or by updateing the
+    * dot)
+    */
     __move__ = (event) => {
         if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
             this.updateSlide(Constants.KEYMAP[event.keyCode]);
         } else if (event.keyCode === Constants.UP_KEY) {
-            this.handleDateClick(Math.min(this.state.selected + 1, this.state.timelineDates.length - 1));
+            this.handleDateClick(Math.min(this.state.selected + 1, this.props.events.length - 1));
         } else if (event.keyCode === Constants.DOWN_KEY) {
             this.handleDateClick(Math.max(this.state.selected - 1, 0));
         }
     }
 
-    __setUpState__ = (nextProps) => {
-        // parsing the dates from all valid formats that the constructor for Date accepts.
-        const dates = nextProps.values.map((value) => new Date(value));
-        const distances = cummulativeSeperation(dates, nextProps.eventsMinDistance, Constants.DAY, Constants.MAX_NORMALISED_SEPERATION);
+    __setUpState__ = (props) => {
+        if (this.mainDiv) {
+            const fullWidth = Number(getComputedStyle(this.mainDiv)['width'].replace('px', '')) - 80;
+            // The new state of the horizontal timeline.
+            const state = {
+                // the exact value of the width of the timeline
+                totalWidth: Math.max(this.props.events[this.props.events.length - 1].distance + 100, fullWidth),
+            };
 
-        //TODO We need the full width of the bar here to correctly determine the totalWidth
-        const fullWidth = 2000;
-
-        // The new state of the horizontal timeline.
-        const state = {
-            // the distances from the origin of the the timeline
-            distanceFromOrigin: distances,
-            // parsed format of the dates
-            timelineDates: dates,
-            // the exact value of the width of the timeline
-            totalWidth: Math.max(nextProps.styles.maxSize, distances[distances.length - 1] + 100, fullWidth)
-        };
-
-        // set selected value only if index value is present
-        if (nextProps.index) {
-            state.selected = nextProps.index;
-        }
-
-        this.setState(state,
-        // after setting the state go to the selected event
-        () => {
-            this.__updateFilling__(this.state.selected);
-        });
-    };
-
-    /**
-   * Updates the the value of the position that the filling bar should take.
-   * @param  {number} selected The index of the dot upto which the filling needs to be done.
-   * @return {undefind} Nothing just modifies the state withe the new filling value.
-   */
-    __updateFilling__ = (selected) => {
-        // filled value = distane from origin to the selected event + half the space occupied by the
-        // date string on screen
-        const filledValue = (this.state.distanceFromOrigin[selected] + Constants.DATE_WIDTH / 2) / this.state.totalWidth;
-
-        // right now the filledValue contains the value of the transform
-        this.setState({selected: selected, filledValue: filledValue});
-    };
-
-    /**
-   * This method translates the timeline by a certaing amount depending on if the direction passed
-   * is left or right.
-   *
-   * @param  {string} direction The direction towards which the timeline will translates
-   * @return {undefind} Just modifies the value by which we need to translate the timeline in place
-   */
-    updateSlide = (direction) => {
-        // the width of the timeline component between the two buttons (prev and next)
-        const wrapperWidth = Number(getComputedStyle(document.getElementsByClassName('events-wrapper')[0])['width'].replace('px', ''));
-
-        //  translate the timeline to the left('next')/right('prev')
-        if (direction === Constants.RIGHT) {
-            this.setState({
-                position: Math.max(this.state.position - wrapperWidth + this.props.eventsMinDistance, wrapperWidth - this.state.totalWidth),
-                maxPosition: wrapperWidth - this.state.totalWidth
-            });
-        } else if (direction === Constants.LEFT) {
-            this.setState({
-                position: Math.min(0, this.state.position + wrapperWidth - this.props.eventsMinDistance)
-            });
+            //Update the state and go to the selected event afterwards
+            this.setState(state);
         }
     };
 
     /**
-   * Invokes the parent prop indexClick with the passed value of the index and then updates the
-   * filling bar by calling
-   * the __updateFilling__ method.
-   *
-   * @param  {number} index The index of the timeline dot that we need to go to
-   * @return {undefind} modifies the state
-   */
-    handleDateClick = (index) => {
-        this.props.indexClick(index);
-        this.__updateFilling__(index);
-    };
+     * Handler to store the main div so we can reference it later
+     */
+    __storeMainDiv__(ref) {
+        this.mainDiv = ref;
+        this.__setUpState__(this.props);
+    }
 
     render() {
         //  creating an array of list items that have an onClick handler into which
         //  passing the index of the clicked entity.
         // NOTE: Improve timeline dates handeling and eventsMinLapse handling
-        const valuesList = this.props.values.map((date, index) => (<TimelineDot distanceFromOrigin={this.state.distanceFromOrigin[index]} eventDate={this.state.timelineDates[index]} index={index} key={index} onClick={this.handleDateClick} selected={this.state.selected} styles={this.props.styles}/>));
         const touchEvents = this.props.isTouchEnabled
             ? {
                 onTouchStart: this.handleTouchStart,
@@ -253,68 +236,34 @@ class HorizontalTimeline extends React.Component {
             }
             : {};
         return (
-            <div {...touchEvents}>
-                <div style={{
+            <div
+                ref={this.__storeMainDiv__}
+                style={{
                     position: 'relative',
-                    height: 100,
-                    margin: '0 auto',
+                    height: '100%',
                     width: '100%'
-                }}>
-                    <div className='events-wrapper' style={{
-                        position: 'relative',
-                        height: '100%',
-                        margin: '0 40px',
-                        overflow: 'hidden'
-                    }}>
-                        <Motion style={{
-                            X: spring(this.state.position, this.props.slidingMotion)
-                        }}>
-                            {({X}) =>
-                              <div className='events' style={{
-                                  position: 'absolute',
-                                  zIndex: 1,
-                                  left: 0,
-                                  top: 49,
-                                  height: 2,
-                                  background: this.props.styles.outline,
-                                  width: 100 %,
-                                  WebkitTransform: `translate3d(${X}, 0, 0)px`,
-                                  transform: `translate3d(${X}px, 0, 0)`
-                              }}>
-                                <ol className='events-bar' style={{
-                                    listStyle: 'none'
-                                }}>
-                                    {valuesList}
-                                </ol>
-
-                                <Motion style={{
-                                    tX: spring(this.state.filledValue, this.props.fillingMotion)
-                                }}>
-                                    {({tX}) =>
-                                      <span aria-hidden='true' className='filling-line' style={{
-                                        position: 'absolute',
-                                        zIndex: 1,
-                                        left: 0,
-                                        top: 0,
-                                        height: '100%',
-                                        width: '100%',
-                                        transformOrigin: 'left center',
-                                        backgroundColor: this.props.styles.foreground,
-                                        WebkitTransform: `scaleX(${tX})`,
-                                        transform: `scaleX(${tX})`
-                                    }}></span>
-                                  }
-                                </Motion>
-                              </div>
-                            }
-                        </Motion>
-                    </div>
-                    <Faders styles={this.props.styles}/>
-                    <HorizontalTimelineButtons maxPosition={this.state.maxPosition} position={this.state.position} styles={this.props.styles} updateSlide={this.updateSlide}/>
-                </div>
+                }}
+                {...touchEvents}
+            >
+                {this.state.totalWidth
+                    ? <TimelineEvents
+                        events={this.props.events}
+                        selectedIndex={this.props.index}
+                        totalWidth={this.state.totalWidth}
+                        minDistance={this.props.eventsMinDistance}
+                        minSeperation={Constants.DAY}
+                        maxSeperation={Constants.MAX_NORMALISED_SEPERATION}
+                        labelWidth={Constants.DATE_WIDTH}
+                        handleDateClick={this.props.indexClick}
+                        fillingMotion={this.props.fillingMotion}
+                        slidingMotion={this.props.slidingMotion}
+                        styles={this.props.styles}
+                      />
+                    : undefined
+                }
             </div>
         );
     }
 }
 
-export default Radium(HorizontalTimeline);
+export default transformEvents(Radium(HorizontalTimeline));
