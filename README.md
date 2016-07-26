@@ -10,17 +10,19 @@ Here is a [demo] (http://jckdrpr.github.io/react-horizontal-timeline) I hope you
 
 ##HorizontalTimeline
 
-It will just render a timeline with the dates that you provided and it is upto you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
+It will just render a timeline with the dates that you provided and it is up to you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
 
-Property	       |	Type   	   |	Default	                    |	Description
+Property	         |	Type   	     |	Default	                      |	Description
 :------------------|:--------------|:-------------------------------|:--------------------------------
- values            | array         | undefind                       | **sorted** array of dates (format:**mm/dd/yyyy**) (**required**)
- indexCLick        | function      | undefind                       | function that takes the index of the array as argument (**required**)
+ values            | array         | undefined                      | **sorted** array of dates (format:**mm/dd/yyyy**) (**required**)
+ indexClick        | function      | undefined                      | function that takes the index of the array as argument (**required**)
  index             | number        | 0                              | the index of the selected date (useful if you want to control the selected date from outside like in case of react-swipeable-views)
  eventsMinDistance | number        | 80                             | The minimum distance between consecutive events
  fillingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how filling motion will look
  slidingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how sliding motion will look
- styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf', maxSize: 800 } | object containging the styles for the timeline currently outline (the color of the boundries of the thimeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors along with the max length of the timeline can be changed.
+ isTouchEnabled    | boolean       | true                           | Enable touch events (swipe left, right)
+ isKeyboardEnabled | boolean       | true                           | Enable keyboard events (up, down, left, right)
+ styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf' } | object containing the styles for the timeline currently outline (the color of the boundaries of the timeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors of the timeline can be changed.
 
 This is how it can be used.
 
@@ -57,13 +59,13 @@ For more advanced usage take a look at the demos directory.
 - ~~Make it more customizable.~~
 - ~~Improve the structure.~~
 - ~~Keyboard movement controls~~
-- Touch controls
+- ~~Touch controls~~
 - Customizable date points/event names/tooltip on the timeline
 - Make someone use it. :D
 
 ##Running the developmnt version
 - Just clone the repo and do an ```npm install``` followed by an ```npm run start```.
-- Then go to ```localhost:5000/demos/<demo_name>/index.html``` to see the fruits of your labor.
+- Then go to ```localhost:5001/demos/<demo_name>/index.html``` to see the fruits of your labor.
 
 ####Here is the information provided by the original author.
 

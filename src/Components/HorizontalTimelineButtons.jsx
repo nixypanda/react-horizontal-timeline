@@ -23,7 +23,7 @@ const buttonStyles = {
   link: ({ outline }) => ({
     position: 'absolute',
     zIndex: 1,
-    top: '50%',
+    top: '49px',
     bottom: 'auto',
     transform: 'translateY(-50%)',
     height: 34,
@@ -32,7 +32,8 @@ const buttonStyles = {
     border: `2px solid ${outline}`,
     overflow: 'hidden',
     textIndent: '100%',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
+    transition: 'border-color 0.3s',
   }),
   icon: (styles, active) => ({
     position: 'absolute',
@@ -71,36 +72,43 @@ const buttonStyles = {
  * @param  {object} props The info provided by the parent
  * @return {StatelessFunctionalReactComponent} The Markup info for both the buttons
  */
-const HorizontalTimelineButtons = (props) => (
-  <ul >
-    <li
-      key={Constants.LEFT}
-      onClick={() => props.updateSlide(Constants.LEFT)}
-      style={[
-        buttonStyles.link(props.styles),
-        props.position === 0 ? buttonStyles.inactive(props.styles) : buttonStyles.active(props.styles),
-        { [Constants.LEFT]: 0 }
-      ]}
-    >
-      <FaAngleLeft
-        style={buttonStyles.icon(props.styles, !(props.position === 0))}
-      />
-    </li>
-    <li
-      key={Constants.RIGHT}
-      onClick={() => props.updateSlide(Constants.RIGHT)}
-      style={[
-        buttonStyles.link(props.styles),
-        { [Constants.RIGHT]: 0 },
-        props.position === props.maxPosition ? buttonStyles.inactive(props.styles) : buttonStyles.active(props.styles)
-      ]}
-    >
-      <FaAngleRight
-        style={buttonStyles.icon(props.styles, !(props.position === props.maxPosition))}
-      />
-    </li>
-  </ul>
-);
+const HorizontalTimelineButtons = (props) => {
+  const buttonBackEnabled = props.position !== 0;
+  const buttonForwardEnabled = props.position !== props.maxPosition;
+
+  return (
+    <ul className="buttons">
+      <li
+        className={`button-back ${buttonBackEnabled ? 'enabled' : 'disabled'}`}
+        key={Constants.LEFT}
+        onClick={() => props.updateSlide(Constants.LEFT)}
+        style={[
+          buttonStyles.link(props.styles),
+          buttonBackEnabled ? buttonStyles.active(props.styles) : buttonStyles.inactive(props.styles),
+          { [Constants.LEFT]: 0 },
+        ]}
+      >
+        <FaAngleLeft
+          style={buttonStyles.icon(props.styles, !(props.position === 0))}
+        />
+      </li>
+      <li
+        className={`button-forward ${buttonForwardEnabled ? 'enabled' : 'disabled'}`}
+        key={Constants.RIGHT}
+        onClick={() => props.updateSlide(Constants.RIGHT)}
+        style={[
+          buttonStyles.link(props.styles),
+          buttonForwardEnabled ? buttonStyles.active(props.styles) : buttonStyles.inactive(props.styles),
+          { [Constants.RIGHT]: 0 },
+        ]}
+      >
+        <FaAngleRight
+          style={buttonStyles.icon(props.styles, !(props.position === props.maxPosition))}
+        />
+      </li>
+    </ul>
+  );
+}
 
 
 // Expected propteries
@@ -117,4 +125,3 @@ HorizontalTimelineButtons.propTypes = {
 
 // Wrapping the buttons with Radium (so we get all the styling goodness)
 export default Radium(HorizontalTimelineButtons);
-
