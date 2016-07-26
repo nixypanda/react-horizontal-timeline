@@ -30,6 +30,25 @@ class TimelineEvents extends React.Component {
     }
   }
 
+  componentWillMount() {
+    document.body.addEventListener('keydown', this.handleKeydown);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.handleKeydown);
+  }
+
+  handleKeydown = (event) => {
+    if (this.props.isKeyboardEnabled) {
+      if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
+        this.updateSlide(Constants.KEYMAP[event.keyCode]);
+      } else if (event.keyCode === Constants.UP_KEY) {
+        this.props.handleDateClick(Math.min(this.props.selectedIndex + 1, this.props.events.length - 1));
+      } else if (event.keyCode === Constants.DOWN_KEY) {
+        this.props.handleDateClick(Math.max(this.props.selectedIndex - 1, 0));
+      }
+    }
+  }
 
   handleTouchStart = (event) => {
     const touchObj = event.touches[0];
@@ -39,7 +58,6 @@ class TimelineEvents extends React.Component {
     this.touch.isSwiping = false;
     this.touch.started = true;
   };
-
 
   handleTouchMove = (event) => {
     const wrapperWidth = Number(
@@ -71,7 +89,6 @@ class TimelineEvents extends React.Component {
     // Prevent native scrolling
     event.preventDefault();
   };
-
 
   handleTouchEnd = (event) => {
     const wrapperWidth = Number(
@@ -202,6 +219,7 @@ class TimelineEvents extends React.Component {
                 selectedIndex={this.props.selectedIndex}
                 styles={this.props.styles}
                 handleDateClick={this.props.handleDateClick}
+                labelWidth={this.props.labelWidth}
               />
               <FillingLine
                 filledValue={filledValue}
@@ -237,6 +255,7 @@ TimelineEvents.propTypes = {
   minDistance: PropTypes.number.isRequired,
   minSeperation: PropTypes.number.isRequired,
   maxSeperation: PropTypes.number.isRequired,
+  // The width you want the labels to be
   labelWidth: PropTypes.number.isRequired,
   // Handler
   handleDateClick: PropTypes.func.isRequired,
@@ -244,8 +263,9 @@ TimelineEvents.propTypes = {
   fillingMotion: PropTypes.object,
   slidingMotion: PropTypes.object,
   styles: PropTypes.object.isRequired,
+  isTouchEnabled: PropTypes.bool,
+  isKeyboardEnabled: PropTypes.bool,
 }
 
 
 export default TimelineEvents
-

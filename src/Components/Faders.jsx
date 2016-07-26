@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Radium from 'radium';
 
+import Color from 'color';
 
 const LEFT = 'left';
 const RIGHT = 'right';
@@ -27,7 +28,7 @@ const faderStyle = {
   },
   specific: (styles, position, gradientDirection) => ({
     [position]: 40,
-    backgroundImage: `linear-gradient(to ${gradientDirection}, ${styles.background}, rgba(248, 248, 248, 0))`
+    backgroundImage: `linear-gradient(to ${gradientDirection}, ${styles.background}, ${Color(styles.background).alpha(0).rgbaString()})`
   })
 };
 
@@ -60,4 +61,3 @@ Faders.propTypes = {
 
 
 export default Radium(Faders);
-

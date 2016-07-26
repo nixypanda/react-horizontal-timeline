@@ -38,7 +38,8 @@ export default class HorizontalTimelineContent extends React.Component {
             indexClick={(index) => {
               this.setState({ value: index, previous: this.state.value });
             }}
-            values={ this.dates } />
+            values={ this.dates }
+          />
         </div>
         <div className='text-center'>
           <SwipeableViews

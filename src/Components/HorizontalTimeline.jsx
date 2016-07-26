@@ -81,7 +81,9 @@ class HorizontalTimeline extends React.Component {
     eventsMinDistance: PropTypes.number,
     styles: PropTypes.object,
     fillingMotion: PropTypes.object,
-    slidingMotion: PropTypes.object
+    slidingMotion: PropTypes.object,
+    isTouchEnabled: PropTypes.bool,
+    isKeyboardEnabled: PropTypes.bool,
   };
 
   /**
@@ -103,11 +105,11 @@ class HorizontalTimeline extends React.Component {
       stiffness: 150,
       damping: 25
     },
-    isTouchEnabled: true
+    isTouchEnabled: true,
+    isKeyboardEnabled: true,
   };
 
   componentWillMount() {
-    document.body.addEventListener('keydown', this.__move__);
     window.addEventListener('resize', this.handleResize);
   }
 
@@ -120,31 +122,12 @@ class HorizontalTimeline extends React.Component {
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.__move__);
     window.removeEventListener('resize', this.handleResize);
   }
 
   handleResize = () => {
     this.__setUpState__(this.props);
   }
-
-  /**
-   * Movement in the horizontal timeline based on the movent from arrow keys
-   *
-   * @param  {object} event The keypress event
-   * @return {undefind} modifies the state (either by translating the timeline or by updateing the
-   * dot)
-   */
-  __move__ = (event) => {
-    if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
-      this.updateSlide(Constants.KEYMAP[event.keyCode]);
-    } else if (event.keyCode === Constants.UP_KEY) {
-      this.handleDateClick(Math.min(this.state.selected + 1, this.props.events.length - 1));
-    } else if (event.keyCode === Constants.DOWN_KEY) {
-      this.handleDateClick(Math.max(this.state.selected - 1, 0));
-    }
-  }
-
 
   __setUpState__ = (props) => {
     if (this.mainDiv) {
@@ -185,7 +168,6 @@ class HorizontalTimeline extends React.Component {
       >
         {this.state.totalWidth
           ? <TimelineEvents
-              isTouchEnabled={this.props.isTouchEnabled}
               events={this.props.events}
               selectedIndex={this.props.index}
               totalWidth={this.state.totalWidth}
@@ -197,14 +179,15 @@ class HorizontalTimeline extends React.Component {
               fillingMotion={this.props.fillingMotion}
               slidingMotion={this.props.slidingMotion}
               styles={this.props.styles}
-              />
-              : undefined
-          }
-        </div>
-      );
-    }
+              isTouchEnabled={this.props.isTouchEnabled}
+              isKeyboardEnabled={this.props.isKeyboardEnabled}
+          />
+          : undefined
+        }
+      </div>
+    );
+  }
 }
 
 
 export default transformEvents(Radium(HorizontalTimeline));
-
