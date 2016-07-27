@@ -16,13 +16,16 @@ module.exports = {
 
   // Milliseconds in a given day (required to set the minimum seperation on events)
   DAY: 86400000,
-  // The maximum seperation between any two events (min: 1 and max: 6)
-  // MAX_NORMALISED_SEPERATION * ${eventsMinDistance} is the value in pixles for max seperation
-  MAX_NORMALISED_SEPERATION: 6,
   // Total length of the timeline in pixels
   MIN_TIMELINE_WIDTH: 750,
+  // Minimum padding between two event labels
+  MIN_EVENT_PADDING: 20,
+  // Maximum padding between two event labels
+  MAX_EVENT_PADDING: 120,
   // width of the area for text in the timeline
   DATE_WIDTH: 85,
+  // Padding at end of timeline
+  TIMELINE_PADDING: 100,
 
   // which events to trigger based on the left or the right arrow key on the keyboard is pressed
   KEYMAP: {
@@ -30,4 +33,3 @@ module.exports = {
     39: 'right'
   }
 };
-

@@ -1,12 +1,12 @@
 import test from 'ava';
-import { daydiff, zip, minDistanceEvents } from './helpers';
+import { daydiff, zip, dateDistanceExtremes } from './helpers';
 
-test('difference bwtween same date', t => {
+test('difference between same date', t => {
   const now = Date.now();
   t.is(daydiff(now, now), 0, 'same date no difference');
 });
 
-test('day difference bwtween two days', t => {
+test('day difference between two days', t => {
   const first = new Date('01/01/1993');
   const second = new Date('01/02/1993');
   t.is(daydiff(first, second), 86400000);
@@ -39,14 +39,13 @@ test('forall arrays x and y and forall i in natural numbers zip([x, y][i] = [x[i
 });
 
 
-test('forall date array the minDistanceEvents(array) >= the seperation provided', t => {
-  for (let i = 0; i < 10; i += 1) {
-    const customSeperation = 86400000;
-    const len = Math.round(Math.random() * 10) + 1;
-    let x = [ ...Array(len).keys() ].map(_ => Math.round(Math.random(_) * 100000000));
-    x.sort();
-
-    t.truthy(minDistanceEvents(x, customSeperation) >= customSeperation);
+test('dateDistanceExtremes', t => {
+  const dates = [new Date('2016-01-01'), new Date('2016-01-02'), new Date('2016-01-05')];
+  const singleDay = 86400000;
+  const result = {
+    min: singleDay,
+    max: singleDay * 3,
   }
-});
 
+  t.deepEqual(dateDistanceExtremes(dates), result);
+});

@@ -72,7 +72,7 @@ class TimelineDot extends React.Component {
 
     return [
       dots.base,
-      { left: this.props.labelWidth / 2 },
+      { left: this.props.labelWidth / 2 - dots.base.width / 2},
       dots[dotType](this.props.styles),
       Radium.getState(this.state, 'dot-label', ':hover') || Radium.getState(this.state, 'dot-dot', ':hover')
         ? hoverStyle
@@ -97,7 +97,7 @@ class TimelineDot extends React.Component {
           style={[
             dots.links,
             {
-              left: this.props.distanceFromOrigin,
+              left: this.props.distanceFromOrigin - this.props.labelWidth / 2,
               cursor: 'pointer',
               width: this.props.labelWidth,
               ':hover': {}, // We need this to track the hover state of this element

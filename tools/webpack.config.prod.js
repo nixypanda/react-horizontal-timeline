@@ -39,6 +39,7 @@ module.exports = {
     'react-icons': 'react-icons',
     'react-icon-base': 'react-icon-base',
     'react-motion': 'react-motion',
+    'react-dimensions': 'react-dimensions',
   },
   plugins: [],
   module: {

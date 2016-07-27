@@ -1,193 +1,145 @@
 import React, {PropTypes} from 'react';
-import {Motion, spring} from 'react-motion';
 
-// decorators
+// Decorators
 import Radium from 'radium';
+import dimensions from 'react-dimensions';
 
+// Components
+import EventsBar from './EventsBar';
+
+// Helpers and constansts
 import {zip, daydiff, cummulativeSeperation} from '../helpers';
 import Constants from '../Constants';
 
-import TimelineEvents from './TimelineEvents';
-
-const defaultCalcLabel = (value) => (new Date(value)).toDateString().substring(4);
-
-const transformEvents = (Component) => {
-
-  const EventsTransform = ({values, getLabel, eventsMinDistance, ...props}) => {
-    //Default label calculation
-    const calcLabel = getLabel || defaultCalcLabel;
-    const minDistance = eventsMinDistance || 80;
-
-    const dates = values.map((value) => new Date(value));
-    const distances = cummulativeSeperation(
-      dates,
-      minDistance,
-      Constants.DAY,
-      Constants.MAX_NORMALISED_SEPERATION
-    );
-
-    const events = distances.map((distance, index) => ({
-      distance,
-      label: calcLabel(values[index]),
-    }));
-
-    return (
-      <Component
-        events={events}
-        eventsMinDistance={minDistance}
-        {...props}
-      />
-    );
-  };
-
-  EventsTransform.propTypes = {
-    //  array containing the sorted date strings
-    values: PropTypes.arrayOf(PropTypes.string).isRequired,
-    // The minimum distance between consecutive events
-    eventsMinDistance: PropTypes.number,
-  }
-
-  return EventsTransform;
-
-};
+/**
+ * Default method to convert a date to a string label
+ * @param {string} date The string representation of a date
+ * @return {string} The formatted date string
+ */
+const defaultGetLabel = (date) => (new Date(date)).toDateString().substring(4);
 
 /*
  * This is the Horizontal Timeline. This component expects an array of dates
- * just as strings (e.g. 1/1/1993) and layes them horizontaly on the the screen
+ * just as strings (e.g. 1993-01-01) and layes them horizontaly on the the screen
  * also expects a callback which is activated when that particular index is
  * clicked passing that index along
  */
 class HorizontalTimeline extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.__storeMainDiv__ = this.__storeMainDiv__.bind(this);
-  }
-
-  /**
-   * The expected properties from the parent
-   * @type {Object}
-   */
-  static propTypes = {
-    index: PropTypes.number,
-    //  array containing the events
-    events: PropTypes.arrayOf(PropTypes.shape({
-      distance: PropTypes.number.isRequired,
-      label: PropTypes.string.isRequired,
-    })).isRequired,
-    //  function that takes the index of the array as argument
-    indexClick: PropTypes.func,
-    // The minimum distance between consecutive events
-    eventsMinDistance: PropTypes.number,
-    styles: PropTypes.object,
-    fillingMotion: PropTypes.object,
-    slidingMotion: PropTypes.object,
-    isTouchEnabled: PropTypes.bool,
-    isKeyboardEnabled: PropTypes.bool,
-  };
-
-  /**
-   * The values that the properties will take if they are not provided
-   * by the user.
-   * @type {Object}
-   */
-  static defaultProps = {
-    styles: {
-      outline: '#dfdfdf',
-      background: '#f8f8f8',
-      foreground: '#7b9d6f'
-    },
-    fillingMotion: {
-      stiffness: 150,
-      damping: 25
-    },
-    slidingMotion: {
-      stiffness: 150,
-      damping: 25
-    },
-    isTouchEnabled: true,
-    isKeyboardEnabled: true,
-  };
-
-  componentWillMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentDidMount() {
-    this.__setUpState__(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.__setUpState__(nextProps);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
-  handleResize = () => {
-    this.__setUpState__(this.props);
-  }
-
-  __setUpState__ = (props) => {
-    if (this.mainDiv) {
-      const fullWidth = Number(getComputedStyle(this.mainDiv)['width'].replace('px', '')) - 80;
-      // The new state of the horizontal timeline.
-      const state = {
-        // the exact value of the width of the timeline
-        totalWidth: Math.max(
-          this.props.events[this.props.events.length - 1].distance + 100,
-          fullWidth
-        ),
-      };
-
-      //Update the state and go to the selected event afterwards
-      this.setState(state);
-    }
-  };
-
-
-  /**
-   * Handler to store the main div so we can reference it later
-   */
-  __storeMainDiv__(ref) {
-    this.mainDiv = ref;
-    this.__setUpState__(this.props);
-  }
-
-
   render() {
-    return (
-      <div
-        ref={this.__storeMainDiv__}
-        style={{
-          position: 'relative',
-          height: '100%',
-          width: '100%'
-        }}
-      >
-        {this.state.totalWidth
-          ? <TimelineEvents
-              events={this.props.events}
-              selectedIndex={this.props.index}
-              totalWidth={this.state.totalWidth}
-              minDistance={this.props.eventsMinDistance}
-              minSeperation={Constants.DAY}
-              maxSeperation={Constants.MAX_NORMALISED_SEPERATION}
-              labelWidth={Constants.DATE_WIDTH}
-              handleDateClick={this.props.indexClick}
-              fillingMotion={this.props.fillingMotion}
-              slidingMotion={this.props.slidingMotion}
-              styles={this.props.styles}
-              isTouchEnabled={this.props.isTouchEnabled}
-              isKeyboardEnabled={this.props.isKeyboardEnabled}
-          />
-          : undefined
-        }
-      </div>
+    const props = this.props;
+
+    if (!props.containerWidth) {
+      //As long as we do not know the width of our container, do not render anything!
+      return false;
+    }
+
+    // Convert the date strings to actual date objects
+    const dates = props.values.map((value) => new Date(value));
+    // Calculate the distances for all events
+    const distances = cummulativeSeperation(
+      dates,
+      props.labelWidth,
+      props.minEventPadding,
+      props.maxEventPadding,
+      props.linePadding,
     );
-  }
+
+    // Convert the distances and dates to events
+    const events = distances.map((distance, index) => ({
+      distance,
+      label: props.getLabel(props.values[index]),
+    }));
+
+    const totalWidth = Math.max(
+      events[events.length - 1].distance + this.props.linePadding,
+      this.props.containerWidth - 80
+    );
+
+    return (
+      <EventsBar
+        events={events}
+        isTouchEnabled={props.isTouchEnabled}
+        totalWidth={totalWidth}
+        index={props.index}
+        styles={props.styles}
+        indexClick={props.indexClick}
+        labelWidth={props.labelWidth}
+        fillingMotion={props.fillingMotion}
+      />
+    );
+  };
+
 }
 
+/**
+ * The expected properties from the parent
+ * @type {Object}
+ */
+HorizontalTimeline.propTypes = {
+  // --- EVENTS ---
+  // Selected index
+  index: PropTypes.number,
+  // Array containing the sorted date strings
+  values: PropTypes.arrayOf(PropTypes.string).isRequired,
+  // Function that takes the index of the array as argument
+  indexClick: PropTypes.func,
+  // Function to calculate the label based on the date string
+  getLabel: PropTypes.func,
+  // --- POSITIONING ---
+  // the minimum padding between events
+  minEventPadding: PropTypes.number,
+  // The maximum padding between events
+  maxEventPadding: PropTypes.number,
+  // Padding at the front and back of the line
+  linePadding: PropTypes.number,
+  // The width of the label
+  labelWidth: PropTypes.number,
+  // --- STYLING ---
+  styles: PropTypes.object,
+  fillingMotion: PropTypes.object,
+  slidingMotion: PropTypes.object,
+  // --- INTERACTION ---
+  isTouchEnabled: PropTypes.bool,
+  isKeyboardEnabled: PropTypes.bool,
+};
 
-export default transformEvents(Radium(HorizontalTimeline));
+/**
+ * The values that the properties will take if they are not provided
+ * by the user.
+ * @type {Object}
+ */
+HorizontalTimeline.defaultProps = {
+  // --- EVENTS ---
+  getLabel: defaultGetLabel,
+  // --- POSITIONING ---
+  minEventPadding: Constants.MIN_EVENT_PADDING,
+  maxEventPadding: Constants.MAX_EVENT_PADDING,
+  linePadding: Constants.TIMELINE_PADDING,
+  labelWidth: Constants.DATE_WIDTH,
+  // --- STYLING ---
+  styles: {
+    outline: '#dfdfdf',
+    background: '#f8f8f8',
+    foreground: '#7b9d6f'
+  },
+  fillingMotion: {
+    stiffness: 150,
+    damping: 25
+  },
+  slidingMotion: {
+    stiffness: 150,
+    damping: 25
+  },
+  // --- INTERACTION ---
+  isTouchEnabled: true,
+  isKeyboardEnabled: true,
+};
+
+const containerStyle = {
+  width: '100%',
+  height: '100%',
+  position: 'relative',
+};
+
+export default Radium(dimensions({containerStyle, elementResize: true})(HorizontalTimeline));

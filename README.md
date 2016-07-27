@@ -17,12 +17,16 @@ Property	         |	Type   	     |	Default	                      |	Description
  values            | array         | undefined                      | **sorted** array of dates (format:**mm/dd/yyyy**) (**required**)
  indexClick        | function      | undefined                      | function that takes the index of the array as argument (**required**)
  index             | number        | 0                              | the index of the selected date (useful if you want to control the selected date from outside like in case of react-swipeable-views)
- eventsMinDistance | number        | 80                             | The minimum distance between consecutive events
+ getLabel          | function      | date.toDateString().substring(4) |  A function to calculate the label of the event based on the date of the event
+ minEventPadding   | number        | 20                             | The minimum padding between two event labels
+ maxEventPadding   | number        | 120                            | The maximum padding between two event labels
+ linePadding       | number        | 100                            | Padding used at the start and end of the timeline
+ labelWidth        | number        | 85                             | The width of an individual label
  fillingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how filling motion will look
  slidingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how sliding motion will look
+ styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf' } | object containing the styles for the timeline currently outline (the color of the boundaries of the timeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors of the timeline can be changed.
  isTouchEnabled    | boolean       | true                           | Enable touch events (swipe left, right)
  isKeyboardEnabled | boolean       | true                           | Enable keyboard events (up, down, left, right)
- styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf' } | object containing the styles for the timeline currently outline (the color of the boundaries of the timeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors of the timeline can be changed.
 
 This is how it can be used.
 
