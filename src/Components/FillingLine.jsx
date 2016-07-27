@@ -22,11 +22,9 @@ const FillingLine = ({ filledValue, fillingMotion, styles }) => (
         left: 0,
         top: 0,
         height: '100%',
-        width: '100%',
+        width: tX,
         transformOrigin: 'left center',
         backgroundColor: styles.foreground,
-        WebkitTransform: `scaleX(${tX})`,
-        transform: `scaleX(${tX})`
       }}
     />
     }</Motion>
@@ -46,4 +44,3 @@ FillingLine.propTypes = {
 
 
 export default FillingLine;
-

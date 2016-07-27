@@ -73,8 +73,8 @@ const buttonStyles = {
  * @return {StatelessFunctionalReactComponent} The Markup info for both the buttons
  */
 const HorizontalTimelineButtons = (props) => {
-  const buttonBackEnabled = props.position !== 0;
-  const buttonForwardEnabled = props.position !== props.maxPosition;
+  const buttonBackEnabled = Math.round(props.position) !== 0;
+  const buttonForwardEnabled = Math.round(props.position) !== Math.round(props.maxPosition);
 
   return (
     <ul className="buttons">
@@ -89,7 +89,7 @@ const HorizontalTimelineButtons = (props) => {
         ]}
       >
         <FaAngleLeft
-          style={buttonStyles.icon(props.styles, !(props.position === 0))}
+          style={buttonStyles.icon(props.styles, buttonBackEnabled)}
         />
       </li>
       <li
@@ -103,7 +103,7 @@ const HorizontalTimelineButtons = (props) => {
         ]}
       >
         <FaAngleRight
-          style={buttonStyles.icon(props.styles, !(props.position === props.maxPosition))}
+          style={buttonStyles.icon(props.styles, buttonForwardEnabled)}
         />
       </li>
     </ul>
