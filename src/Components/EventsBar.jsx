@@ -35,7 +35,7 @@ const EventsBar = ({ events, selectedIndex, styles, handleDateClick, labelWidth 
  * The styles that parent will provide
  * @type {Object}
  */
-EventsBar.PropTypes = {
+EventsBar.propTypes = {
   // Array containing the events
   events: PropTypes.arrayOf(PropTypes.shape({
     distance: PropTypes.number.isRequired,

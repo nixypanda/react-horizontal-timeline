@@ -5,7 +5,7 @@
   "main": "./dist/react-horizontal-timeline.js",
   "scripts": {
     "start": "node tools/server.js",
-    "build": "./node_modules/.bin/webpack --config tools/webpack.config.prod.js",
+    "build": "cross-env NODE_ENV=production webpack --config tools/webpack.config.prod.js",
     "build:demos": "./node_modules/.bin/webpack --config tools/webpack.config.demos.prod.js",
     "prepublish": "npm run build",
     "lint": "./node_modules/.bin/eslint --config tools/lint-config.js src demos",
@@ -89,21 +89,19 @@
     ]
   },
   "dependencies": {
-    "babel-plugin-transform-react-inline-elements": "^6.8.0",
-    "bootstrap": "^3.3.6",
     "color": "^0.11.3",
     "radium": "^0.18.0",
     "react": "^15.0.2",
-    "react-addons-update": "^15.2.1",
-    "react-dom": "^15.0.2",
     "react-icons": "^2.0.1",
     "react-motion": "^0.4.2"
   },
   "devDependencies": {
     "ava": "^0.15.2",
+    "bootstrap": "^3.3.6",
     "babel-core": "^6.3.21",
     "babel-eslint": "^6.0.2",
     "babel-loader": "^6.2.0",
+    "babel-plugin-transform-react-inline-elements": "^6.8.0",
     "babel-plugin-transform-react-constant-elements": "^6.9.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.2.7",
     "babel-polyfill": "^6.9.1",
@@ -123,6 +121,7 @@
     "jsdom": "^9.4.1",
     "nyc": "^7.0.0",
     "react-addons-test-utils": "^15.0.2",
+    "react-dom": "^15.0.2",
     "react-swipeable-views": "^0.6.1",
     "react-transform-hmr": "^1.0.1",
     "style-loader": "^0.13.0",

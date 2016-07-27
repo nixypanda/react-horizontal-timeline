@@ -3,53 +3,27 @@
  */
 
 /* eslint-disable no-var */
-// var webpack = require('webpack');
 var path = require('path');
+var sourcePath = path.join(__dirname, '..', 'src');
+var distPath = path.join(__dirname, '..', 'dist');
+
 var loaders = [
-  // **IMPORTANT** This is needed so that each bootstrap js file required by
-  // bootstrap-webpack has access to the jQuery object
-  {
-    test: /bootstrap\/js\//,
-    loader: 'imports?jQuery=jquery'
-  },
   // Babel enables the use of ES6 today by transpiling your ES6 JavaScript into equivalent ES5
   // source that is actually delivered to the end user browser.
   {
     test: /\.jsx?$/,
     loaders: [ 'babel' ],
-    include: path.join(process.cwd(), 'src')
+    include: sourcePath
   },
-  // css etc required to run bootstrap
-  {
-    test: /\.css$/,
-    loader: 'style-loader!css-loader',
-    include: path.join(process.cwd(), 'src/')
-  },
-  {
-    test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url?limit=10000&mimetype=application/font-woff'
-  },
-  {
-    test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url?limit=10000&mimetype=application/octet-stream'
-  },
-  {
-    test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'file'
-  },
-  {
-    test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url?limit=10000&mimetype=image/svg+xml'
-  }
 ];
 
 module.exports = {
   entry: [
-    path.join(process.cwd(), './src/Components/HorizontalTimeline.jsx')
+    path.join(sourcePath, 'Components/HorizontalTimeline.jsx')
   ],
   // If you pass an array - the modules are loaded on startup. The last one is exported.
   output: {
-    path: path.join(process.cwd(), 'dist'),
+    path: distPath,
     filename: 'react-horizontal-timeline.js',
     libraryTarget: 'commonjs2'
   },
@@ -57,11 +31,14 @@ module.exports = {
   resolve: {
     extensions: [ '', '.js', '.jsx' ]
   },
+  // External dependencies don't need to be in our own dist
   externals: {
-    react: 'react',
-    'react-dom': 'react-dom',
+    'color': 'color',
+    'radium': 'radium',
+    'react': 'react',
+    'react-icons': 'react-icons',
+    'react-icon-base': 'react-icon-base',
     'react-motion': 'react-motion',
-    radium: 'radium'
   },
   plugins: [],
   module: {
