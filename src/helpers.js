@@ -39,8 +39,8 @@ export const dateDistanceExtremes = (dates) => {
   // are the same then return the provided minimum seperation.
   return {
     min: Math.min.apply(null, dateDistances),
-    max: Math.max.apply(null, dateDistances),
-  }
+    max: Math.max.apply(null, dateDistances)
+  };
 };
 
 
@@ -61,7 +61,7 @@ export const cummulativeSeperation = (dates, labelWidth, minEventPadding, maxEve
   const dateExtremes = dateDistanceExtremes(dates);
   const datesDiff = dateExtremes.max - dateExtremes.min;
   const paddingDiff = maxEventPadding - minEventPadding;
-  const halfLabel = labelWidth / 2;
+  // const halfLabel = labelWidth / 2;
 
   // using dynamic programming to set up the distance from the origin of the timeline.
   const distances = new Array(dates.length);

@@ -1,10 +1,12 @@
 import test from 'ava';
 import { daydiff, zip, dateDistanceExtremes } from './helpers';
 
+
 test('difference between same date', t => {
   const now = Date.now();
   t.is(daydiff(now, now), 0, 'same date no difference');
 });
+
 
 test('day difference between two days', t => {
   const first = new Date('01/01/1993');
@@ -40,12 +42,13 @@ test('forall arrays x and y and forall i in natural numbers zip([x, y][i] = [x[i
 
 
 test('dateDistanceExtremes', t => {
-  const dates = [new Date('2016-01-01'), new Date('2016-01-02'), new Date('2016-01-05')];
+  const dates = [ new Date('2016-01-01'), new Date('2016-01-02'), new Date('2016-01-05') ];
   const singleDay = 86400000;
   const result = {
     min: singleDay,
-    max: singleDay * 3,
-  }
+    max: singleDay * 3
+  };
 
   t.deepEqual(dateDistanceExtremes(dates), result);
 });
+
