@@ -73,8 +73,8 @@ const buttonStyles = {
  * @return {StatelessFunctionalReactComponent} The Markup info for both the buttons
  */
 const HorizontalTimelineButtons = (props) => {
-  const buttonBackEnabled = Math.round(props.position) !== 0;
-  const buttonForwardEnabled = Math.round(props.position) !== Math.round(props.maxPosition);
+  const buttonBackEnabled = Math.round(props.position) < 0;
+  const buttonForwardEnabled = Math.round(props.position) > Math.round(props.maxPosition);
 
   return (
     <ul className="buttons">
