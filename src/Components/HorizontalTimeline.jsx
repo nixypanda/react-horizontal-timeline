@@ -51,9 +51,11 @@ class HorizontalTimeline extends React.Component {
       label: props.getLabel(props.values[index]),
     }));
 
+    const visibleWidth = this.props.containerWidth - 80;
+
     const totalWidth = Math.max(
       events[events.length - 1].distance + this.props.linePadding,
-      this.props.containerWidth - 80
+      visibleWidth
     );
 
     return (
@@ -61,6 +63,7 @@ class HorizontalTimeline extends React.Component {
         events={events}
         isTouchEnabled={props.isTouchEnabled}
         totalWidth={totalWidth}
+        visibleWidth={visibleWidth}
         index={props.index}
         styles={props.styles}
         indexClick={props.indexClick}

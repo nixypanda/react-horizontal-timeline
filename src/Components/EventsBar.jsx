@@ -27,9 +27,6 @@ class EventsBar extends React.Component {
       started: false,
       threshold: 3
     }
-
-    this.__storeWrapperRef__ = this.__storeWrapperRef__.bind(this);
-    this.updateSlide = this.updateSlide.bind(this);
   }
 
   componentWillMount() {
@@ -127,35 +124,27 @@ class EventsBar extends React.Component {
    * @return {undefind} Just modifies the value by which we need to translate the timeline in place
    */
   updateSlide = (direction, props = this.props) => {
-    if (this.wrapper) {
-      // the width of the timeline component between the two buttons (prev and next)
-      const wrapperWidth = Number(getComputedStyle(this.wrapper)['width'].replace('px', '')) - 80;
-      const maxPosition = Math.min(wrapperWidth - this.props.totalWidth, 0); // NEVER scroll to the right
+    // the width of the timeline component between the two buttons (prev and next)
+    const maxPosition = Math.min(props.visibleWidth - this.props.totalWidth, 0); // NEVER scroll to the right
 
-      //  translate the timeline to the left('next')/right('prev')
-      if (direction === Constants.RIGHT) {
-        this.setState({
-          position: Math.max((this.state.position - wrapperWidth) + props.labelWidth, maxPosition),
-          maxPosition
-        });
-      } else if (direction === Constants.LEFT) {
-        this.setState({
-          position: Math.min(0, (this.state.position + wrapperWidth) - props.labelWidth),
-          maxPosition
-        });
-      } else {
-        //Make sure we are not scrolling outside the view
-        this.setState({
-          position: Math.max(this.state.position, maxPosition),
-          maxPosition,
-        });
-      }
+    //  translate the timeline to the left('next')/right('prev')
+    if (direction === Constants.RIGHT) {
+      this.setState({
+        position: Math.max((this.state.position - props.visibleWidth) + props.labelWidth, maxPosition),
+        maxPosition
+      });
+    } else if (direction === Constants.LEFT) {
+      this.setState({
+        position: Math.min(0, (this.state.position + props.visibleWidth) - props.labelWidth),
+        maxPosition
+      });
+    } else {
+      //Make sure we are not scrolling outside the view
+      this.setState({
+        position: Math.max(this.state.position, maxPosition),
+        maxPosition,
+      });
     }
-  };
-
-  __storeWrapperRef__ = (ref) => {
-    this.wrapper = ref;
-    this.updateSlide();
   };
 
   render() {
@@ -175,7 +164,6 @@ class EventsBar extends React.Component {
 
     return (
       <div
-        ref={this.__storeWrapperRef__}
         style={{
           width: '100%',
           height: '100%',
@@ -244,6 +232,7 @@ EventsBar.propTypes = {
   })).isRequired,
   isTouchEnabled: PropTypes.bool.isRequired,
   totalWidth: PropTypes.number.isRequired,
+  visibleWidth: PropTypes.number.isRequired,
   index: PropTypes.number,
   styles: PropTypes.object.isRequired,
   indexClick: PropTypes.func.isRequired,
