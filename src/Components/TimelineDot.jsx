@@ -89,7 +89,7 @@ class TimelineDot extends React.Component {
     }
 
     return (
-      <li key={ this.props.index } >
+      <li key={ this.props.index } className={dotType}>
         <a
           key='dot-label'
           className='dot-label'
@@ -107,7 +107,6 @@ class TimelineDot extends React.Component {
           { this.props.label }
           <span
             key='dot-dot'
-            className={dotType}
             onClick={() => this.props.onClick(this.props.index) }
             style={this.__getDotStyles__(dotType)}
           />
