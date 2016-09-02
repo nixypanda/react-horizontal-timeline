@@ -57,20 +57,23 @@ export const dateDistanceExtremes = (dates) => {
  */
 // the interface for this function is pure
 export const cummulativeSeperation = (dates, labelWidth, minEventPadding, maxEventPadding, startPadding) => {
+  // using dynamic programming to set up the distance from the origin of the timeline.
+  const distances = new Array(dates.length);
+  distances[0] = startPadding;
+
   // Calculating the minimum seperation between events
   const dateExtremes = dateDistanceExtremes(dates);
   const datesDiff = dateExtremes.max - dateExtremes.min;
   const paddingDiff = maxEventPadding - minEventPadding;
   // const halfLabel = labelWidth / 2;
 
-  // using dynamic programming to set up the distance from the origin of the timeline.
-  const distances = new Array(dates.length);
-  distances[0] = startPadding;
 
   for (let index = 1; index < distances.length; index += 1) {
     const distance = daydiff(dates[index - 1], dates[index]);
     // relative spacing according to min and max seperation
-    const seperation = Math.round((((distance - dateExtremes.min) * paddingDiff) / datesDiff) + minEventPadding);
+    const seperation = datesDiff === 0
+                        ? maxEventPadding
+                        : Math.round((((distance - dateExtremes.min) * paddingDiff) / datesDiff) + minEventPadding);
     // the distance_from_origin(n) = distance_from_origin(n-1) + distance between n and n - 1.
     distances[index] = distances[index - 1] + labelWidth + seperation;
   }
