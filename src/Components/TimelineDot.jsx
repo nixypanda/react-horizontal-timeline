@@ -24,7 +24,6 @@ const dots = {
     height: 12,
     width: 12,
     borderRadius: '50%',
-    zIndex: 2,
     transition: 'background-color 0.3s, border-color 0.3s',
     ':hover': {}, // We need this to track the hover state of this element
   },
@@ -89,7 +88,7 @@ class TimelineDot extends React.Component {
     }
 
     return (
-      <li key={ this.props.index } className={dotType}>
+      <li key={ this.props.date } id={`timeline-dot-${this.props.date}`} className={dotType}>
         <a
           key='dot-label'
           className='dot-label'
@@ -123,8 +122,10 @@ class TimelineDot extends React.Component {
 TimelineDot.propTypes = {
   // The index of the currently selected dot (required to style as old, present, or future event)
   selected: PropTypes.number.isRequired,
-  // The index of the present event (used as key and for deciding the styles alongside selected)
+  // The index of the present event (used for deciding the styles alongside selected)
   index: PropTypes.number.isRequired,
+  // The actual date of the event (used as key and id)
+  date: PropTypes.string.isRequired,
   // The onClick handler ( in this case to trigger the fillingMotion of the timeline )
   onClick: PropTypes.func.isRequired,
   // The date of the event (required to display it)

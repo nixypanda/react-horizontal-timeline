@@ -49,6 +49,7 @@ class HorizontalTimeline extends React.Component {
     const events = distances.map((distance, index) => ({
       distance,
       label: props.getLabel(props.values[index]),
+      date: props.values[index],
     }));
 
     const visibleWidth = this.props.containerWidth - 80;
@@ -57,6 +58,15 @@ class HorizontalTimeline extends React.Component {
       events[events.length - 1].distance + this.props.linePadding,
       visibleWidth
     );
+
+    let barPaddingRight = 0;
+    let barPaddingLeft = 0;
+    if (!this.props.isOpenEnding) {
+      barPaddingRight = totalWidth - events[events.length - 1].distance;
+    }
+    if (!this.props.isOpenBeginning) {
+      barPaddingLeft = events[0].distance;
+    }
 
     return (
       <EventsBar
@@ -69,6 +79,8 @@ class HorizontalTimeline extends React.Component {
         indexClick={props.indexClick}
         labelWidth={props.labelWidth}
         fillingMotion={props.fillingMotion}
+        barPaddingRight={barPaddingRight}
+        barPaddingLeft={barPaddingLeft}
       />
     );
   };
@@ -102,6 +114,8 @@ HorizontalTimeline.propTypes = {
   styles: PropTypes.object,
   fillingMotion: PropTypes.object,
   slidingMotion: PropTypes.object,
+  isOpenEnding: PropTypes.bool,
+  isOpenBeginning: PropTypes.bool,
   // --- INTERACTION ---
   isTouchEnabled: PropTypes.bool,
   isKeyboardEnabled: PropTypes.bool,
@@ -134,6 +148,8 @@ HorizontalTimeline.defaultProps = {
     stiffness: 150,
     damping: 25
   },
+  isOpenEnding: true,
+  isOpenBeginning: true,
   // --- INTERACTION ---
   isTouchEnabled: true,
   isKeyboardEnabled: true,

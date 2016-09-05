@@ -26,7 +26,9 @@ export default class HorizontalTimelineContent extends React.Component {
       stylesForeground: '#7b9d6f',
       stylesOutline: '#dfdfdf',
       isTouchEnabled: true,
-      isKeyboardEnabled: true
+      isKeyboardEnabled: true,
+      isOpenEnding: true,
+      isOpenBeginning: true,
     };
   }
 
@@ -88,6 +90,8 @@ export default class HorizontalTimelineContent extends React.Component {
               outline: state.stylesOutline
             }}
             values={ this.dates }
+            isOpenEnding={state.isOpenEnding}
+            isOpenBeginning={state.isOpenBeginning}
           />
         </div>
         <div className='text-center'>
