@@ -20,6 +20,7 @@ const EventsBar = ({ events, selectedIndex, styles, handleDateClick, labelWidth 
       <TimelineDot
         distanceFromOrigin={event.distance}
         label={event.label}
+        date={event.date}
         index={index}
         key={index}
         onClick={handleDateClick}
@@ -40,6 +41,7 @@ EventsBar.propTypes = {
   events: PropTypes.arrayOf(PropTypes.shape({
     distance: PropTypes.number.isRequired,
     label: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
   })).isRequired,
   // The index of the selected event
   selectedIndex: PropTypes.number,

@@ -26,7 +26,9 @@ export default class HorizontalTimelineContent extends React.Component {
       stylesForeground: '#7b9d6f',
       stylesOutline: '#dfdfdf',
       isTouchEnabled: true,
-      isKeyboardEnabled: true
+      isKeyboardEnabled: true,
+      isOpenEnding: true,
+      isOpenBeginning: true,
     };
   }
 
@@ -67,6 +69,9 @@ export default class HorizontalTimelineContent extends React.Component {
 
     return (
       <div>
+        <button onClick={() => {
+          this.setState({ value: this.dates.length - 1, previous: this.state.value });
+        }}>SELECT LAST</button>
         <div style={{ width: '60%', height: '100px', margin: '0 auto' }}>
           <HorizontalTimeline
             fillingMotion={{ stiffness: state.fillingMotionStiffness, damping: state.fillingMotionDamping }}
@@ -88,6 +93,8 @@ export default class HorizontalTimelineContent extends React.Component {
               outline: state.stylesOutline
             }}
             values={ this.dates }
+            isOpenEnding={state.isOpenEnding}
+            isOpenBeginning={state.isOpenBeginning}
           />
         </div>
         <div className='text-center'>

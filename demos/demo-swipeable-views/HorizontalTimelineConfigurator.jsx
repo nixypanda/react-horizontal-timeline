@@ -37,6 +37,28 @@ const HorizontalTimelineConfigurator = (props) => {
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, fontSize: 20 }}>Endings</div>
+        <div style={{ flex: 1 }}>
+          <label>Open beginning</label>
+          <input
+            onChange={(e) => {
+              props.setConfig('isOpenBeginning', e.target.checked);
+            }}
+            type='checkbox'
+            checked={props.isOpenBeginning}
+          />
+          <label>Open ending</label>
+          <input
+            onChange={(e) => {
+              props.setConfig('isOpenEnding', e.target.checked);
+            }}
+            type='checkbox'
+            checked={props.isOpenEnding}
+          />
+        </div>
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, fontSize: 20 }}>Line Padding</div>
         <div style={{ flex: 1 }}>
           <input
@@ -180,8 +202,9 @@ HorizontalTimelineConfigurator.propTypes = {
   stylesBackground: PropTypes.string.isRequired,
   stylesForeground: PropTypes.string.isRequired,
   stylesOutline: PropTypes.string.isRequired,
-  setConfig: PropTypes.func.isRequired
+  setConfig: PropTypes.func.isRequired,
+  isOpenEnding: PropTypes.func.isRequired,
+  isOpenBeginning: PropTypes.func.isRequired,
 };
 
 export default HorizontalTimelineConfigurator;
-
