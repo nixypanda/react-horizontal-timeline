@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 
-
 const HorizontalTimelineConfigurator = (props) => {
   return (
     <div className={'container'} style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
@@ -41,19 +40,19 @@ const HorizontalTimelineConfigurator = (props) => {
         <div style={{ flex: 1 }}>
           <label>Open beginning</label>
           <input
+            checked={props.isOpenBeginning}
             onChange={(e) => {
               props.setConfig('isOpenBeginning', e.target.checked);
             }}
             type='checkbox'
-            checked={props.isOpenBeginning}
           />
           <label>Open ending</label>
           <input
+            checked={props.isOpenEnding}
             onChange={(e) => {
               props.setConfig('isOpenEnding', e.target.checked);
             }}
             type='checkbox'
-            checked={props.isOpenEnding}
           />
         </div>
       </div>
@@ -191,20 +190,20 @@ const HorizontalTimelineConfigurator = (props) => {
 };
 
 HorizontalTimelineConfigurator.propTypes = {
-  minEventPadding: PropTypes.number.isRequired,
-  maxEventPadding: PropTypes.number.isRequired,
-  linePadding: PropTypes.number.isRequired,
-  labelWidth: PropTypes.number.isRequired,
   fillingMotionStiffness: PropTypes.number.isRequired,
   fillingMotionDamping: PropTypes.number.isRequired,
+  isOpenEnding: PropTypes.func.isRequired,
+  isOpenBeginning: PropTypes.func.isRequired,
+  linePadding: PropTypes.number.isRequired,
+  labelWidth: PropTypes.number.isRequired,
+  maxEventPadding: PropTypes.number.isRequired,
+  minEventPadding: PropTypes.number.isRequired,
+  setConfig: PropTypes.func.isRequired,
   slidingMotionStiffness: PropTypes.number.isRequired,
   slidingMotionDamping: PropTypes.number.isRequired,
   stylesBackground: PropTypes.string.isRequired,
   stylesForeground: PropTypes.string.isRequired,
-  stylesOutline: PropTypes.string.isRequired,
-  setConfig: PropTypes.func.isRequired,
-  isOpenEnding: PropTypes.func.isRequired,
-  isOpenBeginning: PropTypes.func.isRequired,
+  stylesOutline: PropTypes.string.isRequired
 };
 
 export default HorizontalTimelineConfigurator;
