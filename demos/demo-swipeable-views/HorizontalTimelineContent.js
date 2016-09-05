@@ -69,9 +69,6 @@ export default class HorizontalTimelineContent extends React.Component {
 
     return (
       <div>
-        <button onClick={() => {
-          this.setState({ value: this.dates.length - 1, previous: this.state.value });
-        }}>SELECT LAST</button>
         <div style={{ width: '60%', height: '100px', margin: '0 auto' }}>
           <HorizontalTimeline
             fillingMotion={{ stiffness: state.fillingMotionStiffness, damping: state.fillingMotionDamping }}
