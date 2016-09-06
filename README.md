@@ -27,6 +27,8 @@ Property	         |	Type   	     |	Default	                      |	Description
  styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf' } | object containing the styles for the timeline currently outline (the color of the boundaries of the timeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors of the timeline can be changed.
  isTouchEnabled    | boolean       | true                           | Enable touch events (swipe left, right)
  isKeyboardEnabled | boolean       | true                           | Enable keyboard events (up, down, left, right)
+ isOpenBeginning   | boolean       | true                           | Show the beginning of the timeline as open ended
+ isOpenEnding      | boolean       | true                           | Show the ending of the timeline as open ended
 
 This is how it can be used.
 
