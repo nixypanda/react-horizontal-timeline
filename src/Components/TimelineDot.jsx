@@ -11,7 +11,6 @@ const dots = {
   links: {
     position: 'absolute',
     bottom: 0,
-    zIndex: 2,
     textAlign: 'center',
     paddingBottom: 15,
   },
@@ -63,7 +62,7 @@ const dots = {
  */
 class TimelineDot extends React.Component {
 
-  __getDotStyles__ = (dotType) => {
+  __getDotStyles__ = (dotType, key) => {
     const hoverStyle = {
       backgroundColor: this.props.styles.foreground,
       border: `2px solid ${this.props.styles.foreground}`,
@@ -73,7 +72,7 @@ class TimelineDot extends React.Component {
       dots.base,
       { left: this.props.labelWidth / 2 - dots.base.width / 2},
       dots[dotType](this.props.styles),
-      Radium.getState(this.state, 'dot-label', ':hover') || Radium.getState(this.state, 'dot-dot', ':hover')
+      Radium.getState(this.state, key, ':hover') || Radium.getState(this.state, 'dot-dot', ':hover')
         ? hoverStyle
         : undefined,
     ]
@@ -88,28 +87,27 @@ class TimelineDot extends React.Component {
     }
 
     return (
-      <li key={ this.props.date } id={`timeline-dot-${this.props.date}`} className={dotType}>
-        <a
-          key='dot-label'
-          className='dot-label'
+      <li
+        key={ this.props.date }
+        id={`timeline-dot-${this.props.date}`}
+        className={`${dotType} dot-label`}
+        onClick={() => this.props.onClick(this.props.index)}
+        style={[
+          dots.links,
+          {
+            left: this.props.distanceFromOrigin - this.props.labelWidth / 2,
+            cursor: 'pointer',
+            width: this.props.labelWidth,
+            ':hover': {}, // We need this to track the hover state of this element
+          }
+        ]}
+      >
+        { this.props.label }
+        <span
+          key='dot-dot'
           onClick={() => this.props.onClick(this.props.index) }
-          style={[
-            dots.links,
-            {
-              left: this.props.distanceFromOrigin - this.props.labelWidth / 2,
-              cursor: 'pointer',
-              width: this.props.labelWidth,
-              ':hover': {}, // We need this to track the hover state of this element
-            }
-          ]}
-        >
-          { this.props.label }
-          <span
-            key='dot-dot'
-            onClick={() => this.props.onClick(this.props.index) }
-            style={this.__getDotStyles__(dotType)}
-          />
-        </a>
+          style={this.__getDotStyles__(dotType, this.props.date)}
+        />
       </li>
     );
   }

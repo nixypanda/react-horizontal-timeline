@@ -17,7 +17,6 @@ const RIGHT = 'right';
  */
 const faderStyle = {
   base: {
-    zIndex: 2,
     top: '50%',
     position: 'absolute',
     bottom: 'auto',
