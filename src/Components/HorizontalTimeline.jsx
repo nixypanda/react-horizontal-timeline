@@ -70,6 +70,8 @@ class HorizontalTimeline extends React.Component {
 
     return (
       <EventsBar
+        width={props.containerWidth}
+        height={props.containerHeight}
         events={events}
         isTouchEnabled={props.isTouchEnabled}
         totalWidth={totalWidth}
@@ -155,10 +157,4 @@ HorizontalTimeline.defaultProps = {
   isKeyboardEnabled: true,
 };
 
-const containerStyle = {
-  width: '100%',
-  height: '100%',
-  position: 'relative',
-};
-
-export default Radium(dimensions({containerStyle, elementResize: true})(HorizontalTimeline));
+export default Radium(dimensions({elementResize: true})(HorizontalTimeline));

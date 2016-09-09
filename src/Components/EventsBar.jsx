@@ -15,7 +15,7 @@ class EventsBar extends React.Component {
 
     this.state = {
       position: 0,
-      maxPosition: 0,
+      maxPosition: Math.min(props.visibleWidth - props.totalWidth, 0),
     };
 
     this.touch = {
@@ -166,8 +166,8 @@ class EventsBar extends React.Component {
     return (
       <div
         style={{
-          width: '100%',
-          height: '100%',
+          width: `${this.props.width}px`,
+          height: `${this.props.height}px`,
         }}
         {...touchEvents}
       >
@@ -189,7 +189,6 @@ class EventsBar extends React.Component {
               className='events'
               style={{
                 position: 'absolute',
-                zIndex: 1,
                 left: 0,
                 top: 49,
                 height: 2,
@@ -233,6 +232,8 @@ class EventsBar extends React.Component {
 }
 
 EventsBar.propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
   events: PropTypes.arrayOf(PropTypes.shape({
     distance: PropTypes.number.isRequired,
     label: PropTypes.string.isRequired,

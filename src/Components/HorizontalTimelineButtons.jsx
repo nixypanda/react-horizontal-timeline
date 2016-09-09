@@ -22,7 +22,6 @@ import FaAngleRight from 'react-icons/lib/fa/angle-right';
 const buttonStyles = {
   link: ({ outline }) => ({
     position: 'absolute',
-    zIndex: 1,
     top: '49px',
     bottom: 'auto',
     transform: 'translateY(-50%)',
@@ -38,7 +37,6 @@ const buttonStyles = {
   icon: (styles, active) => ({
     position: 'absolute',
     left: 0,
-    zIndex: 3,
     top: '50%',
     bottom: 'auto',
     transform: 'translateY(-50%)',

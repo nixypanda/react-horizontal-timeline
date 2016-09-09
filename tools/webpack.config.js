@@ -56,7 +56,7 @@ var loaders = [
 // setting up the entry point to the demos
 entry = Object.keys(entry).reduce(function (result, key) {
   result[key] = [
-    'webpack-dev-server/client?http://localhost:5000',
+    'webpack-dev-server/client?http://localhost:5001',
     'webpack/hot/only-dev-server',
     entry[key]
   ];
