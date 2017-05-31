@@ -12,23 +12,23 @@ Here is a [demo] (http://jckdrpr.github.io/react-horizontal-timeline) I hope you
 
 It will just render a timeline with the dates that you provided and it is up to you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
 
-Property	         |	Type   	     |	Default	                      |	Description
-:------------------|:--------------|:-------------------------------|:--------------------------------
- values            | array         | undefined                      | **sorted** array of dates (format:**mm/dd/yyyy**) (**required**)
- indexClick        | function      | undefined                      | function that takes the index of the array as argument (**required**)
- index             | number        | 0                              | the index of the selected date (useful if you want to control the selected date from outside like in case of react-swipeable-views)
- getLabel          | function      | date.toDateString().substring(4) |  A function to calculate the label of the event based on the date of the event
- minEventPadding   | number        | 20                             | The minimum padding between two event labels
- maxEventPadding   | number        | 120                            | The maximum padding between two event labels
- linePadding       | number        | 100                            | Padding used at the start and end of the timeline
- labelWidth        | number        | 85                             | The width of an individual label
- fillingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how filling motion will look
- slidingMotion     | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how sliding motion will look
- styles            | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf' } | object containing the styles for the timeline currently outline (the color of the boundaries of the timeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors of the timeline can be changed.
- isTouchEnabled    | boolean       | true                           | Enable touch events (swipe left, right)
- isKeyboardEnabled | boolean       | true                           | Enable keyboard events (up, down, left, right)
- isOpenBeginning   | boolean       | true                           | Show the beginning of the timeline as open ended
- isOpenEnding      | boolean       | true                           | Show the ending of the timeline as open ended
+Property	                  |	Type   	     |	Default	                      |	Description
+:--------------------------|:--------------|:-------------------------------|:--------------------------------
+ values (**required**)     | array         | undefined                      | **sorted** array of dates (format:**yyyy-mm-dd**)
+ indexClick (**required**) | function      | undefined                      | function that takes the index of the array as argument
+ index (**required**)      | number        | undefined                      | the index of the selected date
+ getLabel                  | function      | date.toDateString().substring(4) |  A function to calculate the label of the event based on the date of the event
+ minEventPadding           | number        | 20                             | The minimum padding between two event labels
+ maxEventPadding           | number        | 120                            | The maximum padding between two event labels
+ linePadding               | number        | 100                            | Padding used at the start and end of the timeline
+ labelWidth                | number        | 85                             | The width of an individual label
+ fillingMotion             | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how filling motion will look
+ slidingMotion             | object        |{ stiffness: 150, damping: 25 } | Sets the animation style of how sliding motion will look
+ styles                    | object        |{ background: '#f8f8f8', foreground: '#7b9d6f', outline: '#dfdfdf' } | object containing the styles for the timeline currently outline (the color of the boundaries of the timeline and the buttons on it's either side), foreground (the filling color, active color) and background (the background color of your page) colors of the timeline can be changed.
+ isTouchEnabled            | boolean       | true                           | Enable touch events (swipe left, right)
+ isKeyboardEnabled         | boolean       | true                           | Enable keyboard events (up, down, left, right)
+ isOpenBeginning           | boolean       | true                           | Show the beginning of the timeline as open ended
+ isOpenEnding              | boolean       | true                           | Show the ending of the timeline as open ended
 
 This is how it can be used.
 
@@ -58,18 +58,7 @@ export default class App extends React.Component {
 ```
 For more advanced usage take a look at the demos directory.
 
-###Todo
-- ~~Start using react-motion to simplify code a bit.~~
-- ~~Arrows on the buttons on either side.~~
-- ~~Start using some solution for css (e.g. ReactCSS, ReactStyle, etc..).~~
-- ~~Make it more customizable.~~
-- ~~Improve the structure.~~
-- ~~Keyboard movement controls~~
-- ~~Touch controls~~
-- Customizable date points/event names/tooltip on the timeline
-- Make someone use it. :D
-
-##Running the developmnt version
+##Running the development version
 - Just clone the repo and do an ```npm install``` followed by an ```npm run start```.
 - Then go to ```localhost:5001/demos/<demo_name>/index.html``` to see the fruits of your labor.
 
