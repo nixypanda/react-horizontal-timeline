@@ -192,8 +192,8 @@ const HorizontalTimelineConfigurator = (props) => {
 HorizontalTimelineConfigurator.propTypes = {
   fillingMotionStiffness: PropTypes.number.isRequired,
   fillingMotionDamping: PropTypes.number.isRequired,
-  isOpenEnding: PropTypes.func.isRequired,
-  isOpenBeginning: PropTypes.func.isRequired,
+  isOpenEnding: PropTypes.bool.isRequired,
+  isOpenBeginning: PropTypes.bool.isRequired,
   linePadding: PropTypes.number.isRequired,
   labelWidth: PropTypes.number.isRequired,
   maxEventPadding: PropTypes.number.isRequired,

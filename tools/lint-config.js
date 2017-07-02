@@ -12,31 +12,6 @@ module.exports = {
 
   plugins: [ 'react' ],
 
-  ecmaFeatures: {
-    arrowFunctions: true,
-    binaryLiterals: true,
-    blockBindings: true,
-    classes: true,
-    defaultParams: true,
-    destructuring: true,
-    forOf: true,
-    generators: true,
-    modules: true,
-    objectLiteralComputedProperties: true,
-    objectLiteralDuplicateProperties: true,
-    objectLiteralShorthandMethods: true,
-    objectLiteralShorthandProperties: true,
-    octalLiterals: true,
-    regexUFlag: true,
-    regexYFlag: true,
-    spread: true,
-    superInFunctions: true,
-    templateStrings: true,
-    unicodeCodePointEscapes: true,
-    globalReturn: true,
-    jsx: true
-  },
-
   rules: {
 
     //
@@ -394,8 +369,6 @@ module.exports = {
     // Prevent missing React when using JSX
     'react/react-in-jsx-scope': 2,
     // Prevent extra closing tags for components without children
-    'react/self-closing-comp': 2,
-    // Prevent missing parentheses around multilines JSX
-    'react/wrap-multilines': 2
+    'react/self-closing-comp': 2
   }
 };
