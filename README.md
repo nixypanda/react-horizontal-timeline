@@ -1,4 +1,4 @@
-#React Horizontal Timeline
+# React Horizontal Timeline
 [![npm version](https://badge.fury.io/js/react-horizontal-timeline.svg)](https://badge.fury.io/js/react-horizontal-timeline)
 [![Build Status](https://travis-ci.org/jckdrpr/react-horizontal-timeline.svg?branch=master)](https://travis-ci.org/jckdrpr/react-horizontal-timeline)
 [![Code Climate](https://codeclimate.com/github/jckdrpr/react-horizontal-timeline/badges/gpa.svg)](https://codeclimate.com/github/jckdrpr/react-horizontal-timeline)
@@ -8,7 +8,7 @@
 A react port of the horizontal time-line developed by CodyHouse.
 Here is a [demo] (http://jckdrpr.github.io/react-horizontal-timeline) I hope you too are a fan of the elder scrolls.
 
-##HorizontalTimeline
+## HorizontalTimeline
 
 It will just render a timeline with the dates that you provided and it is up to you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
 
@@ -58,11 +58,11 @@ export default class App extends React.Component {
 ```
 For more advanced usage take a look at the demos directory.
 
-##Running the development version
-- Just clone the repo and do an ```npm install``` followed by an ```npm run start```.
-- Then go to ```localhost:5001/demos/<demo_name>/index.html``` to see the fruits of your labor.
+## Running the development version
+- Just clone the repo and do an `npm install` followed by an `npm run start`.
+- Then go to `localhost:5001/demos/<demo_name>/index.html` to see the fruits of your labor.
 
-####Here is the information provided by the original author.
+#### Here is the information provided by the original author.
 
 An easy to customize, horizontal timeline powered by CSS and jQuery.
 

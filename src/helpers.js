@@ -72,8 +72,8 @@ export const cummulativeSeperation = (dates, labelWidth, minEventPadding, maxEve
     const distance = daydiff(dates[index - 1], dates[index]);
     // relative spacing according to min and max seperation
     const seperation = datesDiff === 0
-                        ? maxEventPadding
-                        : Math.round((((distance - dateExtremes.min) * paddingDiff) / datesDiff) + minEventPadding);
+      ? maxEventPadding
+      : Math.round((((distance - dateExtremes.min) * paddingDiff) / datesDiff) + minEventPadding);
     // the distance_from_origin(n) = distance_from_origin(n-1) + distance between n and n - 1.
     distances[index] = distances[index - 1] + labelWidth + seperation;
   }

@@ -27,7 +27,7 @@ const faderStyle = {
   },
   specific: (styles, position, gradientDirection) => ({
     [position]: 40,
-    backgroundImage: `linear-gradient(to ${gradientDirection}, ${styles.background}, ${Color(styles.background).alpha(0).rgbaString()})`
+    backgroundImage: `linear-gradient(to ${gradientDirection}, ${styles.background}, ${Color(styles.background).alpha(0).rgb()})`
   })
 };
 

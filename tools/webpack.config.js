@@ -6,49 +6,51 @@
  * state while editing React components.
  */
 
-/* eslint-disable no-var */
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 
 // entry point of all the deomos
-var entry = {
+let entry = {
   'demo-swipeable-views': path.join(process.cwd(), './demos/demo-swipeable-views/index.js')
 };
 
 // array of all the requisite loaders
-var loaders = [
+const rules = [
   // babel loader to transpile es6/7 with jsx -> es5
   {
     test: /\.jsx?$/,
     include: [ path.join(process.cwd(), 'demos'), path.join(process.cwd(), 'src') ],
-    loaders: [ 'babel' ]
+    use: [ 'babel-loader' ]
   },
     // ability to load css files into js files
   {
     test: /(\.css)$/,
-    loaders: [ 'style', 'css' ]
+    use: [ 'style-loader', 'css-loader' ]
   },
 
   /* BOOTSTRAP CONFIGURATION */
   {
     test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'file'
+    use: ['file-loader']
   },
   {
     test: /\.(woff|woff2)$/,
-    loader: 'url?prefix=font/&limit=5000'
+    //'url?prefix=font/&limit=5000'
+    use: [{'loader': 'url-loader', 'options': {'prefix': 'font', 'limit': 5000} }]
   },
   {
     test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url?limit=10000&mimetype=application/octet-stream'
+    // loader: 'url?limit=10000&mimetype=application/octet-stream'
+    use: [{'loader': 'url-loader', 'options': {'limit': 10000, 'mimetype': 'application/octet-stream'}}]
   },
   {
     test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-    loader: 'url?limit=10000&mimetype=image/svg+xml'
+    // loader: 'url?limit=10000&mimetype=image/svg+xml'
+    use: [{'loader': 'url-loader', 'options': {'limit': 10000, 'mimetype': 'image/svg+xml'}}]
   },
   {
     test: /\.html$/,
-    loader: 'html'
+    use: ['html-loader']
   }
 ];
 
@@ -73,7 +75,7 @@ module.exports = {
   },
   // Array of file extensions used to resolve modules.
   resolve: {
-    extensions: [ '', '.js', '.jsx' ]
+    extensions: [ '.js', '.jsx' ]
   },
   // http://www.cnblogs.com/Answer1215/p/4312265.html
   // The source map file will only be downloaded if you have source maps enabled and your dev tools
@@ -85,12 +87,9 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     // Hot loader is better when used with NoErrorsPlugin and hot/only-dev-server since it eliminates
     // page reloads altogether and recovers after syntax errors.
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   module: {
-    loaders: loaders
-  },
-  noParse: [
-    path.join(process.cwd(), 'node_modules')
-  ]
+    rules: rules
+  }
 };
