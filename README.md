@@ -41,11 +41,15 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <HorizontalTimeline
-          indexClick={(index) => {
-            this.setState({ value: index, previous: this.state.value });
-          }}
-          values={ VALUES } />
+        {/* Bounding box for the Timeline */}
+        <div style={{ width: '60%', height: '100px', margin: '0 auto' }}>
+          <HorizontalTimeline
+            index={this.state.value}
+            indexClick={(index) => {
+              this.setState({ value: index, previous: this.state.value });
+            }}
+            values={ VALUES } />
+        </div>
         <div className='text-center'>
           {/* any arbitrary component can go here */}    
           {this.state.value}
