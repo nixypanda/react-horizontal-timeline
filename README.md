@@ -6,7 +6,7 @@
 [![devDependency Status](https://david-dm.org/jckdrpr/react-horizontal-timeline/dev-status.svg)](https://david-dm.org/jckdrpr/react-horizontal-timeline#info=devDependencies)
 
 A react port of the horizontal time-line developed by CodyHouse.
-Here is a [demo] (http://jckdrpr.github.io/react-horizontal-timeline) I hope you too are a fan of the elder scrolls.
+Here is a [demo](http://sherubthakur.github.io/react-horizontal-timeline) I hope you too are a fan of the elder scrolls.
 
 ## HorizontalTimeline
 
