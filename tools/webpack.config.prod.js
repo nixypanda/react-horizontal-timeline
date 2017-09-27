@@ -32,15 +32,14 @@ module.exports = {
     extensions: [ '.js', '.jsx' ]
   },
   // External dependencies don't need to be in our own dist
-  externals: {
-    'color': 'color',
-    'radium': 'radium',
-    'react': 'react',
-    'react-icons': 'react-icons',
-    'react-icon-base': 'react-icon-base',
-    'react-motion': 'react-motion',
-    'react-dimensions': 'react-dimensions',
-  },
+  externals: [
+    'color',
+    'radium',
+    'react',
+    /^react-icons\b/,
+    'react-motion',
+    'react-dimensions'
+  ],
   plugins: [
     new webpack.optimize.UglifyJsPlugin()
   ],
