@@ -105,7 +105,6 @@ class TimelineDot extends React.Component {
         { this.props.label }
         <span
           key='dot-dot'
-          onClick={() => this.props.onClick(this.props.index) }
           style={this.__getDotStyles__(dotType, this.props.date)}
         />
       </li>
