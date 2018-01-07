@@ -1,5 +1,6 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
 import {Motion, spring} from 'react-motion';
+import PropTypes from 'prop-types';
 
 import Events from './Events';
 import EventLine from './EventLine';
