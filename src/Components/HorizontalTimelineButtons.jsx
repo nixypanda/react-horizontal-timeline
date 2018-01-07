@@ -74,6 +74,10 @@ const buttonStyles = {
 const HorizontalTimelineButtons = (props) => {
   const buttonBackEnabled = Math.round(props.position) < 0;
   const buttonForwardEnabled = Math.round(props.position) > Math.round(props.maxPosition);
+  const baseStyles = [
+    buttonStyles.link(props.styles),
+    buttonBackEnabled ? buttonStyles.active(props.styles) : buttonStyles.inactive(props.styles),
+  ];
 
   return (
     <ul className="buttons">
@@ -81,11 +85,7 @@ const HorizontalTimelineButtons = (props) => {
         className={`button-back ${buttonBackEnabled ? 'enabled' : 'disabled'}`}
         key={Constants.LEFT}
         onClick={() => props.updateSlide(Constants.LEFT)}
-        style={[
-          buttonStyles.link(props.styles),
-          buttonBackEnabled ? buttonStyles.active(props.styles) : buttonStyles.inactive(props.styles),
-          { [Constants.LEFT]: 0 },
-        ]}
+        style={[ ...baseStyles, { [Constants.LEFT]: 0 } ]}
       >
         <FaAngleLeft
           style={buttonStyles.icon(props.styles, buttonBackEnabled)}
@@ -95,11 +95,7 @@ const HorizontalTimelineButtons = (props) => {
         className={`button-forward ${buttonForwardEnabled ? 'enabled' : 'disabled'}`}
         key={Constants.RIGHT}
         onClick={() => props.updateSlide(Constants.RIGHT)}
-        style={[
-          buttonStyles.link(props.styles),
-          buttonForwardEnabled ? buttonStyles.active(props.styles) : buttonStyles.inactive(props.styles),
-          { [Constants.RIGHT]: 0 },
-        ]}
+        style={[ ...baseStyles, { [Constants.RIGHT]: 0 } ]}
       >
         <FaAngleRight
           style={buttonStyles.icon(props.styles, buttonForwardEnabled)}
