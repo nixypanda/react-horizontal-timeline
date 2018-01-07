@@ -1,189 +1,92 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
+const Container = (props) => (
+  <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
+    <div style={{ flex: 2, fontSize: 20 }}>{ props.label }</div>
+    { props.children }
+  </div>
+)
+
+const ColorIn = ({ label, config, ...rest }) => (
+  <div style={{ flex: 1 }}>
+    <label >{label}</label>
+    &nbsp;
+    <input
+      onChange={(e) => {
+        rest.setConfig(config, e.target.value);
+      }}
+      type='color'
+      value={rest[config]}
+    />
+  </div>
+)
+
+const NumberIn = ({ label, config, min, max, ...rest }) => (
+  <div style={{ flex: 1 }}>
+    <label >{label}</label>
+    &nbsp;
+    <input
+      min={min}
+      max={max}
+      onChange={(e) => {
+        rest.setConfig(config, Number(e.target.value));
+      }}
+      type='number'
+      value={rest[config]}
+    />
+  </div>
+)
+
+const CheckIn = ({ label, config, ...rest }) => (
+  <div style={{ flex: 1 }}>
+    <label>{label}</label>
+    <input
+      checked={rest[config]}
+      onChange={(e) => {
+        rest.setConfig(config, e.target.checked);
+      }}
+      type='checkbox'
+    />
+  </div>
+)
+
 const HorizontalTimelineConfigurator = (props) => {
   return (
     <div className={'container'} style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap' }}>
       <h2 className='text-center' style={{ flex: 1 }} >Configure the Timeline</h2>
 
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: 2, fontSize: 20 }}>Padding between events</div>
-        <div style={{ flex: 1 }}>
-          <label>Minimum</label>
-          &nbsp;
-          <input
-            max={props.maxEventPadding}
-            min={20}
-            onChange={(e) => {
-              props.setConfig('minEventPadding', Number(e.target.value));
-            }}
-            type='number'
-            value={props.minEventPadding}
-          />
-        </div>
+      <Container label='Padding between events'>
+        <NumberIn label='Minimum' config='minEventPadding' max={props.maxEventPadding} min={20} {...props} />
+        <NumberIn label='Maximum' config='maxEventPadding' min={props.minEventPadding} {...props} />
+      </Container>
 
-        <div style={{ flex: 1 }}>
-          <label>Maximum</label>
-          &nbsp;
-          <input
-            min={props.minEventPadding}
-            onChange={(e) => {
-              props.setConfig('maxEventPadding', Number(e.target.value));
-            }}
-            type='number'
-            value={props.maxEventPadding}
-          />
-        </div>
-      </div>
+      <Container label='Endings'>
+        <CheckIn label='Open Begining' config='isOpenBeginning' {...props} />
+        <CheckIn label='Open Ending' config='isOpenEnding' {...props} />
+      </Container>
 
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, fontSize: 20 }}>Endings</div>
-        <div style={{ flex: 1 }}>
-          <label>Open beginning</label>
-          <input
-            checked={props.isOpenBeginning}
-            onChange={(e) => {
-              props.setConfig('isOpenBeginning', e.target.checked);
-            }}
-            type='checkbox'
-          />
-          <label>Open ending</label>
-          <input
-            checked={props.isOpenEnding}
-            onChange={(e) => {
-              props.setConfig('isOpenEnding', e.target.checked);
-            }}
-            type='checkbox'
-          />
-        </div>
-      </div>
+      <Container label='Padding/Width'>
+        <NumberIn label='Line Padding' config='linePadding' {...props} />
+        <NumberIn label='Lable Width' config='labelWidth' {...props} />
+      </Container>
 
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, fontSize: 20 }}>Line Padding</div>
-        <div style={{ flex: 1 }}>
-          <input
-            min={0}
-            onChange={(e) => {
-              props.setConfig('linePadding', Number(e.target.value));
-            }}
-            type='number'
-            value={props.linePadding}
-          />
-        </div>
-      </div>
+      <Container label='Filling Motion'>
+        <NumberIn label='Stiffness' config='fillingMotionStiffness' {...props} />
+        <NumberIn label='Damping' config='fillingMotionDamping' {...props} />
+      </Container>
 
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, fontSize: 20 }}>LabelWidth</div>
-        <div style={{ flex: 1 }}>
-          <input
-            min={0}
-            onChange={(e) => {
-              props.setConfig('labelWidth', Number(e.target.value));
-            }}
-            type='number'
-            value={props.labelWidth}
-          />
-        </div>
-      </div>
-
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: 2, fontSize: 20 }}>Filling Motion</div>
-
-        <div style={{ flex: 1 }} >
-          <label>Stiffness</label>
-          &nbsp;
-          <input
-            min={0}
-            onChange={(e) => {
-              props.setConfig('fillingMotionStiffness', Number(e.target.value));
-            }}
-            type='number'
-            value={props.fillingMotionStiffness}
-          />
-        </div>
-
-        <div style={{ flex: 1 }} >
-          <label>Damping</label>
-          &nbsp;
-          <input
-            min={0}
-            onChange={(e) => {
-              props.setConfig('fillingMotionDamping', Number(e.target.value));
-            }}
-            type='number'
-            value={props.fillingMotionDamping}
-          />
-        </div>
-      </div>
-
-      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
-        <div style={{ flex: 2, fontSize: 20 }} >Sliding Motion</div>
-
-        <div style={{ flex: 1 }} >
-          <label>Stiffness</label>
-          &nbsp;
-          <input
-            min={0}
-            onChange={(e) => {
-              props.setConfig('slidingMotionStiffness', Number(e.target.value));
-            }}
-            type='number'
-            value={props.slidingMotionStiffness}
-          />
-        </div>
-
-        <div style={{ flex: 1 }} >
-          <label >Damping</label>
-          &nbsp;
-          <input
-            min={0}
-            onChange={(e) => {
-              props.setConfig('slidingMotionDamping', Number(e.target.value));
-            }}
-            type='number'
-            value={props.slidingMotionDamping}
-          />
-        </div>
-      </div>
+      <Container label='Sliding Motion'>
+        <NumberIn label='Stiffness' config='slidingMotionStiffness' {...props} />
+        <NumberIn label='Damping' config='slidingMotionDamping' {...props} />
+      </Container>
 
       <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
         <div style={{ flex: 3, fontSize: 20 }}>Styling</div>
-
-        <div style={{ flex: 1 }}>
-          <label>Background</label>
-          &nbsp;
-          <input
-            onChange={(e) => {
-              props.setConfig('stylesBackground', e.target.value);
-            }}
-            type='color'
-            value={props.stylesBackground}
-          />
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <label >Foreground</label>
-          &nbsp;
-          <input
-            onChange={(e) => {
-              props.setConfig('stylesForeground', e.target.value);
-            }}
-            type='color'
-            value={props.stylesForeground}
-          />
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <label >Outline</label>
-          &nbsp;
-          <input
-            onChange={(e) => {
-              props.setConfig('stylesOutline', e.target.value);
-            }}
-            type='color'
-            value={props.stylesOutline}
-          />
-        </div>
+        <ColorIn label='Background' config='stylesBackground' {...props} />
+        <ColorIn label='Foreground' config='stylesForeground' {...props} />
+        <ColorIn label='Outline' config='stylesOutline' {...props} />
       </div>
 
     </div>
