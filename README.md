@@ -63,7 +63,9 @@ export default class App extends React.Component {
 For more advanced usage take a look at the demos directory.
 
 ## Running the development version
-- Just clone the repo and do an `npm install` followed by an `npm run start`.
+- Just clone the repo and do an `npm install` (or `yarn install`)
+- Note: You will need to do `npm install react react-dom` to install `peerDependencies` as both `yarn` and `npm` don't do this.
+- Run `npm run start`/`npm start`/`yarn start`.
 - Then go to `localhost:5001/demos/<demo_name>/index.html` to see the fruits of your labor.
 
 #### Here is the information provided by the original author.
