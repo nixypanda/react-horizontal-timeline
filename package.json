@@ -1,6 +1,6 @@
 {
   "name": "react-horizontal-timeline",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "A horizontal timeline component made using react",
   "main": "./dist/react-horizontal-timeline.js",
   "scripts": {
