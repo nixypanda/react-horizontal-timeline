@@ -4,8 +4,7 @@ import Radium from 'radium';
 import Constants from '../Constants';
 
 // icons
-import FaAngleLeft from 'react-icons/lib/fa/angle-left';
-import FaAngleRight from 'react-icons/lib/fa/angle-right';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 // this handles the rendering part of the buttons that appear on either side of
 // the timeline.
