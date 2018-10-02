@@ -57,9 +57,9 @@
     "@babel/plugin-transform-runtime": "^7.1.0",
     "color": "^3.0.0",
     "prop-types": "^15.6.0",
-    "radium": "^0.24.0",
+    "radium": "^0.25.0",
     "react-dimensions": "2.0.0-alpha2",
-    "react-icons": "^2.0.1",
+    "react-icons": "^3.1.0",
     "react-motion": "^0.5.0"
   },
   "devDependencies": {
