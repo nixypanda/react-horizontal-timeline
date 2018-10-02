@@ -1,30 +1,30 @@
-import test from 'ava';
+/* eslint no-undef: 0 */
 import { daydiff, zip, dateDistanceExtremes } from './helpers';
 
 
-test('difference between same date', t => {
+test('difference between same date', () => {
   const now = Date.now();
-  t.is(daydiff(now, now), 0, 'same date no difference');
+  expect(daydiff(now, now)).toBe(0);
 });
 
 
-test('day difference between two days', t => {
+test('day difference between two days', () => {
   const first = new Date('01/01/1993');
   const second = new Date('01/02/1993');
-  t.is(daydiff(first, second), 86400000);
+  expect(daydiff(first, second)).toBe(86400000);
 });
 
-test('the zip', t => {
+test('the zip', () => {
   const toZip = [ [ '00', '01', '02' ], [ '10', '11', '12' ] ];
   const result = [ [ '00', '10' ], [ '01', '11' ], [ '02', '12' ] ];
 
-  t.deepEqual(zip(toZip), result);
+  expect(zip(toZip)).toEqual(result);
   // the initial one remains unchanged
-  t.deepEqual(toZip, toZip);
+  expect(toZip).toEqual(toZip);
 });
 
 
-test('forall arrays x and y and forall i in natural numbers zip([x, y][i] = [x[i], y[i]])', t => {
+test('forall arrays x and y and forall i in natural numbers zip([x, y][i] = [x[i], y[i]])', () => {
   for (let j = 0; j < 10; j += 1) {
     const len = Math.round(Math.random() * 100) + 1;
     // given any two arrays x and y
@@ -35,13 +35,13 @@ test('forall arrays x and y and forall i in natural numbers zip([x, y][i] = [x[i
 
     // has a property that the for all i : z[i] == [x[i], y[i]]
     for (let i = 0; i < len; i += 1) {
-      t.deepEqual(z[i], [ x[i], y[i] ]);
+      expect(z[i]).toEqual([ x[i], y[i] ]);
     }
   }
 });
 
 
-test('dateDistanceExtremes', t => {
+test('dateDistanceExtremes', () => {
   const dates = [ new Date('2016-01-01'), new Date('2016-01-02'), new Date('2016-01-05') ];
   const singleDay = 86400000;
   const result = {
@@ -49,6 +49,6 @@ test('dateDistanceExtremes', t => {
     max: singleDay * 3
   };
 
-  t.deepEqual(dateDistanceExtremes(dates), result);
+  expect(dateDistanceExtremes(dates)).toEqual(result);
 });
 
