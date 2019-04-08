@@ -20,7 +20,7 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
  * inactive: styles defined for when the icons are inactive.
  */
 const buttonStyles = {
-  link: ({ outline }) => ({
+  link: (styles) => ({
     position: 'absolute',
     top: '49px',
     bottom: 'auto',
@@ -28,11 +28,12 @@ const buttonStyles = {
     height: 34,
     width: 34,
     borderRadius: '50%',
-    border: `2px solid ${outline}`,
+    border: `2px solid ${styles.outline}`,
     overflow: 'hidden',
     textIndent: '100%',
     whiteSpace: 'nowrap',
     transition: 'border-color 0.3s',
+    ...styles.link
   }),
   icon: (styles, active) => ({
     position: 'absolute',
@@ -45,20 +46,23 @@ const buttonStyles = {
     overflow: 'hidden',
     textIndent: '100%',
     whiteSpace: 'nowrap',
-    fill: active ? styles.foreground : styles.outline
+    fill: active ? styles.foreground : styles.outline,
+    ...styles.icon
   }),
   inactive: (styles) => ({
     color: styles.outline,
     cursor: 'not-allowed',
     ':hover': {
       border: `2px solid ${styles.outline}`
-    }
+    },
+    ...styles.inactive
   }),
   active: (styles) => ({
     cursor: 'pointer',
     ':hover': {
       border: `2px solid ${styles.foreground}`,
-      color: styles.foreground
+      color: styles.foreground,
+      ...styles.active
     }
   })
 };
