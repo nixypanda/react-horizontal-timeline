@@ -8,6 +8,9 @@
 A react port of the horizontal time-line developed by CodyHouse.
 Here is a [demo](http://sherubthakur.github.io/react-horizontal-timeline) I hope you too are a fan of the elder scrolls.
 
+## NOTE
+This package is no longer maintained by me. If you find it usefull and would like to be a maintainer for this package please contact me sherub.thakur@gmail.com
+
 ## HorizontalTimeline
 
 It will just render a timeline with the dates that you provided and it is up to you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
