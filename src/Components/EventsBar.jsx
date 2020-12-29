@@ -44,6 +44,7 @@ class EventsBar extends React.Component {
   }
 
   handleKeydown = (event) => {
+    event.preventDefault();
     if (this.props.isKeyboardEnabled) {
       if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
         this.updateSlide(Constants.KEYMAP[event.keyCode]);
