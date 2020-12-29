@@ -48,9 +48,9 @@ class EventsBar extends React.Component {
       if (event.keyCode === Constants.LEFT_KEY || event.keyCode === Constants.RIGHT_KEY) {
         this.updateSlide(Constants.KEYMAP[event.keyCode]);
       } else if (event.keyCode === Constants.UP_KEY) {
-        this.props.indexClick(Math.min(this.props.selectedIndex + 1, this.props.events.length - 1));
+        this.props.indexClick(Math.min(this.props.index + 1, this.props.events.length - 1));
       } else if (event.keyCode === Constants.DOWN_KEY) {
-        this.props.indexClick(Math.max(this.props.selectedIndex - 1, 0));
+        this.props.indexClick(Math.max(this.props.index - 1, 0));
       }
     }
   }
