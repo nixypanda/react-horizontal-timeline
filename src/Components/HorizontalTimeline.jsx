@@ -75,6 +75,7 @@ class HorizontalTimeline extends React.Component {
         height={props.containerHeight}
         events={events}
         isTouchEnabled={props.isTouchEnabled}
+        isKeyboardEnabled={props.isKeyboardEnabled}
         totalWidth={totalWidth}
         visibleWidth={visibleWidth}
         index={props.index}
