@@ -36,7 +36,24 @@ Property	                  |	Type   	     |	Default	                      |	Desc
 This is how it can be used.
 
 ```
+import HorizontalTimeline from 'react-horizontal-timeline';
+
 const VALUES = [ /* The date strings go here */ ];
+
+/*
+Format: YYYY-MM-DD
+For example:
+const VALUES = [
+    '2008-06-01',
+    '2010-06-01',
+    '2013-06-01',
+    '2015-03-01',
+    '2019-01-01',
+    '2019-06-17',
+    '2019-08-01',
+];
+Note: Make sure dates are sorted in increasing order
+*/
 
 export default class App extends React.Component {
   state = { value: 0, previous: 0 };
