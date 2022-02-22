@@ -1,23 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 // Decorators
-import Radium from 'radium';
-import dimensions from 'react-dimensions';
+import Radium from "radium";
+import dimensions from "react-dimensions";
 
 // Components
-import EventsBar from './EventsBar';
+import EventsBar from "./EventsBar";
 
 // Helpers and constansts
-import {zip, daydiff, cummulativeSeperation} from '../helpers';
-import Constants from '../Constants';
+import { zip, daydiff, cummulativeSeperation } from "../helpers";
+import Constants from "../Constants";
+import moment from "moment";
 
 /**
  * Default method to convert a date to a string label
  * @param {string} date The string representation of a date
  * @return {string} The formatted date string
  */
-const defaultGetLabel = (date, index) => (new Date(date)).toDateString().substring(4);
+const defaultGetLabel = (date, index, dateStringFormat) => {
+  return moment(date).format(dateStringFormat);
+};
 
 /*
  * This is the Horizontal Timeline. This component expects an array of dates
@@ -26,7 +29,6 @@ const defaultGetLabel = (date, index) => (new Date(date)).toDateString().substri
  * clicked passing that index along
  */
 class HorizontalTimeline extends React.Component {
-
   render() {
     const props = this.props;
 
@@ -43,13 +45,13 @@ class HorizontalTimeline extends React.Component {
       props.labelWidth,
       props.minEventPadding,
       props.maxEventPadding,
-      props.linePadding,
+      props.linePadding
     );
 
     // Convert the distances and dates to events
     const events = distances.map((distance, index) => ({
       distance,
-      label: props.getLabel(props.values[index], index),
+      label: props.getLabel(props.values[index], index, props.labelFormat),
       date: props.values[index],
     }));
 
@@ -86,8 +88,7 @@ class HorizontalTimeline extends React.Component {
         barPaddingLeft={barPaddingLeft}
       />
     );
-  };
-
+  }
 }
 
 /**
@@ -100,6 +101,8 @@ HorizontalTimeline.propTypes = {
   index: PropTypes.number,
   // Array containing the sorted date strings
   values: PropTypes.arrayOf(PropTypes.string).isRequired,
+  // Date string format for lable
+  labelFormat: PropTypes.string,
   // Function that takes the index of the array as argument
   indexClick: PropTypes.func,
   // Function to calculate the label based on the date string
@@ -132,6 +135,7 @@ HorizontalTimeline.propTypes = {
 HorizontalTimeline.defaultProps = {
   // --- EVENTS ---
   getLabel: defaultGetLabel,
+  labelFormat: "DD MMM",
   // --- POSITIONING ---
   minEventPadding: Constants.MIN_EVENT_PADDING,
   maxEventPadding: Constants.MAX_EVENT_PADDING,
@@ -139,17 +143,17 @@ HorizontalTimeline.defaultProps = {
   labelWidth: Constants.DATE_WIDTH,
   // --- STYLING ---
   styles: {
-    outline: '#dfdfdf',
-    background: '#f8f8f8',
-    foreground: '#7b9d6f'
+    outline: "#dfdfdf",
+    background: "#f8f8f8",
+    foreground: "#7b9d6f",
   },
   fillingMotion: {
     stiffness: 150,
-    damping: 25
+    damping: 25,
   },
   slidingMotion: {
     stiffness: 150,
-    damping: 25
+    damping: 25,
   },
   isOpenEnding: true,
   isOpenBeginning: true,
@@ -158,4 +162,4 @@ HorizontalTimeline.defaultProps = {
   isKeyboardEnabled: true,
 };
 
-export default Radium(dimensions({elementResize: true})(HorizontalTimeline));
+export default Radium(dimensions({ elementResize: true })(HorizontalTimeline));
