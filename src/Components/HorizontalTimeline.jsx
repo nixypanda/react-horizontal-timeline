@@ -51,7 +51,7 @@ class HorizontalTimeline extends React.Component {
     // Convert the distances and dates to events
     const events = distances.map((distance, index) => ({
       distance,
-      label: props.getLabel(props.values[index], index, props.dateLabelFormat),
+      label: props.getLabel(props.values[index], index, props.labelFormat),
       date: props.values[index],
     }));
 
@@ -102,7 +102,7 @@ HorizontalTimeline.propTypes = {
   // Array containing the sorted date strings
   values: PropTypes.arrayOf(PropTypes.string).isRequired,
   // Date string format for lable
-  dateLabelFormat: PropTypes.string,
+  labelFormat: PropTypes.string,
   // Function that takes the index of the array as argument
   indexClick: PropTypes.func,
   // Function to calculate the label based on the date string
@@ -135,7 +135,7 @@ HorizontalTimeline.propTypes = {
 HorizontalTimeline.defaultProps = {
   // --- EVENTS ---
   getLabel: defaultGetLabel,
-  dateLabelFormat: "DD MMM",
+  labelFormat: "DD MMM",
   // --- POSITIONING ---
   minEventPadding: Constants.MIN_EVENT_PADDING,
   maxEventPadding: Constants.MAX_EVENT_PADDING,

@@ -79,7 +79,7 @@ export default class HorizontalTimelineContent extends React.Component {
             indexClick={(index) => {
               this.setState({ value: index, previous: this.state.value });
             }}
-            dateLabelFormat="DD MMM"
+            labelFormat="DD MMM"
             isKeyboardEnabled={state.isKeyboardEnabled}
             isTouchEnabled={state.isTouchEnabled}
             labelWidth={state.labelWidth}
