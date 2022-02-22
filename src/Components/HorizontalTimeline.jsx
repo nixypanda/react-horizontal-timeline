@@ -19,7 +19,6 @@ import moment from "moment";
  * @return {string} The formatted date string
  */
 const defaultGetLabel = (date, index, dateStringFormat) => {
-  // new Date(date).toDateString().substring(4);
   return moment(date).format(dateStringFormat);
 };
 
